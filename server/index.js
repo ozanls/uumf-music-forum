@@ -7,8 +7,18 @@ app.use(express.json());
 const db = require('./models')
 
 // Routers
-const postRouter = require('./routes/Posts');
-app.use('/posts', postRouter);
+
+    // Posts router
+    const postRouter = require('./routes/Posts');
+    app.use('/posts', postRouter);
+
+    // Comments router
+    const commentRouter = require('./routes/Comments');
+    app.use('/comments', commentRouter);
+ 
+    // Boards router
+    const boardRouter = require('./routes/Boards');
+    app.use('/boards', boardRouter);
 
 db.sequelize.sync().then(() => {
 
