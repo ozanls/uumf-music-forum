@@ -7,7 +7,7 @@ module.exports = (sequelize) => {
       primaryKey: true,
       autoIncrement: true
     },
-    post_id: {
+    postId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
         key: 'id'
       }
     },
-    user_id: {
+    userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -29,7 +29,7 @@ module.exports = (sequelize) => {
     indexes: [
       {
         unique: true,
-        fields: ['post_id', 'user_id']
+        fields: ['postId', 'userId']
       }
     ]
   });

@@ -4,10 +4,6 @@
 # Ignore environment variables file
 .env
 
-# Ignore node modules
-client/node_modules
-server/node_modules
-
 # Ignore compiled binaries
 *.exe
 *.dll
@@ -20,7 +16,8 @@ server/node_modules
 /dist/
 
 # Ignore package manager directories
-/node_modules/
+client/node_modules
+server/node_modules
 /vendor/
 
 # Ignore log files

@@ -6,7 +6,7 @@ module.exports = function(sequelize, DataTypes) {
           primaryKey: true,
           autoIncrement: true
         },
-        board_id: {
+        boardId: {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: {
@@ -14,7 +14,7 @@ module.exports = function(sequelize, DataTypes) {
             key: 'id'
           }
         },
-        user_id: {
+        userId: {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: {

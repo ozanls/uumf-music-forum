@@ -1,12 +1,12 @@
 module.exports = function(sequelize, DataTypes) {
 
-    const PostsXTags = sequelize.define('PostsXTags', {
+    const PostXTag = sequelize.define('PostXTag', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  post_id: {
+  postId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -14,7 +14,7 @@ module.exports = function(sequelize, DataTypes) {
       key: 'id',
     },
   },
-  tag_id: {
+  tagId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -27,5 +27,5 @@ module.exports = function(sequelize, DataTypes) {
   timestamps: true
 });
 
-return PostsXTags;
+return PostXTag;
 }

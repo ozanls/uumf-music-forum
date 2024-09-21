@@ -1,12 +1,12 @@
 module.exports = function(sequelize, DataTypes) {
 
-  const UsersXBadges= sequelize.define('UsersXBadges', {
+  const UserXBadge= sequelize.define('UserXBadge', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  user_id: {
+  userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -14,7 +14,7 @@ module.exports = function(sequelize, DataTypes) {
       key: 'id',
     },
   },
-  badge_id: {
+  badgeId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -27,5 +27,5 @@ module.exports = function(sequelize, DataTypes) {
   timestamps: true
 });
 
-return UsersXBadges;
+return UserXBadge;
 }

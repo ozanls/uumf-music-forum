@@ -7,7 +7,7 @@ module.exports = (sequelize) => {
       primaryKey: true,
       autoIncrement: true
     },
-    board_id: {
+    boardId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -36,7 +36,7 @@ module.exports = (sequelize) => {
     indexes: [
       {
         unique: true,
-        fields: ['board_id', 'name']  // Ensures tag names are unique within a board
+        fields: ['boardId', 'name']  // Ensures tag names are unique within a board
       }
     ]
   });
