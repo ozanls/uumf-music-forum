@@ -37,7 +37,7 @@ module.exports = (sequelize) => {
     }
   }, {
     tableName: 'comments',
-    timestamps: true,  // This will add createdAt and updatedAt fields
+    timestamps: true,
   });
 
   return Comment;
