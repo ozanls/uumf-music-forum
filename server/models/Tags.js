@@ -19,11 +19,7 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(100),
       allowNull: false
     },
-    description: {
-      type: DataTypes.STRING(255),
-      allowNull: true
-    },
-    hex_code: {
+    hexCode: {
       type: DataTypes.STRING(7),
       allowNull: true,
       validate: {

@@ -20,6 +20,10 @@ const db = require('./models')
     const boardRouter = require('./routes/Boards');
     app.use('/boards', boardRouter);
 
+    // Tags router
+    const tagRouter = require('./routes/Tags');
+    app.use('/tags', tagRouter);
+
 db.sequelize.sync().then(() => {
 
     app.listen(port, () => {
