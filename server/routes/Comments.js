@@ -2,15 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { Comment } = require('../models');
 
-// Get all comments for a specific post
-router.get('/:postId', async (req, res) => {
-    const postId = req.params.postId;
-    const allComments = await Comment.findAll({ where: { postId } });
-    res.json(allComments);
-});
-
 // Get a comment by id
-router.get('/:postId/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     const commentId = req.params.id;
     const comment = await Comment.findByPk(commentId);
     res.json(comment);

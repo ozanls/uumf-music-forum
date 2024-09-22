@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Post, Tag, PostXTag } = require('../models');
+const { Post, Comment, Tag, PostXTag } = require('../models');
 const getRandomColor = require('../utilities/GetRandomColor');
 
 
@@ -17,18 +17,29 @@ router.get('/:id', async (req, res) => {
     res.json(post);
 });
 
+// Get all comments for a post
+router.get('/:postId/comments', async (req, res) => {
+    const postId = req.params.postId;
+    const allComments = await Comment.findAll({ where: { postId } });
+    res.json(allComments);
+});
+
+
 // Create a new post
 router.post('/', async (req, res) => {
     const post = req.body;
     try {
         const newPost = await Post.create(post); 
         const postTags = post.tags;
+
+        // Add tags
         for (const tag of postTags) {
             const [newTag] = await Tag.findOrCreate({ 
                 where: { boardId: newPost.boardId, name: tag },
                 defaults: { hexCode: getRandomColor()}
             });
 
+            // Create PostsXTags entry
             await PostXTag.create({ postId: newPost.id, tagId: newTag.id });
         }
         res.json(newPost);
@@ -48,6 +59,7 @@ router.post('/:id', async (req, res) => {
         // Update tags
         const postTags = post.tags;
         if (postTags) {
+
             // Remove existing tags
             await PostXTag.destroy({ where: { postId: postId } });
 

@@ -3,15 +3,8 @@ const router = express.Router();
 const { Tag } = require('../models');
 const getRandomColor = require('../utilities/GetRandomColor');
 
-// Get all tags for a specific board
-router.get('/:boardId', async (req, res) => {
-    const boardId = req.params.boardId;
-    const tags = await Tag.findAll({ where: { boardId } });
-    res.json(tags);
-});
-
 // Get a tag by id
-router.get('/:boardId/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     const tagId = req.params.id;
     const tag = await Tag.findByPk(tagId);
     res.json(tag);
