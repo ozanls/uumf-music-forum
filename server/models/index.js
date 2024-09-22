@@ -37,6 +37,18 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+// Import join models
+const PostsXTags = require('./PostsXTags')(sequelize, Sequelize.DataTypes);
+const UsersXBadges = require('./UsersXBadges')(sequelize, Sequelize.DataTypes);
+
+// PostTags associations
+db.Post.belongsToMany(db.Tag, { through: PostsXTags });
+db.Tag.belongsToMany(db.Post, { through: PostsXTags });
+
+// UserBadges associations
+db.User.belongsToMany(db.Badge, { through: UsersXBadges });
+db.Badge.belongsToMany(db.User, { through: UsersXBadges });
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
