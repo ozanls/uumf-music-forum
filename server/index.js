@@ -1,4 +1,8 @@
 const express = require('express');
+const session = require('express-session');
+const passport = require('passport');
+const { Strategy } = require('./strategies/local-strategy');
+
 const app = express();
 const port = 3001;
 
@@ -6,7 +10,25 @@ app.use(express.json());
 
 const db = require('./models')
 
+// Configure session
+app.use(session({
+    secret: 'UUMF-fAhcblQRqTkD',
+    saveUninitialized: true,
+    resave: false,
+    cookie: {
+        maxAge: 3600000
+    }
+}));
+
+// Initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Routers
+
+    // Users router
+    const userRouter = require('./routes/Users');
+    app.use('/users', userRouter);
 
     // Posts router
     const postRouter = require('./routes/Posts');

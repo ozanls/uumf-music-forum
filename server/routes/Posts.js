@@ -3,7 +3,6 @@ const router = express.Router();
 const { Post, Comment, Tag, PostXTag } = require('../models');
 const getRandomColor = require('../utilities/GetRandomColor');
 
-
 // Get all posts
 router.get('/', async (req, res) => {
     const allPosts = await Post.findAll();
@@ -23,7 +22,6 @@ router.get('/:postId/comments', async (req, res) => {
     const allComments = await Comment.findAll({ where: { postId } });
     res.json(allComments);
 });
-
 
 // Create a new post
 router.post('/', async (req, res) => {
