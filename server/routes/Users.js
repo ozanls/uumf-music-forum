@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const { User } = require('../models');
-const hashPassword = require('../utilities/helpers');
-
+const { hashPassword } = require('../utilities/Hashing');
 
 // Authenticate a user (login)
 router.post('/auth', (req, res, next) => {

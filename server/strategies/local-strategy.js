@@ -1,13 +1,15 @@
 const passport = require('passport');
 const { Strategy } = require('passport-local');
 const { User } = require('../models');
-const { comparePassword } = require('../utilities/helpers');
+const { comparePassword } = require('../utilities/Hashing');
 
 passport.serializeUser((user, done) => {
+    console.log('1. serializeUser')
     done(null, user.id)
 })
 
 passport.deserializeUser( async (id, done) => {
+    console.log('2. deserializeUser')
     try{
         const findUser = await User.findOne({ where: { id } });
         if (!findUser) {

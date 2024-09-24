@@ -2,18 +2,29 @@ const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const { Strategy } = require('./strategies/local-strategy');
+const MySQLStore = require('express-mysql-session')(session);
 
 const app = express();
 const port = 3001;
-
 app.use(express.json());
 
 const db = require('./models')
+
+const dbOptions = {
+    host: db.sequelize.config.host,
+    port: db.sequelize.config.port || 3306,
+    user: db.sequelize.config.username,
+    password: db.sequelize.config.password,
+    database: db.sequelize.config.database
+};
+
+const sessionStore = new MySQLStore(dbOptions);
 
 // Configure session
 app.use(session({
     secret: 'UUMF-fAhcblQRqTkD',
     saveUninitialized: true,
+    store: sessionStore,
     resave: false,
     cookie: {
         maxAge: 3600000
