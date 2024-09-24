@@ -10,7 +10,7 @@ module.exports = function(sequelize, DataTypes) {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'posts', // Reference to posts table
+      model: 'posts', 
       key: 'id',
     },
   },
@@ -18,12 +18,12 @@ module.exports = function(sequelize, DataTypes) {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'tags', // Reference to tags table
+      model: 'tags',
       key: 'id',
     },
   },
 }, {
-  tableName: 'posts_x_tags',
+  tableName: 'postsxtags',
   timestamps: true
 });
 

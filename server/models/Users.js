@@ -35,6 +35,11 @@ module.exports = (sequelize) => {
     status: {
       type: DataTypes.STRING(20),
       defaultValue: 'active'
+    },
+    role: {
+      type: DataTypes.ENUM('admin', 'moderator', 'vip', 'user'),
+      allowNull: false,
+      defaultValue: 'user'
     }
   }, {
     tableName: 'users',

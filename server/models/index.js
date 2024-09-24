@@ -37,17 +37,36 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
-// Import join models
-const PostsXTags = require('./PostsXTags')(sequelize, Sequelize.DataTypes);
-const UsersXBadges = require('./UsersXBadges')(sequelize, Sequelize.DataTypes);
-
-// PostTags associations
-db.Post.belongsToMany(db.Tag, { through: PostsXTags });
-db.Tag.belongsToMany(db.Post, { through: PostsXTags });
-
-// UserBadges associations
-db.User.belongsToMany(db.Badge, { through: UsersXBadges });
-db.Badge.belongsToMany(db.User, { through: UsersXBadges });
+// PostXTag Associations
+db.Post.belongsToMany(db.Tag, {
+  through: 'PostsXTags',
+  foreignKey: 'postId',
+  otherKey: 'tagId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
+db.Tag.belongsToMany(db.Post, {
+  through: 'PostsXTags',
+  foreignKey: 'tagId',
+  otherKey: 'postId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
+// UsersXBadges Associations
+db.User.belongsToMany(db.Badge, {
+  through: 'UsersXBadges',
+  foreignKey: 'userId',
+  otherKey: 'badgeId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
+db.Badge.belongsToMany(db.User, {
+  through: 'UsersXBadges',
+  foreignKey: 'badgeId',
+  otherKey: 'userId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

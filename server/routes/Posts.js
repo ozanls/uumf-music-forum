@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Post, Comment, Tag, PostXTag } = require('../models');
 const getRandomColor = require('../utilities/GetRandomColor');
+const { isAuthenticated, verifyAuthorization , isOwner } = require('../utilities/auth');
 
 // Get all posts
 router.get('/', async (req, res) => {
@@ -24,7 +25,7 @@ router.get('/:postId/comments', async (req, res) => {
 });
 
 // Create a new post
-router.post('/', async (req, res) => {
+router.post('/', isAuthenticated, async (req, res) => {
     const post = req.body;
     try {
         const newPost = await Post.create(post); 
@@ -48,7 +49,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update a post
-router.post('/:id', async (req, res) => {
+router.post('/:id', verifyAuthorization(Post, 'id', ['admin', 'moderator']), async (req, res) => {
     const post = req.body;
     const postId = req.params.id;
     try {
@@ -80,7 +81,7 @@ router.post('/:id', async (req, res) => {
 });
 
 // Delete a post
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verifyAuthorization(Post, 'id', ['admin', 'moderator']), async (req, res) => {
     const postId = req.params.id;
     await Post.destroy({ where: { id: postId } });
     res.json({ message: 'Post deleted' });

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Tag } = require('../models');
 const getRandomColor = require('../utilities/GetRandomColor');
+const { verifyAuthorization } = require('../utilities/auth');
 
 // Get a tag by id
 router.get('/:id', async (req, res) => {
@@ -11,7 +12,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create a new tag
-router.post('/', async (req, res) => {
+router.post('/', verifyAuthorization(Tag, 'id', ['admin', 'moderator']), async (req, res) => {
     const tag = req.body;
     tag.hexCode = getRandomColor();
     await Tag.create(tag);
@@ -19,7 +20,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update a tag
-router.post('/:id', async (req, res) => {
+router.post('/:id', verifyAuthorization(Tag, 'id', ['admin', 'moderator']), async (req, res) => {
     const tag = req.body;
     const tagId = req.params.id;
     await Tag.update(tag, { where: { id: tagId } });
@@ -28,7 +29,7 @@ router.post('/:id', async (req, res) => {
 
 
 // Delete a tag
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verifyAuthorization(Tag, 'id', ['admin', 'moderator']), async (req, res) => {
     const tagId = req.params.id;
     await Tag.destroy({ where: { id: tagId } });
     res.json({ message: 'Tag deleted' });

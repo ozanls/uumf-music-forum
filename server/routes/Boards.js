@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Board, Tag, Post} = require('../models');
+const { verifyAuthorization } = require('../utilities/auth');
 
 // Get all boards
 router.get('/', async (req, res) => {
@@ -30,14 +31,14 @@ router.get('/:boardId/posts', async (req, res) => {
 });
 
 // Create a new board
-router.post('/', async (req, res) => {
+router.post('/', verifyAuthorization(Board, 'id', ['admin']), async (req, res) => {
     const board = req.body;
     await Board.create(board);
     res.json(board);
 });
 
 // Update a board
-router.post('/:id', async (req, res) => {
+router.post('/:id', verifyAuthorization(Board, 'id', ['admin']), async (req, res) => {
     const board = req.body;
     const boardId = req.params.id;
     await Board.update(board, { where: { id: boardId } });
@@ -45,7 +46,7 @@ router.post('/:id', async (req, res) => {
 });
 
 // Delete a board
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verifyAuthorization(Board, 'id', ['admin']), async (req, res) => {
     const boardId = req.params.id;
     await Board.destroy({ where: { id: boardId } });
     res.json({ message: 'Board deleted' });

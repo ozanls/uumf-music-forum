@@ -10,7 +10,7 @@ module.exports = function(sequelize, DataTypes) {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'users', // Reference to users table
+      model: 'users',
       key: 'id',
     },
   },
@@ -18,12 +18,12 @@ module.exports = function(sequelize, DataTypes) {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'badges', // Reference to badges table
+      model: 'badges',
       key: 'id',
     },
   },
 }, {
-  tableName: 'users_x_badges',
+  tableName: 'usersxbadges',
   timestamps: true
 });
 
