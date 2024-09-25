@@ -12,39 +12,6 @@ function isAuthenticated(req, res, next) {
     res.status(401).json({ message: 'Unauthorized: Please log in and try again.' });
 }
 
-// Check the users role. If the user has the required role, continue. If not, return 403.
-function authorizeRoute(permissions) {
-    return (req, res, next) => {
-        const userRole = req.user.role;
-        if (permissions.includes(userRole)) {
-            return next();
-        }
-        res.status(403).json({ message: 'Forbidden: You do not have access to this resource.' });
-    };
-};
-
-// Check if the user is the owner of the post
-async function isOwner(req, res, next) {
-    const postId = req.params.id;
-    const post = await Post.findByPk(postId);
-    console.log('post.userId: ', post.userId);
-    console.log('req.user.id: ', req.user.id);
-
-    // Check if the post exists, if not return 404
-    if (!post) {
-        return res.status(404).json({ message: 'Post not found' });
-    }
-
-    // Check if the user is the owner of the post, if not return 403
-    if (post.userId !== req.user.id) {
-        return res.status(403).json({ message: 'Forbidden: You do not have access to this resource.' });
-    }
-
-    // If the user is the owner of the post, continue
-    req.post = post;
-    next();
-}
-
 function verifyAuthorization(model, resourceIdParam, permissions) {
     return async (req, res, next) => {
         const userRole = req.user?.role;
@@ -87,7 +54,5 @@ function verifyAuthorization(model, resourceIdParam, permissions) {
 
 module.exports = {
     isAuthenticated,
-    authorizeRoute,
-    verifyAuthorization,
-    isOwner
+    verifyAuthorization
 };
