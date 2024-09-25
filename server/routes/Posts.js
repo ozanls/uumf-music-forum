@@ -27,6 +27,8 @@ router.get('/:postId/comments', async (req, res) => {
 // Create a new post
 router.post('/', isAuthenticated, async (req, res) => {
     const post = req.body;
+    req.body.userId = req.user.id;
+
     try {
         const newPost = await Post.create(post); 
         const postTags = post.tags;
@@ -52,6 +54,7 @@ router.post('/', isAuthenticated, async (req, res) => {
 router.post('/:id', verifyAuthorization(Post, 'id', ['admin', 'moderator']), async (req, res) => {
     const post = req.body;
     const postId = req.params.id;
+
     try {
         await Post.update(post, { where: { id: postId } });
 
