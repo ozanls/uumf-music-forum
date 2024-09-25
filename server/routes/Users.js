@@ -73,11 +73,38 @@ router.post('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res)
     res.json(user);
 });
 
-// Delete a user
+// Delete a user account
 router.delete('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res) => {
-    const userId = req.params.id;
-    await User.destroy({ where: { id: userId } });
-    res.json({ message: 'User deleted' });
+    try {
+        const userId = req.params.id;
+        const user = await User.findByPk(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        await user.destroy();
+
+        // If the user is deleting their own account, log them out and destroy the session
+        if (userId == req.user.id) {
+            req.logout((err) => {
+                if (err) {
+                    return res.status(500).json({ error: 'An error occurred while logging out' });
+                }
+                req.session.destroy((err) => {
+                    if (err) {
+                        return res.status(500).json({ error: 'An error occurred while destroying the session' });
+                    }
+                    res.status(200).json({ message: 'User account deleted successfully' });
+                });
+            });
+        } else {
+            res.status(200).json({ message: 'User account deleted successfully' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while deleting the user account' });
+    }
 });
 
 module.exports = router;

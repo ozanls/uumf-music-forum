@@ -62,6 +62,11 @@ function verifyAuthorization(model, resourceIdParam, permissions) {
         const resourceId = req.params[resourceIdParam];
         const resource = await model.findByPk(resourceId);
 
+        // Allow the user to delete their own account
+        if (req.method === 'DELETE' && resourceId == req.user.id) {
+            return next();
+        }
+
         // If the resource exists, check if the user is the owner of the resource
         if (resource){
             if (resource.userId === req.user.id) {
