@@ -23,7 +23,7 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(7),
       allowNull: true,
       validate: {
-        is: /^#[0-9A-F]{6}$/i  // Validates that it's a proper hex color code
+        is: /^#[0-9A-F]{6}$/i
       }
     }
   }, {
@@ -32,10 +32,18 @@ module.exports = (sequelize) => {
     indexes: [
       {
         unique: true,
-        fields: ['boardId', 'name']  // Ensures tag names are unique within a board
+        fields: ['boardId', 'name']
       }
     ]
   });
+
+  Tag.associate = (models) => {
+    Tag.belongsToMany(models.Post, {
+      through: models.PostXTag,
+      foreignKey: 'tagId',
+      otherKey: 'postId'
+    });
+  };
 
   return Tag;
 };

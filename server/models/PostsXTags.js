@@ -8,11 +8,12 @@ module.exports = function(sequelize, DataTypes) {
   },
   postId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
     references: {
-      model: 'posts', 
-      key: 'id',
+      model: 'posts',
+      key: 'id'
     },
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   },
   tagId: {
     type: DataTypes.INTEGER,
@@ -21,6 +22,8 @@ module.exports = function(sequelize, DataTypes) {
       model: 'tags',
       key: 'id',
     },
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   },
 }, {
   tableName: 'postsxtags',

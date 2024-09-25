@@ -42,7 +42,16 @@ module.exports = function(sequelize, DataTypes) {
         tableName: 'posts',
         timestamps: true
       });
-    
+
+        
+    Post.associate = (models) => {
+      Post.belongsToMany(models.Tag, {
+        through: models.PostXTag,
+        foreignKey: 'postId',
+        otherKey: 'tagId'
+      });
+    };
+
       return Post;
  
 }

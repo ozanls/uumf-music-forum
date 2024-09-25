@@ -13,6 +13,8 @@ module.exports = function(sequelize, DataTypes) {
       model: 'users',
       key: 'id',
     },
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   },
   badgeId: {
     type: DataTypes.INTEGER,
@@ -21,6 +23,8 @@ module.exports = function(sequelize, DataTypes) {
       model: 'badges',
       key: 'id',
     },
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   },
 }, {
   tableName: 'usersxbadges',

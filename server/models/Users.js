@@ -46,5 +46,13 @@ module.exports = (sequelize) => {
     timestamps: true
   });
 
+  User.associate = (models) => {
+    User.belongsToMany(models.Tag, {
+      through: models.UserXBadge,
+      foreignKey: 'userId',
+      otherKey: 'badgeId'
+    });
+  };
+
   return User;
 };
