@@ -67,6 +67,28 @@ db.Badge.belongsToMany(db.User, {
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
+// Likes Associations
+db.User.hasMany(db.Like, {
+  foreignKey: 'userId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
+db.Post.hasMany(db.Like, {
+  foreignKey: 'postId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
+// Saves Associations
+db.User.hasMany(db.Save, {
+  foreignKey: 'userId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
+db.Post.hasMany(db.Save, {
+  foreignKey: 'postId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
