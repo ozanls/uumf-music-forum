@@ -32,20 +32,38 @@ router.post('/auth/logout', (req, res) => {
 
 // Verify authentication status
 router.get('/auth/status', isAuthenticated, (req, res) => {
+    try{
     req.isAuthenticated() ? res.json(req.user) : res.status(401).json({ message: 'Unauthorized' });
+    }
+    catch(error){
+        console.error('Error getting authentication status:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 // Get all users
 router.get('/', verifyAuthorization(User, 'id', ['admin']), async (req, res) => {
-    const allUsers = await User.findAll();
-    res.json(allUsers);
+    try{
+        const allUsers = await User.findAll();
+        res.json(allUsers);
+    }
+    catch(error){
+        console.error('Error getting all users:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 // Get a user by id
 router.get('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res) => {
     const userId = req.params.id;
-    const user = await User.findByPk(userId);
-    user ? res.json(user) : res.json({ message: 'User not found' });
+    try{
+        const user = await User.findByPk(userId);
+        user ? res.json(user) : res.json({ message: 'User not found' });
+    }
+    catch(error){
+        console.error('Error getting user by id:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
  
 // Create a new user (register)
@@ -69,8 +87,14 @@ router.post('/register', async (req, res) => {
 router.post('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res) => {
     const user = req.body;
     const userId = req.params.id;
-    await User.update(user, { where: { id: userId } });
-    res.json(user);
+    try{
+        await User.update(user, { where: { id: userId } });
+        res.json(user);
+    }
+    catch(error){
+        console.error('Error updating user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 // Delete a user account

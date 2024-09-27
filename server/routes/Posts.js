@@ -155,7 +155,6 @@ router.post('/:id/unsave', isAuthenticated, async (req, res) => {
     const userId = req.user.id;
 
     try {
-        // Destroy the save entry
         const save = await Save.destroy({
             where: { postId, userId }
         });
@@ -197,8 +196,14 @@ router.get('/search/:boardId/:query', async (req, res) => {
 // Delete a post
 router.delete('/:id', verifyAuthorization(Post, 'id', ['admin', 'moderator']), async (req, res) => {
     const postId = req.params.id;
-    await Post.destroy({ where: { id: postId } });
-    res.json({ message: 'Post deleted' });
+    try{
+        await Post.destroy({ where: { id: postId } });
+        res.json({ message: 'Post deleted' });
+    }
+    catch(error){
+        console.error('Error deleting post:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 module.exports = router;
