@@ -30,5 +30,10 @@ module.exports = function(sequelize, DataTypes) {
   timestamps: true
 });
 
+PostXTag.associate = (models) => {
+  PostXTag.belongsTo(models.Post, { foreignKey: 'postId', as: 'post' });
+  PostXTag.belongsTo(models.Tag, { foreignKey: 'tagId', as: 'tag' });
+};
+
 return PostXTag;
 }

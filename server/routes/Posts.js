@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Post, Comment, Tag, PostXTag, Like, Save } = require('../models');
+const { Post, Comment, Tag, PostXTag, Like, Save, sequelize } = require('../models');
 const getRandomColor = require('../utilities/GetRandomColor');
 const { isAuthenticated, verifyAuthorization , isOwner } = require('../utilities/auth');
 const { Op } = require('sequelize');
@@ -52,14 +52,12 @@ router.post('/', isAuthenticated, async (req, res) => {
         const newPost = await Post.create(post); 
         const postTags = post.tags;
 
-        // Add tags
         for (const tag of postTags) {
             const [newTag] = await Tag.findOrCreate({ 
                 where: { boardId: newPost.boardId, name: tag },
                 defaults: { hexCode: getRandomColor()}
             });
 
-            // Create PostsXTags entry
             await PostXTag.create({ postId: newPost.id, tagId: newTag.id });
         }
         res.json(newPost);
@@ -76,15 +74,11 @@ router.post('/:id', verifyAuthorization(Post, 'id', ['admin', 'moderator']), asy
 
     try {
         await Post.update(post, { where: { id: postId } });
-
-        // Update tags
         const postTags = post.tags;
+
         if (postTags) {
-
-            // Remove existing tags
             await PostXTag.destroy({ where: { postId: postId } });
-
-            // Add new tags
+            
             for (const tag of postTags) {
                 const [newTag] = await Tag.findOrCreate({
                     where: { boardId: post.boardId, name: tag },
@@ -96,6 +90,7 @@ router.post('/:id', verifyAuthorization(Post, 'id', ['admin', 'moderator']), asy
         }
 
         res.json(post);
+
     } catch (error) {
         console.error('Error updating post:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -109,9 +104,9 @@ router.post('/:id/like', isAuthenticated, async (req, res) => {
 
     try {
         const like = await Like.create({ postId, userId });
-        // Increment the likes attribute of the post
         await Post.increment('likes', { where: { id: postId } });
         res.json(like);
+        
     } catch (error) {
         console.error('Error liking post:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -122,14 +117,22 @@ router.post('/:id/like', isAuthenticated, async (req, res) => {
 router.post('/:id/unlike', isAuthenticated, async (req, res) => {
     const postId = req.params.id;
     const userId = req.user.id;
+    const transaction = await sequelize.transaction();
 
     try {
-        await Like.destroy({ where: { postId, userId } });
-        // Decrement the likes attribute of the post
-        await Post.decrement('likes', { where: { id: postId } });
-        res.json({ message: 'Post unliked' });
+        const likeDestroyed = await Like.destroy({ where: { postId, userId }, transaction });
+
+        if (likeDestroyed) {
+            await Post.decrement('likes', { where: { id: postId }, transaction });
+            await transaction.commit();
+            res.json({ message: 'Post unliked' });
+        } else {
+            await transaction.rollback();
+            res.status(404).json({ message: 'Like not found' });
+        }
 
     } catch (error) {
+        await transaction.rollback();
         console.error('Error unliking post:', error);
         res.status(500).json({ error: 'Internal server error' });
     }

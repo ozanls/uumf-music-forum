@@ -31,5 +31,10 @@ module.exports = function(sequelize, DataTypes) {
   timestamps: true
 });
 
+UserXBadge.associate = (models) => {
+  UserXBadge.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
+  UserXBadge.belongsTo(models.Badge, { foreignKey: 'badgeId', as: 'badge' });
+};
+
 return UserXBadge;
 }
