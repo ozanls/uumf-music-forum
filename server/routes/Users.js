@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-const { User } = require('../models');
+const { User, Save, Post } = require('../models');
 const { hashPassword } = require('../utilities/hashing');
 const { isAuthenticated, verifyAuthorization } = require('../utilities/auth');
 
@@ -53,6 +53,27 @@ router.get('/', verifyAuthorization(User, 'id', ['admin']), async (req, res) => 
     }
 });
 
+
+// Get all saved posts for a user
+router.get('/saved', isAuthenticated, async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const saves = await Save.findAll({
+            where: { userId },
+            include: [{
+                model: Post,
+                as: 'post'
+            }]
+        });
+
+        res.json(saves);
+    } catch (error) {
+        console.error('Error getting saved posts:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Get a user by id
 router.get('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res) => {
     const userId = req.params.id;
@@ -82,6 +103,7 @@ router.post('/register', async (req, res) => {
     await User.create(user);
     res.json(user);
 });
+ 
 
 // Update a user
 router.post('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res) => {
