@@ -103,7 +103,44 @@ router.post('/register', async (req, res) => {
     await User.create(user);
     res.json(user);
 });
- 
+
+// Update own email
+router.post('/update/email', isAuthenticated, async (req, res) => {
+    const { email } = req.body;
+    const userId = req.user.id;
+
+    if (!email) {
+        return res.status(400).json({ error: 'Email field is required, please try again' });
+    }
+    
+    try {
+        const [updatedRows] = await User.update({ email }, { where: { id: userId } });
+        
+        if (updatedRows === 0) {
+            return res.status(400).json({ error: 'Email update failed' });
+        }
+
+        res.json({ message: 'Email updated successfully' });
+    } catch (error) {
+        console.error('Error updating email:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Update own password
+router.post('/update/password', isAuthenticated, async (req, res) => {
+    const { password } = req.body;
+    const userId = req.user.id;
+
+    try {
+        const hashedPassword = await hashPassword(password);
+        await User.update({ password: hashedPassword }, { where: { id: userId } });
+        res.json({ message: 'Password updated successfully' });
+    } catch (error) {
+        console.error('Error updating password:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 // Update a user
 router.post('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res) => {
