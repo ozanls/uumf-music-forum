@@ -6,7 +6,7 @@ const MySQLStore = require('express-mysql-session')(session);
 require('dotenv').config();
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT;
 app.use(express.json());
 
 const db = require('./models')

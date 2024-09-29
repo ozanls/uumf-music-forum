@@ -6,6 +6,7 @@ const { User, Save, Post } = require('../models');
 const { hashPassword } = require('../utilities/hashing');
 const { isAuthenticated, verifyAuthorization } = require('../utilities/auth');
 const sendConfirmationEmail = require('../utilities/sendConfirmationEmail');
+const sendForgotPasswordEmail = require('../utilities/sendForgotPasswordEmail');
 require('dotenv').config();
 
 // Authenticate a user (login)
@@ -97,7 +98,6 @@ router.get('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res) 
 router.post('/register', async (req, res) => {
     const user = req.body;
     user.password = await hashPassword(user.password);
-
     const existingUser = await User.findOne({ where: { username: user.username } });
     
     if (existingUser) {
@@ -106,11 +106,8 @@ router.post('/register', async (req, res) => {
     }
 
     const newUser = await User.create(user);
-
     const token = jwt.sign({ id: newUser.id, email: newUser.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
     sendConfirmationEmail(newUser, token);
-
     res.json(newUser);
 });
 
@@ -137,6 +134,42 @@ router.get('/confirm/:token', async (req, res) => {
     }
 });
 
+// Forgot password route
+router.post('/forgot-password', async (req, res) => {
+    const { email } = req.body;
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+        return res.status(400).json({ message: 'User not found' });
+    }
+
+    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    sendForgotPasswordEmail(user, token);
+    res.json({ message: 'Password reset email sent' });
+});
+
+// Reset password route (from forgot password email)
+router.post('/reset-password/:token', async (req, res) => {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findOne({ where: { id: decoded.id } });
+
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid token' });
+        }
+
+        const hashedPassword = await hashPassword(newPassword);
+        user.password = hashedPassword;
+        await user.save();
+
+        res.json({ message: 'Password reset successfully' });
+    } catch (error) {
+        console.error('Error resetting password:', error);
+        res.status(400).json({ message: 'Invalid or expired token' });
+    }
+});
 
 // Update own email
 router.post('/update/email', isAuthenticated, async (req, res) => {
@@ -161,7 +194,7 @@ router.post('/update/email', isAuthenticated, async (req, res) => {
     }
 });
 
-// Update own password
+// Update own password (authenticated user)
 router.post('/update/password', isAuthenticated, async (req, res) => {
     const { password } = req.body;
     const userId = req.user.id;

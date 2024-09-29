@@ -3,8 +3,10 @@ require('dotenv').config();
 
 const sesClient = new SESClient({ region: process.env.AWS_REGION });
 
-const sendConfirmationEmail = async (user, token) => {
-    const confirmationLink = `${process.env.SITE_URL}/users/confirm/${token}` || `http://localhost:${port}/users/confirm/${token}`;
+const sendForgotPasswordEmail = async (user, token) => {
+    const confirmationLink = `${process.env.SITE_URL}/users/reset-password/${token}` || `http://localhost:${port}/reset-password/reset-password/${token}`;
+
+    // REPLACE confirmationLink with frontend URL that sends a POST request to the reset-password route.
 
     const params = {
         Source: process.env.AWS_SES_SENDER,
@@ -13,11 +15,11 @@ const sendConfirmationEmail = async (user, token) => {
         },
         Message: {
             Subject: {
-                Data: 'UUMF - Confirm Your Email'
+                Data: 'UUMF - Reset Your Password'
             },
             Body: {
                 Text: {
-                    Data: `Please confirm your email by clicking the following link: ${confirmationLink}. 
+                    Data: `You can reset your password using the following link: ${confirmationLink}. 
                     This link will expire in 1 hour.
                     If you did not request a password reset, please ignore this email.
                     (This is an automated message, please do not reply.)`
@@ -28,10 +30,10 @@ const sendConfirmationEmail = async (user, token) => {
 
     try {
         await sesClient.send(new SendEmailCommand(params));
-        console.log('Confirmation email sent');
+        console.log('Password reset email sent');
     } catch (error) {
-        console.error('Error sending confirmation email:', error);
+        console.error('Error sending password reset email:', error);
     }
 };
 
-module.exports = sendConfirmationEmail;
+module.exports = sendForgotPasswordEmail;
