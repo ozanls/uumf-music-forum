@@ -21,8 +21,8 @@ function verifyAuthorization(model, resourceIdParam, permissions) {
             return res.status(403).json({ message: 'Unauthorized: Please log in and try again.' });
         }
 
-        // Allow admins to create a new resource without checking for an existing resource
-        if (req.method === 'POST' && permissions.includes(userRole)) {
+        // If the user has the required role, continue
+        if (permissions.includes(userRole)) {
             return next();
         }
 

@@ -40,6 +40,18 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM('admin', 'moderator', 'vip', 'user'),
       allowNull: false,
       defaultValue: 'user'
+    },
+    confirmedEmail: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    agreedToTerms: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    receivePromo: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   }, {
     tableName: 'users',

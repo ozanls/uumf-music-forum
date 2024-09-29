@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
 const { User, Save, Post } = require('../models');
 const { hashPassword } = require('../utilities/hashing');
 const { isAuthenticated, verifyAuthorization } = require('../utilities/auth');
+const sendConfirmationEmail = require('../utilities/sendConfirmationEmail');
+require('dotenv').config();
 
 // Authenticate a user (login)
 router.post('/auth', (req, res, next) => {
@@ -13,6 +16,9 @@ router.post('/auth', (req, res, next) => {
         }
         if (!user) {
             return res.status(401).json({ message: info.message });
+        }
+        if (!user.confirmedEmail) {
+            return res.status(401).json({ message: 'Please confirm your email address' });
         }
         req.logIn(user, (err) => {
             if (err) {
@@ -92,7 +98,6 @@ router.post('/register', async (req, res) => {
     const user = req.body;
     user.password = await hashPassword(user.password);
 
-    // Check if the user already exists
     const existingUser = await User.findOne({ where: { username: user.username } });
     
     if (existingUser) {
@@ -100,9 +105,38 @@ router.post('/register', async (req, res) => {
         return;
     }
 
-    await User.create(user);
-    res.json(user);
+    const newUser = await User.create(user);
+
+    const token = jwt.sign({ id: newUser.id, email: newUser.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    sendConfirmationEmail(newUser, token);
+
+    res.json(newUser);
 });
+
+// Confirm email route
+router.get('/confirm/:token', async (req, res) => {
+    const { token } = req.params;
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findOne({ where: { id: decoded.id } });
+
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid token' });
+        }
+
+        user.confirmedEmail = true;
+        await user.save();
+
+        res.json({ message: 'Email confirmed successfully' });
+    } catch (error) {
+        console.error('Error confirming email:', error);
+        res.status(400).json({ message: 'Invalid or expired token' });
+    }
+});
+
 
 // Update own email
 router.post('/update/email', isAuthenticated, async (req, res) => {

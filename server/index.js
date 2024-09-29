@@ -1,8 +1,9 @@
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
-const { Strategy } = require('./strategies/local-strategy');
+const { Strategy } = require('./utilities/local-strategy');
 const MySQLStore = require('express-mysql-session')(session);
+require('dotenv').config();
 
 const app = express();
 const port = 3001;
@@ -22,7 +23,7 @@ const sessionStore = new MySQLStore(dbOptions);
 
 // Configure session
 app.use(session({
-    secret: 'UUMF-fAhcblQRqTkD',
+    secret: process.env.SESSION_SECRET,
     saveUninitialized: true,
     store: sessionStore,
     resave: false,

@@ -12,7 +12,7 @@ module.exports = {
         status: 'active',
         createdAt: new Date(),
         updatedAt: new Date()
-      }
+      },
     ], {});
   },
 
