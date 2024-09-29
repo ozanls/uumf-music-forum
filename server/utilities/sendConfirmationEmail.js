@@ -4,7 +4,7 @@ require('dotenv').config();
 const sesClient = new SESClient({ region: process.env.AWS_REGION });
 
 const sendConfirmationEmail = async (user, token) => {
-    const confirmationLink = `http://localhost:3001/users/confirm/${token}`;
+    const confirmationLink = `${process.env.SITE_URL}/users/confirm/${token}` || `http://localhost:3001/users/confirm/${token}`;
 
     const params = {
         Source: process.env.AWS_SES_SENDER,
@@ -13,7 +13,7 @@ const sendConfirmationEmail = async (user, token) => {
         },
         Message: {
             Subject: {
-                Data: 'Email Confirmation'
+                Data: 'UUMF - Confirm Your Email'
             },
             Body: {
                 Text: {
