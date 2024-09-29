@@ -5,7 +5,7 @@ const sesClient = new SESClient({ region: process.env.AWS_REGION });
 
 const sendForgotPasswordEmail = async (user, token) => {
     const confirmationLink = `${process.env.SITE_URL}/users/reset-password/${token}` || `http://localhost:${port}/reset-password/reset-password/${token}`;
-
+    
     // REPLACE confirmationLink with frontend URL that sends a POST request to the reset-password route.
 
     const params = {

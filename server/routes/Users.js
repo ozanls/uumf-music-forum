@@ -98,10 +98,17 @@ router.get('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res) 
 router.post('/register', async (req, res) => {
     const user = req.body;
     user.password = await hashPassword(user.password);
+    user.role = 'user';
     const existingUser = await User.findOne({ where: { username: user.username } });
+    const existingEmail = await User.findOne({ where: { email: user.email } });
     
     if (existingUser) {
-        res.status(400).json({ message: 'User already exists' });
+        res.status(400).json({ message: 'Username is taken' });
+        return;
+    }
+
+    if (existingEmail) {
+        res.status(400).json({ message: 'Email already in use' });
         return;
     }
 
@@ -150,7 +157,15 @@ router.post('/forgot-password', async (req, res) => {
 // Reset password route (from forgot password email)
 router.post('/reset-password/:token', async (req, res) => {
     const { token } = req.params;
-    const { newPassword } = req.body;
+    const { newPassword, confirmPassword } = req.body;
+
+    if (!newPassword || !confirmPassword) {
+        return res.status(400).json({ message: 'Password fields are required' });
+    }
+
+    if (newPassword !== confirmPassword) {
+        return res.status(400).json({ message: 'Passwords do not match' });
+    }
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -196,11 +211,19 @@ router.post('/update/email', isAuthenticated, async (req, res) => {
 
 // Update own password (authenticated user)
 router.post('/update/password', isAuthenticated, async (req, res) => {
-    const { password } = req.body;
+    const { newPassword, confirmPassword } = req.body;
     const userId = req.user.id;
 
+    if (!newPassword || !confirmPassword) {
+        return res.status(400).json({ message: 'Password fields are required' });
+    }
+
+    if (newPassword !== confirmPassword) {
+        return res.status(400).json({ message: 'Passwords do not match' });
+    }
+
     try {
-        const hashedPassword = await hashPassword(password);
+        const hashedPassword = await hashPassword(newPassword);
         await User.update({ password: hashedPassword }, { where: { id: userId } });
         res.json({ message: 'Password updated successfully' });
     } catch (error) {
