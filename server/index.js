@@ -2,6 +2,8 @@ const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const { Strategy } = require('./utilities/local-strategy');
+const cron = require('node-cron');
+const deleteUnconfirmedUsers = require('./utilities/deleteUnconfirmedUsers');
 const MySQLStore = require('express-mysql-session')(session);
 require('dotenv').config();
 
@@ -35,6 +37,14 @@ app.use(session({
 // Initialize passport
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Delete unconfirmed users and update trending tags every hour
+cron.schedule('0 * * * *', () => {
+    console.log('Running scheduled task to delete unconfirmed users');
+    deleteUnconfirmedUsers();
+    // updateTrendingTags(); 
+});
+
 
 // Routers
 

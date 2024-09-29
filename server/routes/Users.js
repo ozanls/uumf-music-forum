@@ -7,7 +7,9 @@ const { hashPassword } = require('../utilities/hashing');
 const { isAuthenticated, verifyAuthorization } = require('../utilities/auth');
 const sendConfirmationEmail = require('../utilities/sendConfirmationEmail');
 const sendForgotPasswordEmail = require('../utilities/sendForgotPasswordEmail');
+const deleteUnconfirmedUsers = require('./utilities/deleteUnconfirmedUsers');
 require('dotenv').config();
+
 
 // Authenticate a user (login)
 router.post('/auth', (req, res, next) => {
@@ -59,7 +61,6 @@ router.get('/', verifyAuthorization(User, 'id', ['admin']), async (req, res) => 
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
 
 // Get all saved posts for a user
 router.get('/saved', isAuthenticated, async (req, res) => {
@@ -124,9 +125,7 @@ router.get('/confirm/:token', async (req, res) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
         const user = await User.findOne({ where: { id: decoded.id } });
-
         if (!user) {
             return res.status(400).json({ message: 'Invalid token' });
         }
@@ -242,6 +241,17 @@ router.post('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res)
     }
     catch(error){
         console.error('Error updating user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Delete all accounts over 1hr old with unconfirmed emails
+router.delete('/delete-unconfirmed', verifyAuthorization(User, 'id', ['admin']), async (req, res) => {
+    try {
+        await deleteUnconfirmedUsers();
+        res.json({ message: 'Unconfirmed accounts deleted' });
+    } catch (error) {
+        console.error('Error deleting unconfirmed accounts:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

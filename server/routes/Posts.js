@@ -101,13 +101,22 @@ router.post('/:id', verifyAuthorization(Post, 'id', ['admin', 'moderator']), asy
 router.post('/:id/like', isAuthenticated, async (req, res) => {
     const postId = req.params.id;
     const userId = req.user.id;
+    const transaction = await sequelize.transaction();
 
     try {
-        const like = await Like.create({ postId, userId });
-        await Post.increment('likes', { where: { id: postId } });
+        const existingLike = await Like.findOne({ where: { postId, userId } });
+        if (existingLike) {
+            await transaction.rollback();
+            return res.status(400).json({ message: 'You have already liked this post' });
+        }
+
+        const like = await Like.create({ postId, userId }, { transaction });
+        await Post.increment('likes', { by: 1, where: { id: postId }, transaction });
+        await transaction.commit();
         res.json(like);
-        
+
     } catch (error) {
+        await transaction.rollback();
         console.error('Error liking post:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -142,11 +151,20 @@ router.post('/:id/unlike', isAuthenticated, async (req, res) => {
 router.post('/:id/save', isAuthenticated, async (req, res) => {
     const postId = req.params.id;
     const userId = req.user.id;
+    const transaction = await sequelize.transaction();
 
     try {
-        const save = await Save.create({ postId, userId });
+        const existingSave = await Save.findOne({ where: { postId, userId } });
+        if (existingSave) {
+            await transaction.rollback();
+            return res.status(400).json({ message: 'You have already saved this post' });
+        }
+
+        const save = await Save.create({ postId, userId }, { transaction });
+        await transaction.commit();
         res.json(save);
     } catch (error) {
+        await transaction.rollback();
         console.error('Error saving post:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -156,15 +174,24 @@ router.post('/:id/save', isAuthenticated, async (req, res) => {
 router.post('/:id/unsave', isAuthenticated, async (req, res) => {
     const postId = req.params.id;
     const userId = req.user.id;
+    const transaction = await sequelize.transaction();
 
     try {
-        const save = await Save.destroy({
-            where: { postId, userId }
+        const saveDestroyed = await Save.destroy({
+            where: { postId, userId }, transaction
         });
 
-        res.json({ message: 'Post unsaved', save });
+        if (saveDestroyed) {
+            await transaction.commit();
+            res.json({ message: 'Post unsaved' });
+        } else {
+            await transaction.rollback();
+            res.status(404).json({ message: 'Save not found' });
+        }
+
     } catch (error) {
-        console.error('Error saving post:', error);
+        await transaction.rollback();
+        console.error('Error unsaving post:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

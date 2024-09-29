@@ -26,7 +26,7 @@ module.exports = function(sequelize, DataTypes) {
     onUpdate: 'CASCADE',
   },
 }, {
-  tableName: 'postsxtags',
+  tableName: 'PostsXTags',
   timestamps: true
 });
 

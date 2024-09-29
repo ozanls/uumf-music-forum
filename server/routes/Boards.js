@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { Board, Tag, Post} = require('../models');
+const { Board, Tag, Post, PostXTag, sequelize} = require('../models');
 const { verifyAuthorization } = require('../utilities/auth');
+const { Op } = require('sequelize');
 
 // Get all boards
 router.get('/', async (req, res) => {
