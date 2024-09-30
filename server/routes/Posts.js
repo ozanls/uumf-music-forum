@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Post, Comment, Tag, PostXTag, Like, Save, sequelize } = require('../models');
+const { Post, Comment, Tag, PostXTag, PostLike, Save, sequelize } = require('../models');
 const getRandomColor = require('../utilities/GetRandomColor');
 const { isAuthenticated, verifyAuthorization , isOwner } = require('../utilities/auth');
 const { Op } = require('sequelize');
@@ -104,13 +104,13 @@ router.post('/:id/like', isAuthenticated, async (req, res) => {
     const transaction = await sequelize.transaction();
 
     try {
-        const existingLike = await Like.findOne({ where: { postId, userId } });
+        const existingLike = await PostLike.findOne({ where: { postId, userId } });
         if (existingLike) {
             await transaction.rollback();
             return res.status(400).json({ message: 'You have already liked this post' });
         }
 
-        const like = await Like.create({ postId, userId }, { transaction });
+        const like = await PostLike.create({ postId, userId }, { transaction });
         await Post.increment('likes', { by: 1, where: { id: postId }, transaction });
         await transaction.commit();
         res.json(like);
@@ -129,7 +129,7 @@ router.post('/:id/unlike', isAuthenticated, async (req, res) => {
     const transaction = await sequelize.transaction();
 
     try {
-        const likeDestroyed = await Like.destroy({ where: { postId, userId }, transaction });
+        const likeDestroyed = await PostLike.destroy({ where: { postId, userId }, transaction });
 
         if (likeDestroyed) {
             await Post.decrement('likes', { where: { id: postId }, transaction });

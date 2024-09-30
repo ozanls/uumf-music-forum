@@ -82,14 +82,25 @@ db.Tag.belongsToMany(db.Board, {
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
-// Likes Associations
-db.User.hasMany(db.Like, {
+// PostLikes Associations
+db.User.hasMany(db.PostLike, {
   foreignKey: 'userId',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
-db.Post.hasMany(db.Like, {
+db.Post.hasMany(db.PostLike, {
   foreignKey: 'postId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
+// CommentLikes Associations
+db.User.hasMany(db.CommentLike, {
+  foreignKey: 'userId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
+db.Comment.hasMany(db.CommentLike, {
+  foreignKey: 'commentId',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });

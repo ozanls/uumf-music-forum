@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  const Like = sequelize.define('Like', {
+  const PostLike = sequelize.define('PostLike', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -28,7 +28,7 @@ module.exports = (sequelize) => {
     onUpdate: 'CASCADE'
     }
   }, {
-    tableName: 'likes',
+    tableName: 'postlikes',
     timestamps: true,
     indexes: [
       {
@@ -38,5 +38,5 @@ module.exports = (sequelize) => {
     ]
   });
 
-  return Like;
+  return PostLike;
 };

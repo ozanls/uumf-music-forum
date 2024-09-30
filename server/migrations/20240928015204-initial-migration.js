@@ -186,8 +186,8 @@ module.exports = {
       }
     });
 
-    // Create Likes table
-    await queryInterface.createTable('likes', {
+    // Create PostLikes table
+    await queryInterface.createTable('postlikes', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -225,6 +225,46 @@ module.exports = {
         defaultValue: Sequelize.NOW
       }
     });
+
+        // Create CommentLikes table
+        await queryInterface.createTable('commentlikes', {
+          id: {
+            type: Sequelize.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+            allowNull: false
+          },
+          commentId: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            references: {
+              model: 'comments',
+              key: 'id'
+            },
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+          },
+          userId: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            references: {
+              model: 'users',
+              key: 'id'
+            },
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+          },
+          createdAt: {
+            type: Sequelize.DATE,
+            allowNull: false,
+            defaultValue: Sequelize.NOW
+          },
+          updatedAt: {
+            type: Sequelize.DATE,
+            allowNull: false,
+            defaultValue: Sequelize.NOW
+          }
+        });
 
     // Create Saves table
     await queryInterface.createTable('saves', {

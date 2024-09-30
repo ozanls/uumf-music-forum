@@ -41,11 +41,10 @@ app.use(passport.session());
 
 // Delete unconfirmed users and update trending tags every hour
 cron.schedule('0 * * * *', () => {
-    console.log('Running scheduled task to delete unconfirmed users');
+    console.log('Running scheduled tasks...');
     deleteUnconfirmedUsers();
     updateTrendingTags(); 
 });
-
 
 // Routers
 

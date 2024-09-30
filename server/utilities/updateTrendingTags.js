@@ -1,5 +1,5 @@
 // UpdateTrendingTags.js
-// This function finds the 5 tags for each board with the most posts in the last 12 hours, and and updates the TrendingTags table.
+// This function finds the 5 tags for each board with the most posts in the last 12 hours, and updates the TrendingTags table.
 
 const { Op, fn, col, literal } = require('sequelize');
 const { PostXTag, Tag, Board, TrendingTag } = require('../models');

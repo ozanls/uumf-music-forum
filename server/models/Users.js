@@ -66,5 +66,21 @@ module.exports = (sequelize) => {
     });
   };
 
+  User.associate = (models) => {
+    User.belongsToMany(models.Post, {
+      through: models.PostLike,
+      foreignKey: 'userId',
+      otherKey: 'postId'
+    });
+  };
+
+  User.associate = (models) => {
+    User.belongsToMany(models.Comment, {
+      through: models.CommentLike,
+      foreignKey: 'userId',
+      otherKey: 'commentId'
+    });
+  };
+
   return User;
 };
