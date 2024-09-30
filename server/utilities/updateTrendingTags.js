@@ -30,10 +30,12 @@ async function updateTrendingTags() {
                         boardId: board.id
                     }
                 }],
-                group: ['tagId'],
+                group: ['tagId', 'tag.id', 'tag.name'],
                 order: [[literal('tagCount'), 'DESC']],
                 limit: 5
             });
+
+            const topTagIds = topTags.map(tag => tag.tagId);
 
             for (const tag of topTags) {
                 const [trendingTag, created] = await TrendingTag.findOrCreate({
@@ -54,20 +56,18 @@ async function updateTrendingTags() {
                         updatedAt: new Date()
                     });
                 }
-
-                const trendingTags = await TrendingTag.findAll({
-                    where: {
-                        boardId: board.id
-                    },
-                    include: [{
-                        model: Tag,
-                        as: 'tag',
-                        attributes: ['name']
-                    }]
-                });
-
-                return trendingTags;
             }
+
+            await TrendingTag.destroy({
+                where: {
+                    boardId: board.id,
+                    tagId: {
+                        [Op.notIn]: topTagIds
+                    }
+                }
+            });
+
+            console.log(`Updated trending tags for board ${board.id}`);
         }
     } catch (error) {
         console.error('Error updating trending tags:', error);
