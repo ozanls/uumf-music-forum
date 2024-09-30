@@ -1,3 +1,5 @@
+// auth.js
+// Middleware functions for authenticating and authorizing users.
 const { Post } = require('../models');
 
 // Check if the user is authenticated

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Board, Tag, Post, PostXTag, sequelize} = require('../models');
 const { verifyAuthorization } = require('../utilities/auth');
+const updateTrendingTags = require('../utilities/updateTrendingTags');
 const { Op } = require('sequelize');
 
 // Get all boards
@@ -12,6 +13,18 @@ router.get('/', async (req, res) => {
     }
     catch(error){
         console.error('Error getting all boards:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Get trending tags for all boards
+router.get('/trendingTags', async (req, res) => {
+    try {
+        const trendingTags = await updateTrendingTags();
+        console.log('Trending tags:', trendingTags);
+        res.json(trendingTags);
+    } catch (error) {
+        console.error('Error updating trending tags:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

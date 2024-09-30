@@ -20,6 +20,15 @@ module.exports = (sequelize) => {
     tableName: 'boards',
     timestamps: true
   });
+  
+  Board.associate = (models) => {
+    Board.belongsToMany(models.Tag, {
+      through: models.TrendingTag,
+      foreignKey: 'boardId',
+      otherKey: 'tagId'
+    });
+  };
+
 
   return Board;
 };

@@ -67,6 +67,21 @@ db.Badge.belongsToMany(db.User, {
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
+// TrendingTags Associations
+db.Board.belongsToMany(db.Tag, {
+  through: 'TrendingTags',
+  foreignKey: 'boardId',
+  otherKey: 'tagId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
+db.Tag.belongsToMany(db.Board, {
+  through: 'TrendingTags',
+  foreignKey: 'tagId',
+  otherKey: 'boardId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
 // Likes Associations
 db.User.hasMany(db.Like, {
   foreignKey: 'userId',

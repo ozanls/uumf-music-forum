@@ -7,7 +7,7 @@ const { hashPassword } = require('../utilities/hashing');
 const { isAuthenticated, verifyAuthorization } = require('../utilities/auth');
 const sendConfirmationEmail = require('../utilities/sendConfirmationEmail');
 const sendForgotPasswordEmail = require('../utilities/sendForgotPasswordEmail');
-const deleteUnconfirmedUsers = require('./utilities/deleteUnconfirmedUsers');
+const deleteUnconfirmedUsers = require('../utilities/deleteUnconfirmedUsers');
 require('dotenv').config();
 
 

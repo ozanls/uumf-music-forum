@@ -1,3 +1,6 @@
+// local-strategy.js
+// Passport (Local Strategy) Configuration
+
 const passport = require('passport');
 const { Strategy } = require('passport-local');
 const { User } = require('../models');

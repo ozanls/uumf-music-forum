@@ -28,6 +28,18 @@ module.exports = {
           isEmail: true
         }
       },
+      bio: {
+        type: Sequelize.STRING(255),
+        allowNull: true
+      },
+      status: {
+        type: Sequelize.STRING(20),
+        defaultValue: 'active'
+      },
+      image: {
+        type: Sequelize.STRING(255),
+        allowNull: true
+      },
       role: {
         type: Sequelize.STRING(10),
         allowNull: false,

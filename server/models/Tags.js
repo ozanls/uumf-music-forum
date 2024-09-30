@@ -45,5 +45,13 @@ module.exports = (sequelize) => {
     });
   };
 
+  Tag.associate = (models) => {
+    Tag.belongsToMany(models.Board, {
+      through: models.TrendingTag,
+      foreignKey: 'tagId',
+      otherKey: 'boardId'
+    });
+  };
+
   return Tag;
 };

@@ -1,3 +1,6 @@
+// sendConfirmationEmail.js
+// This function sends a confirmation email to the users email address. The confirmation email contains a link that the user can click to confirm their email address, and gain access to the site. The link will expire in 1 hour.
+
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 require('dotenv').config();
 

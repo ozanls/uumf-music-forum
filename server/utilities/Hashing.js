@@ -1,3 +1,6 @@
+// hashing.js
+// Hashing utility functions
+
 const bcrypt = require('bcrypt');
 
 // Number of salt rounds (complexity of the hash)

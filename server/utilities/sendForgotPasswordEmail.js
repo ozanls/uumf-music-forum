@@ -1,3 +1,6 @@
+// sendForgotPasswordEmail.js
+// This function sends a password reset email to the user's email address.
+
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 require('dotenv').config();
 
