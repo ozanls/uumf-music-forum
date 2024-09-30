@@ -1,11 +1,11 @@
 // UpdateTrendingTags.js
-// This function finds the 5 tags for each board with the most posts in the last 12 hours, and updates the TrendingTags table.
+// This function finds the 5 tags for each board with the most posts in the last 24 hours, and updates the TrendingTags table.
 
 const { Op, fn, col, literal } = require('sequelize');
 const { PostTag, Tag, Board, TrendingTag } = require('../models');
 
 async function updateTrendingTags() {
-    const timeThreshold = new Date(new Date() - 60 * 60 * 1000 * 12); // 12 hours
+    const timeThreshold = new Date(new Date() - 60 * 60 * 1000 * 24); // 24 hours
 
     try {
         const boards = await Board.findAll();
