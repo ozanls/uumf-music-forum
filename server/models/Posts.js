@@ -34,6 +34,10 @@ module.exports = function(sequelize, DataTypes) {
           type: DataTypes.INTEGER,
           defaultValue: 0
         },
+        comments: {
+          type: DataTypes.INTEGER,
+          defaultValue: 0
+        },
         status: {
           type: DataTypes.STRING(20),
           defaultValue: 'active'

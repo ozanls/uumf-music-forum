@@ -122,6 +122,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 0
       },
+      comments: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+      },
       status: {
         type: Sequelize.STRING(20),
         defaultValue: 'active'

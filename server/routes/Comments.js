@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Comment, CommentLike } = require('../models');
+const { Comment, Post, CommentLike } = require('../models');
 const { isAuthenticated, verifyAuthorization } = require('../utilities/auth');
 const { sequelize } = require('../models');
 
@@ -20,12 +20,16 @@ router.get('/:id', async (req, res) => {
 // Create a new comment
 router.post('/', isAuthenticated, async (req, res) => {
     const comment = req.body;
-    try{
-        await Comment.create(comment);
+    const post = await Post.findByPk(req.body.postId);
+    const transaction = await sequelize.transaction();
+    try {
+        await Comment.create(comment, { transaction });
+        await post.increment('comments', { by: 1, transaction });
+        await transaction.commit();
         res.json(comment);
-    }
-    catch(error){
+    } catch (error) {
         console.error('Error creating comment:', error);
+        await transaction.rollback();
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -47,12 +51,24 @@ router.post('/:id', verifyAuthorization(Comment, 'id', ['admin', 'moderator']), 
 // Delete a comment
 router.delete('/:id', verifyAuthorization(Comment, 'id', ['admin', 'moderator']), async (req, res) => {
     const commentId = req.params.id;
-    try{
-        await Comment.destroy({ where: { id: commentId } });
-        res.json({ message: 'Comment deleted' });
+    const transaction = await sequelize.transaction();
+    const comment = await Comment.findByPk(commentId);
+
+    if (!comment) {
+        await transaction.rollback();
+        return res.status(404).json({ error: 'Comment not found' });
     }
-    catch(error){
+
+    const post = await Post.findByPk(comment.postId);
+
+    try {
+        await Comment.destroy({ where: { id: commentId }, transaction });
+        await post.decrement('comments', { by: 1, transaction });
+        await transaction.commit();
+        res.json({ message: 'Comment deleted' });
+    } catch (error) {
         console.error('Error deleting comment:', error);
+        await transaction.rollback();
         res.status(500).json({ error: 'Internal server error' });
     }
 });
