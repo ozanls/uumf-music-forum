@@ -43,7 +43,7 @@ app.use(passport.session());
 cron.schedule('0 * * * *', () => {
     console.log('Running scheduled task to delete unconfirmed users');
     deleteUnconfirmedUsers();
-    updatetTrendingTags(); 
+    updateTrendingTags(); 
 });
 
 
