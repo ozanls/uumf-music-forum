@@ -1,6 +1,6 @@
 module.exports = function(sequelize, DataTypes) {
 
-    const PostXTag = sequelize.define('PostXTag', {
+    const PostTag = sequelize.define('PostTag', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -26,14 +26,14 @@ module.exports = function(sequelize, DataTypes) {
     onUpdate: 'CASCADE',
   },
 }, {
-  tableName: 'PostsXTags',
+  tableName: 'PostTags',
   timestamps: true
 });
 
-PostXTag.associate = (models) => {
-  PostXTag.belongsTo(models.Post, { foreignKey: 'postId', as: 'post' });
-  PostXTag.belongsTo(models.Tag, { foreignKey: 'tagId', as: 'tag' });
+PostTag.associate = (models) => {
+  PostTag.belongsTo(models.Post, { foreignKey: 'postId', as: 'post' });
+  PostTag.belongsTo(models.Tag, { foreignKey: 'tagId', as: 'tag' });
 };
 
-return PostXTag;
+return PostTag;
 }

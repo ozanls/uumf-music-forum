@@ -339,8 +339,8 @@ module.exports = {
       }
     });
 
-    // Create UsersXBadges table
-    await queryInterface.createTable('usersxbadges', {
+    // Create UserBadges table
+    await queryInterface.createTable('userbadges', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -418,8 +418,8 @@ module.exports = {
       }
     });
 
-    // Create PostsXTags table
-    await queryInterface.createTable('postsxtags', {
+    // Create PostTags table
+    await queryInterface.createTable('posttags', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -460,14 +460,14 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('postsxtags');
+    await queryInterface.dropTable('posttags');
     await queryInterface.dropTable('tags');
     await queryInterface.dropTable('saves');
     await queryInterface.dropTable('posts');
     await queryInterface.dropTable('likes');
     await queryInterface.dropTable('comments');
     await queryInterface.dropTable('boards');
-    await queryInterface.dropTable('usersxbadges');
+    await queryInterface.dropTable('userbadges');
     await queryInterface.dropTable('badges');
     await queryInterface.dropTable('users');
   }

@@ -1,6 +1,6 @@
 module.exports = function(sequelize, DataTypes) {
 
-  const UserXBadge= sequelize.define('UserXBadge', {
+  const UserBadge= sequelize.define('UserBadge', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -27,14 +27,14 @@ module.exports = function(sequelize, DataTypes) {
     onUpdate: 'CASCADE'
   },
 }, {
-  tableName: 'usersxbadges',
+  tableName: 'userbadges',
   timestamps: true
 });
 
-UserXBadge.associate = (models) => {
-  UserXBadge.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
-  UserXBadge.belongsTo(models.Badge, { foreignKey: 'badgeId', as: 'badge' });
+UserBadge.associate = (models) => {
+  UserBadge.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
+  UserBadge.belongsTo(models.Badge, { foreignKey: 'badgeId', as: 'badge' });
 };
 
-return UserXBadge;
+return UserBadge;
 }

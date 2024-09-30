@@ -23,7 +23,7 @@ module.exports = (sequelize) => {
 
   Badge.associate = (models) => {
     Badge.belongsToMany(models.Tag, {
-      through: models.UserXBadge,
+      through: models.UserBadge,
       foreignKey: 'badgeId',
       otherKey: 'userId'
     });

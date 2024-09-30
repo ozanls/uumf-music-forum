@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Board, Tag, Post, PostXTag, sequelize} = require('../models');
+const { Board, Tag, Post, PostTag, sequelize} = require('../models');
 const { verifyAuthorization } = require('../utilities/auth');
 const updateTrendingTags = require('../utilities/updateTrendingTags');
 const { Op } = require('sequelize');

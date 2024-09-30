@@ -39,7 +39,7 @@ module.exports = (sequelize) => {
 
   Tag.associate = (models) => {
     Tag.belongsToMany(models.Post, {
-      through: models.PostXTag,
+      through: models.PostTag,
       foreignKey: 'tagId',
       otherKey: 'postId'
     });

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Post, Comment, Tag, PostXTag, PostLike, Save, sequelize } = require('../models');
+const { Post, Comment, Tag, PostTag, PostLike, Save, sequelize } = require('../models');
 const getRandomColor = require('../utilities/GetRandomColor');
 const { isAuthenticated, verifyAuthorization , isOwner } = require('../utilities/auth');
 const { Op } = require('sequelize');
@@ -58,7 +58,7 @@ router.post('/', isAuthenticated, async (req, res) => {
                 defaults: { hexCode: getRandomColor()}
             });
 
-            await PostXTag.create({ postId: newPost.id, tagId: newTag.id });
+            await PostTag.create({ postId: newPost.id, tagId: newTag.id });
         }
         res.json(newPost);
     } catch (error) {
@@ -77,7 +77,7 @@ router.post('/:id', verifyAuthorization(Post, 'id', ['admin', 'moderator']), asy
         const postTags = post.tags;
 
         if (postTags) {
-            await PostXTag.destroy({ where: { postId: postId } });
+            await PostTag.destroy({ where: { postId: postId } });
             
             for (const tag of postTags) {
                 const [newTag] = await Tag.findOrCreate({
@@ -85,7 +85,7 @@ router.post('/:id', verifyAuthorization(Post, 'id', ['admin', 'moderator']), asy
                     defaults: { hexCode: getRandomColor() }
                 });
 
-                await PostXTag.create({ postId: postId, tagId: newTag.id });
+                await PostTag.create({ postId: postId, tagId: newTag.id });
             }
         }
 

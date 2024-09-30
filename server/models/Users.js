@@ -60,7 +60,7 @@ module.exports = (sequelize) => {
 
   User.associate = (models) => {
     User.belongsToMany(models.Tag, {
-      through: models.UserXBadge,
+      through: models.UserBadge,
       foreignKey: 'userId',
       otherKey: 'badgeId'
     });

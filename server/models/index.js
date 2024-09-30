@@ -37,31 +37,31 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
-// PostXTag Associations
+// PostTag Associations
 db.Post.belongsToMany(db.Tag, {
-  through: 'PostsXTags',
+  through: 'PostTags',
   foreignKey: 'postId',
   otherKey: 'tagId',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
 db.Tag.belongsToMany(db.Post, {
-  through: 'PostsXTags',
+  through: 'PostTags',
   foreignKey: 'tagId',
   otherKey: 'postId',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
-// UsersXBadges Associations
+// UserBadges Associations
 db.User.belongsToMany(db.Badge, {
-  through: 'UsersXBadges',
+  through: 'UserBadges',
   foreignKey: 'userId',
   otherKey: 'badgeId',
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
 db.Badge.belongsToMany(db.User, {
-  through: 'UsersXBadges',
+  through: 'UserBadges',
   foreignKey: 'badgeId',
   otherKey: 'userId',
   onDelete: 'CASCADE',
