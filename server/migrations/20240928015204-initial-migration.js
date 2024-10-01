@@ -45,6 +45,21 @@ module.exports = {
         allowNull: false,
         defaultValue: 'user'
       },
+      confirmedEmail: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
+      },
+      agreedToTerms: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
+      },
+      receivePromo: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -457,7 +472,86 @@ module.exports = {
         defaultValue: Sequelize.NOW
       }
     });
+
+    await queryInterface.createTable('TrendingTags', {
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+      },
+      boardId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'boards',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+      tagId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'tags',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+      count: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn('NOW')
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn('NOW')
+      }
+    });
+
+    await queryInterface.addIndex('TrendingTags', ['boardId', 'tagId'], {
+      unique: true,
+      name: 'unique_trending_tag'
+    });
+
+    await queryInterface.addIndex('posttags', ['postId', 'tagId'], {
+      unique: true,
+      name: 'unique_post_tag'
+    });
+
+    await queryInterface.addIndex('userbadges', ['userId', 'badgeId'], {
+      unique: true,
+      name: 'unique_user_badge'
+    });
+
+    await queryInterface.addIndex('tags', ['boardId', 'name'], {
+      unique: true,
+      name: 'unique_board_tag'
+    });
+
+    await queryInterface.addIndex('saves', ['postId', 'userId'], {
+      unique: true,
+      name: 'unique_post_save'
+    });
+
+    await queryInterface.addIndex('postlikes', ['postId', 'userId'], {
+      unique: true,
+      name: 'unique_post_like'
+    });
+
+    await queryInterface.addIndex('commentlikes', ['commentId', 'userId'], {
+      unique: true,
+      name: 'unique_comment_like'
+    });
   },
+  
 
   async down (queryInterface, Sequelize) {
     await queryInterface.dropTable('posttags');
@@ -470,5 +564,7 @@ module.exports = {
     await queryInterface.dropTable('userbadges');
     await queryInterface.dropTable('badges');
     await queryInterface.dropTable('users');
+    await queryInterface.dropTable('trendingtags');
+
   }
 };
