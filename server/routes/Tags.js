@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Tag } = require('../models');
+const { Tag, PostTag } = require('../models');
 const getRandomColor = require('../utilities/GetRandomColor');
 const { verifyAuthorization } = require('../utilities/auth');
 
@@ -63,6 +63,18 @@ router.delete('/:id', verifyAuthorization(Tag, 'id', ['admin', 'moderator']), as
         }
     } catch (error) {
         console.error('Error deleting tag:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Return number of entries for a tag
+router.get('/:id/count', async (req, res) => {
+    const tagId = req.params.id;
+    try {
+        const count = await PostTag.count({ where: { id: tagId } });
+        res.status(200).json({ count });
+    } catch (error) {
+        console.error('Error getting tag count:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
