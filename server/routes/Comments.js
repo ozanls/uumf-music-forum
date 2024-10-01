@@ -7,11 +7,14 @@ const { sequelize } = require('../models');
 // Get a comment by id
 router.get('/:id', async (req, res) => {
     const commentId = req.params.id;
-    try{
+    try {
         const comment = await Comment.findByPk(commentId);
-        res.json(comment);
-    }
-    catch(error){
+        if (comment) {
+            res.status(200).json(comment);
+        } else {
+            res.status(404).json({ error: 'Comment not found' });
+        }
+    } catch (error) {
         console.error('Error getting comment by id:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -26,7 +29,7 @@ router.post('/', isAuthenticated, async (req, res) => {
         await Comment.create(comment, { transaction });
         await post.increment('comments', { by: 1, transaction });
         await transaction.commit();
-        res.json(comment);
+        res.status(201).json(comment);
     } catch (error) {
         console.error('Error creating comment:', error);
         await transaction.rollback();
@@ -38,11 +41,10 @@ router.post('/', isAuthenticated, async (req, res) => {
 router.post('/:id', verifyAuthorization(Comment, 'id', ['admin', 'moderator']), async (req, res) => {
     const comment = req.body;
     const commentId = req.params.id;
-    try{
+    try {
         await Comment.update(comment, { where: { id: commentId } });
-        res.json(comment);
-    }
-    catch(error){
+        res.status(200).json(comment);
+    } catch (error) {
         console.error('Error updating comment:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -65,7 +67,7 @@ router.delete('/:id', verifyAuthorization(Comment, 'id', ['admin', 'moderator'])
         await Comment.destroy({ where: { id: commentId }, transaction });
         await post.decrement('comments', { by: 1, transaction });
         await transaction.commit();
-        res.json({ message: 'Comment deleted' });
+        res.status(200).json({ message: 'Comment deleted' });
     } catch (error) {
         console.error('Error deleting comment:', error);
         await transaction.rollback();
@@ -73,7 +75,7 @@ router.delete('/:id', verifyAuthorization(Comment, 'id', ['admin', 'moderator'])
     }
 });
 
-// Like a comment
+// Like or unlike a comment
 router.post('/:id/like', isAuthenticated, async (req, res) => {
     const commentId = req.params.id;
     const userId = req.user.id;
@@ -82,43 +84,19 @@ router.post('/:id/like', isAuthenticated, async (req, res) => {
     try {
         const existingLike = await CommentLike.findOne({ where: { commentId, userId } });
         if (existingLike) {
-            await transaction.rollback();
-            return res.status(400).json({ message: 'You have already liked this comment' });
+            await CommentLike.destroy({ where: { commentId, userId }, transaction });
+            await Comment.decrement('likes', { where: { id: commentId }, transaction });
+            await transaction.commit();
+            return res.status(200).json({ message: 'Comment unliked' });
+        } else {
+            const like = await CommentLike.create({ commentId, userId }, { transaction });
+            await Comment.increment('likes', { by: 1, where: { id: commentId }, transaction });
+            await transaction.commit();
+            return res.status(201).json({ message: 'Comment liked', like });
         }
-
-        const like = await CommentLike.create({ commentId, userId }, { transaction });
-        await Comment.increment('likes', { by: 1, where: { id: commentId }, transaction });
-        await transaction.commit();
-        res.json(like);
-
     } catch (error) {
         await transaction.rollback();
         console.error('Error liking comment:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-// Unlike a comment
-router.post('/:id/unlike', isAuthenticated, async (req, res) => {
-    const commentId = req.params.id;
-    const userId = req.user.id;
-    const transaction = await sequelize.transaction();
-
-    try {
-        const likeDestroyed = await CommentLike.destroy({ where: { commentId, userId }, transaction });
-
-        if (likeDestroyed) {
-            await Comment.decrement('likes', { where: { id: commentId }, transaction });
-            await transaction.commit();
-            res.json({ message: 'Comment unliked' });
-        } else {
-            await transaction.rollback();
-            res.status(404).json({ message: 'Like not found' });
-        }
-
-    } catch (error) {
-        await transaction.rollback();
-        console.error('Error unliking comment:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

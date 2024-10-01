@@ -7,11 +7,10 @@ const { Op } = require('sequelize');
 
 // Get all posts
 router.get('/', async (req, res) => {
-    try{
+    try {
         const allPosts = await Post.findAll();
-        res.json(allPosts);
-    }
-    catch(error){
+        res.status(200).json(allPosts);
+    } catch (error) {
         console.error('Error getting all posts:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -20,11 +19,10 @@ router.get('/', async (req, res) => {
 // Get a post by id
 router.get('/:id', async (req, res) => {
     const postId = req.params.id;
-    try{
+    try {
         const post = await Post.findByPk(postId);
-        res.json(post);
-    }
-    catch(error){
+        res.status(200).json(post);
+    } catch (error) {
         console.error('Error getting post by id:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -33,11 +31,10 @@ router.get('/:id', async (req, res) => {
 // Get all comments for a post
 router.get('/:postId/comments', async (req, res) => {
     const postId = req.params.postId;
-    try{
+    try {
         const allComments = await Comment.findAll({ where: { postId } });
-        res.json(allComments);
-    }
-    catch(error){
+        res.status(200).json(allComments);
+    } catch (error) {
         console.error('Error getting comments for post:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -49,18 +46,18 @@ router.post('/', isAuthenticated, async (req, res) => {
     req.body.userId = req.user.id;
 
     try {
-        const newPost = await Post.create(post); 
+        const newPost = await Post.create(post);
         const postTags = post.tags;
 
         for (const tag of postTags) {
-            const [newTag] = await Tag.findOrCreate({ 
+            const [newTag] = await Tag.findOrCreate({
                 where: { boardId: newPost.boardId, name: tag },
-                defaults: { hexCode: getRandomColor()}
+                defaults: { hexCode: getRandomColor() }
             });
 
             await PostTag.create({ postId: newPost.id, tagId: newTag.id });
         }
-        res.json(newPost);
+        res.status(201).json(newPost);
     } catch (error) {
         console.error('Error creating post:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -78,7 +75,7 @@ router.post('/:id', verifyAuthorization(Post, 'id', ['admin', 'moderator']), asy
 
         if (postTags) {
             await PostTag.destroy({ where: { postId: postId } });
-            
+
             for (const tag of postTags) {
                 const [newTag] = await Tag.findOrCreate({
                     where: { boardId: post.boardId, name: tag },
@@ -89,7 +86,7 @@ router.post('/:id', verifyAuthorization(Post, 'id', ['admin', 'moderator']), asy
             }
         }
 
-        res.json(post);
+        res.status(200).json(post);
 
     } catch (error) {
         console.error('Error updating post:', error);
@@ -97,7 +94,7 @@ router.post('/:id', verifyAuthorization(Post, 'id', ['admin', 'moderator']), asy
     }
 });
 
-// Like a post
+// Like or unlike a post
 router.post('/:id/like', isAuthenticated, async (req, res) => {
     const postId = req.params.id;
     const userId = req.user.id;
@@ -106,43 +103,19 @@ router.post('/:id/like', isAuthenticated, async (req, res) => {
     try {
         const existingLike = await PostLike.findOne({ where: { postId, userId } });
         if (existingLike) {
-            await transaction.rollback();
-            return res.status(400).json({ message: 'You have already liked this post' });
-        }
-
-        const like = await PostLike.create({ postId, userId }, { transaction });
-        await Post.increment('likes', { by: 1, where: { id: postId }, transaction });
-        await transaction.commit();
-        res.json(like);
-
-    } catch (error) {
-        await transaction.rollback();
-        console.error('Error liking post:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-// Unlike a post
-router.post('/:id/unlike', isAuthenticated, async (req, res) => {
-    const postId = req.params.id;
-    const userId = req.user.id;
-    const transaction = await sequelize.transaction();
-
-    try {
-        const likeDestroyed = await PostLike.destroy({ where: { postId, userId }, transaction });
-
-        if (likeDestroyed) {
+            await PostLike.destroy({ where: { postId, userId }, transaction });
             await Post.decrement('likes', { where: { id: postId }, transaction });
             await transaction.commit();
-            res.json({ message: 'Post unliked' });
+            return res.status(200).json({ message: 'Post unliked' });
         } else {
-            await transaction.rollback();
-            res.status(404).json({ message: 'Like not found' });
+            const like = await PostLike.create({ postId, userId }, { transaction });
+            await Post.increment('likes', { by: 1, where: { id: postId }, transaction });
+            await transaction.commit();
+            return res.status(200).json({ message: 'Post liked', like });
         }
-
     } catch (error) {
         await transaction.rollback();
-        console.error('Error unliking post:', error);
+        console.error('Error liking/unliking post:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -162,7 +135,7 @@ router.post('/:id/save', isAuthenticated, async (req, res) => {
 
         const save = await Save.create({ postId, userId }, { transaction });
         await transaction.commit();
-        res.json(save);
+        res.status(201).json(save);
     } catch (error) {
         await transaction.rollback();
         console.error('Error saving post:', error);
@@ -183,7 +156,7 @@ router.post('/:id/unsave', isAuthenticated, async (req, res) => {
 
         if (saveDestroyed) {
             await transaction.commit();
-            res.json({ message: 'Post unsaved' });
+            res.status(200).json({ message: 'Post unsaved' });
         } else {
             await transaction.rollback();
             res.status(404).json({ message: 'Save not found' });
@@ -212,11 +185,11 @@ router.get('/search/:boardId/:query', async (req, res) => {
         });
 
         if (posts.length === 0) {
-            res.json({ message: 'No posts found' });
+            res.status(404).json({ message: 'No posts found' });
             return;
         }
-        
-        res.json(posts);
+
+        res.status(200).json(posts);
     } catch (error) {
         console.error('Error searching for posts:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -226,11 +199,10 @@ router.get('/search/:boardId/:query', async (req, res) => {
 // Delete a post
 router.delete('/:id', verifyAuthorization(Post, 'id', ['admin', 'moderator']), async (req, res) => {
     const postId = req.params.id;
-    try{
+    try {
         await Post.destroy({ where: { id: postId } });
-        res.json({ message: 'Post deleted' });
-    }
-    catch(error){
+        res.status(200).json({ message: 'Post deleted' });
+    } catch (error) {
         console.error('Error deleting post:', error);
         res.status(500).json({ error: 'Internal server error' });
     }

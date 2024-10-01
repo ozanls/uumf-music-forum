@@ -27,7 +27,7 @@ router.post('/auth', (req, res, next) => {
             if (err) {
                 return res.status(500).json({ message: 'Server error' });
             }
-            return res.json({ message: 'Login successful' });
+            return res.status(200).json({ message: 'Login successful' });
         });
     })(req, res, next);
 });
@@ -42,7 +42,7 @@ router.post('/auth/logout', (req, res) => {
 // Verify authentication status
 router.get('/auth/status', isAuthenticated, (req, res) => {
     try{
-    req.isAuthenticated() ? res.json(req.user) : res.status(401).json({ message: 'Unauthorized' });
+    req.isAuthenticated() ? res.status(200).json(req.user) : res.status(401).json({ message: 'Unauthorized' });
     }
     catch(error){
         console.error('Error getting authentication status:', error);
@@ -54,7 +54,7 @@ router.get('/auth/status', isAuthenticated, (req, res) => {
 router.get('/', verifyAuthorization(User, 'id', ['admin']), async (req, res) => {
     try{
         const allUsers = await User.findAll();
-        res.json(allUsers);
+        res.status(200).json(allUsers);
     }
     catch(error){
         console.error('Error getting all users:', error);
@@ -75,7 +75,7 @@ router.get('/saved', isAuthenticated, async (req, res) => {
             }]
         });
 
-        res.json(saves);
+        res.status(200).json(saves);
     } catch (error) {
         console.error('Error getting saved posts:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -87,7 +87,7 @@ router.get('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res) 
     const userId = req.params.id;
     try{
         const user = await User.findByPk(userId);
-        user ? res.json(user) : res.json({ message: 'User not found' });
+        user ? res.status(200).json(user) : res.status(404).json({ message: 'User not found' });
     }
     catch(error){
         console.error('Error getting user by id:', error);
@@ -116,7 +116,7 @@ router.post('/register', async (req, res) => {
     const newUser = await User.create(user);
     const token = jwt.sign({ id: newUser.id, email: newUser.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
     sendConfirmationEmail(newUser, token);
-    res.json(newUser);
+    res.status(201).json(newUser);
 });
 
 // Confirm email route
@@ -133,7 +133,7 @@ router.get('/confirm/:token', async (req, res) => {
         user.confirmedEmail = true;
         await user.save();
 
-        res.json({ message: 'Email confirmed successfully' });
+        res.status(200).json({ message: 'Email confirmed successfully' });
     } catch (error) {
         console.error('Error confirming email:', error);
         res.status(400).json({ message: 'Invalid or expired token' });
@@ -150,7 +150,7 @@ router.post('/forgot-password', async (req, res) => {
 
     const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
     sendForgotPasswordEmail(user, token);
-    res.json({ message: 'Password reset email sent' });
+    res.status(200).json({ message: 'Password reset email sent' });
 });
 
 // Reset password route (from forgot password email)
@@ -178,7 +178,7 @@ router.post('/reset-password/:token', async (req, res) => {
         user.password = hashedPassword;
         await user.save();
 
-        res.json({ message: 'Password reset successfully' });
+        res.status(200).json({ message: 'Password reset successfully' });
     } catch (error) {
         console.error('Error resetting password:', error);
         res.status(400).json({ message: 'Invalid or expired token' });
@@ -201,7 +201,7 @@ router.post('/update/email', isAuthenticated, async (req, res) => {
             return res.status(400).json({ error: 'Email update failed' });
         }
 
-        res.json({ message: 'Email updated successfully' });
+        res.status(200).json({ message: 'Email updated successfully' });
     } catch (error) {
         console.error('Error updating email:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -224,7 +224,7 @@ router.post('/update/password', isAuthenticated, async (req, res) => {
     try {
         const hashedPassword = await hashPassword(newPassword);
         await User.update({ password: hashedPassword }, { where: { id: userId } });
-        res.json({ message: 'Password updated successfully' });
+        res.status(200).json({ message: 'Password updated successfully' });
     } catch (error) {
         console.error('Error updating password:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -237,7 +237,7 @@ router.post('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res)
     const userId = req.params.id;
     try{
         await User.update(user, { where: { id: userId } });
-        res.json(user);
+        res.status(200).json(user);
     }
     catch(error){
         console.error('Error updating user:', error);
@@ -249,7 +249,7 @@ router.post('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res)
 router.delete('/delete-unconfirmed', verifyAuthorization(User, 'id', ['admin']), async (req, res) => {
     try {
         await deleteUnconfirmedUsers();
-        res.json({ message: 'Unconfirmed accounts deleted' });
+        res.status(200).json({ message: 'Unconfirmed accounts deleted' });
     } catch (error) {
         console.error('Error deleting unconfirmed accounts:', error);
         res.status(500).json({ error: 'Internal server error' });
