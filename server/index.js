@@ -6,11 +6,17 @@ const cron = require('node-cron');
 const deleteUnconfirmedUsers = require('./utilities/deleteUnconfirmedUsers');
 const updateTrendingTags = require('./utilities/updateTrendingTags');
 const MySQLStore = require('express-mysql-session')(session);
+const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT;
 app.use(express.json());
+
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true
+}));
 
 const db = require('./models')
 
@@ -31,7 +37,8 @@ app.use(session({
     store: sessionStore,
     resave: false,
     cookie: {
-        maxAge: 3600000
+        maxAge: 3600000,
+        sameSite: 'None'
     }
 }));
 
