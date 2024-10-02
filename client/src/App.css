@@ -5,17 +5,30 @@
   font-family: 'Kanit', sans-serif;
 }
 
+.button-1{
+  background-color: #FFFFFF;
+  color: #000000;
+  border: 1px solid #000000;
+  padding: 0.5em 1em 0.5em 1em;
+  cursor: pointer;
+}
+
+.button-1:hover{
+  background-color: #cccccc;
+}
+
 nav{
   display:flex;
   background-color: #000000;
-  padding:1em;
   align-items: center;
   display: flex;
   justify-content: space-between;
+  padding:0.5em;
 }
 
 .nav__logo{
   height: 1em;
+  display: block;
 }
 
 .auth{

@@ -13,7 +13,7 @@ function Auth(props) {
     useEffect(() => {
         const checkAuthStatus = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/auth/status` , { withCredentials: true });
+                const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/auth/status`, { withCredentials: true });
                 if (response.status === 200) {
                     setIsAuthenticated(true);
                     setUser(response.data);
@@ -42,10 +42,11 @@ function Auth(props) {
         setShowSignup(false);
         setShowLogin(!showLogin);
     }
+
     const toggleSignup = () => {
         setShowLogin(false);
         setShowSignup(!showSignup);
-        console.log(user)
+        console.log(user);
     }
 
     return (
@@ -54,12 +55,12 @@ function Auth(props) {
             {isAuthenticated ? (
                 <>
                     <p className="auth__welcome">Welcome, {user.username}!</p>
-                    <button onClick={logOut}>Log Out</button>
+                    <button className='button-1' onClick={logOut}>Log Out</button>
                 </>
             ) : (
                 <>
-                    <button onClick={toggleLogin}>Log In</button>
-                    <button onClick={toggleSignup}>Sign Up</button>
+                    <button className='button-1' onClick={toggleLogin}>Log In</button>
+                    <button className='button-1' onClick={toggleSignup}>Sign Up</button>
                 </>
             )}
         </div>
