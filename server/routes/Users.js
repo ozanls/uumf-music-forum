@@ -18,7 +18,7 @@ router.post('/auth', (req, res, next) => {
             return res.status(500).json({ message: 'Server error' });
         }
         if (!user) {
-            return res.status(401).json({ message: info.message });
+            return res.status(401).json({ message: 'Invalid username/password' });
         }
         if (!user.confirmedEmail) {
             return res.status(401).json({ message: 'Please confirm your email address' });
@@ -41,10 +41,9 @@ router.post('/auth/logout', (req, res) => {
 
 // Verify authentication status
 router.get('/auth/status', isAuthenticated, (req, res) => {
-    try{
-    req.isAuthenticated() ? res.status(200).json(req.user) : res.status(401).json({ message: 'Unauthorized' });
-    }
-    catch(error){
+    try {
+        res.status(200).json(req.user);
+    } catch (error) {
         console.error('Error getting authentication status:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -97,9 +96,21 @@ router.get('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res) 
  
 // Create a new user (register)
 router.post('/register', async (req, res) => {
+    
+    if (!req.body.password || !req.body.confirmPassword) {
+        res.status(400).json({ message: 'Both password fields must be filled' });
+        return;
+    }
+
+    if (req.body.password !== req.body.confirmPassword) {
+        res.status(400).json({ message: 'Passwords do not match' });
+        return;
+    }
+
     const user = req.body;
     user.password = await hashPassword(user.password);
-    user.role = 'user';
+    user.role = 'user'; // Default role
+    user.image = 'https://placehold.co/500x500' // Default image
     const existingUser = await User.findOne({ where: { username: user.username } });
     const existingEmail = await User.findOne({ where: { email: user.email } });
     
@@ -112,6 +123,7 @@ router.post('/register', async (req, res) => {
         res.status(400).json({ message: 'Email already in use' });
         return;
     }
+
 
     const newUser = await User.create(user);
     const token = jwt.sign({ id: newUser.id, email: newUser.email }, process.env.JWT_SECRET, { expiresIn: '1h' });

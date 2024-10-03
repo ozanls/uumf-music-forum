@@ -33,14 +33,16 @@ const sessionStore = new MySQLStore(dbOptions);
 // Configure session
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: sessionStore,
     resave: false,
     cookie: {
         maxAge: 3600000,
-        sameSite: 'None'
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+        secure: process.env.NODE_ENV === 'production'
     }
 }));
+
 
 // Initialize passport
 app.use(passport.initialize());

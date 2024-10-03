@@ -16,7 +16,7 @@ function SearchBar() {
     };
 
     fetchBoards();
-  }, []);
+  }, [VITE_SERVER_URL]);
 
   useEffect(() => {
     console.log("Search results:", searchResults);

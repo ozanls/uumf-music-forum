@@ -5,18 +5,6 @@
   font-family: 'Kanit', sans-serif;
 }
 
-.button-1{
-  background-color: #FFFFFF;
-  color: #000000;
-  border: 1px solid #000000;
-  padding: 0.5em 1em 0.5em 1em;
-  cursor: pointer;
-}
-
-.button-1:hover{
-  background-color: #cccccc;
-}
-
 nav{
   display:flex;
   background-color: #000000;
@@ -39,4 +27,25 @@ nav{
 
 .auth__welcome{
   color: #ffffff;
+}
+
+.auth-form{
+  display:flex;
+  flex-direction: column;
+  gap: 1em;
+  position: absolute;
+  right: 0;
+  border: 1px solid black;
+  border-top: none;
+  padding: 1em;
+}
+
+.auth-form__signup, .auth-form__login{
+  display:flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.auth-form__message{
+  color: red;
 }
