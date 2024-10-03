@@ -4,11 +4,7 @@ import axios from 'axios';
 function Auth(props) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState(null);
-    const showLogin = props.showLogin;
-    const showSignup = props.showSignup;
-    const setShowLogin = props.setShowLogin;
-    const setShowSignup = props.setShowSignup;
-
+    const {showLogin, showSignup, setShowLogin, setShowSignup} = props;
 
     useEffect(() => {
         const checkAuthStatus = async () => {

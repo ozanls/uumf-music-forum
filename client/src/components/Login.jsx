@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import ResetPassword from './ResetPassword';
 
 function Login() {
 
     const [message, setMessage] = useState("");
     const [showMessage, setShowMessage] = useState(false);
+    const [showResetPassword, setShowResetPassword] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const username = e.target.username.value;
         const password = e.target.password.value;
+
         console.log("Logging in with:", username, password);
+        
         try {
             const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/auth`, {
                 username,
@@ -37,14 +41,22 @@ function Login() {
 
     return (
         <div className='auth-form'>
-            <form className='auth-form__signup' onSubmit={handleSubmit}>
-                <label htmlFor="username">Username</label>
-                <input type="text" id="username" name="username" />
-                <label htmlFor="password">Password</label>
-                <input type="password" id="password" name="password" />
-                <button type="submit">Log In</button>
-            </form>
-            {showMessage && <p className="auth-form__message">{message}</p>}
+            {showResetPassword && 
+            <ResetPassword setMessage={setMessage} setShowMessage={setShowMessage} showMessage={showMessage}/>}
+            {!showResetPassword &&
+                <>
+                    <form className='auth-form__signup' onSubmit={handleSubmit}>
+                        <label htmlFor="username">Username</label>
+                        <input type="text" id="username" name="username" />
+                        <label htmlFor="password">Password</label>
+                        <input type="password" id="password" name="password" />
+                        <button type="submit">Log In</button>
+                    </form>
+                    <a onClick={() => setShowResetPassword(true)}>Forgot your password?</a>
+                </>
+            }
+            {showMessage && 
+            <p className="auth-form__message">{message}</p>}
         </div>
     );
 }

@@ -40,7 +40,7 @@ nav{
   padding: 1em;
 }
 
-.auth-form__signup, .auth-form__login{
+.auth-form__signup, .auth-form__login, .auth-form__reset-password{
   display:flex;
   flex-direction: column;
   gap: 1em;

@@ -97,13 +97,18 @@ router.get('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res) 
 // Create a new user (register)
 router.post('/register', async (req, res) => {
     
-    if (!req.body.password || !req.body.confirmPassword) {
-        res.status(400).json({ message: 'Both password fields must be filled' });
+    if (!req.body.username || !req.body.email) {
+        res.status(400).json({ message: 'Username and email are required' });
         return;
     }
 
     if (req.body.password !== req.body.confirmPassword) {
         res.status(400).json({ message: 'Passwords do not match' });
+        return;
+    }
+
+    if (req.body.agreedToTerms !== true) {
+        res.status(400).json({ message: 'You must agree to the terms and conditions' });
         return;
     }
 
@@ -123,7 +128,6 @@ router.post('/register', async (req, res) => {
         res.status(400).json({ message: 'Email already in use' });
         return;
     }
-
 
     const newUser = await User.create(user);
     const token = jwt.sign({ id: newUser.id, email: newUser.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -155,14 +159,18 @@ router.get('/confirm/:token', async (req, res) => {
 // Forgot password route
 router.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
-    const user = await User.findOne({ where: { email } });
-    if (!user) {
-        return res.status(400).json({ message: 'User not found' });
-    }
 
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    sendForgotPasswordEmail(user, token);
-    res.status(200).json({ message: 'Password reset email sent' });
+    try {
+        const user = await User.findOne({ where: { email } });
+        if (user) {
+            const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            await sendForgotPasswordEmail(user, token);
+        }
+        res.status(200).json({ message: 'If an account with that email exists, you\'ll receive a password reset email shortly...' });
+    } catch (error) {
+        console.error('Error in forgot-password route:', error);
+        res.status(500).json({ message: 'An error occurred while processing your request. Please try again later.' });
+    }
 });
 
 // Reset password route (from forgot password email)

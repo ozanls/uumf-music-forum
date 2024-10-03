@@ -12,6 +12,15 @@ function Signup() {
     const email = e.target.email.value;
     const password = e.target.password.value;
     const confirmPassword = e.target.confirmPassword.value;
+    const agreedToTerms = e.target.agreedToTerms.checked;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    if (!emailRegex.test(email)) {
+        console.log("Invalid email address");
+        setMessage("Invalid email address");
+        setShowMessage(true);
+        return;
+    }
 
     if (password !== confirmPassword) {
       setMessage("Passwords do not match");
@@ -26,7 +35,8 @@ function Signup() {
         username,
         email,
         password,
-        confirmPassword
+        confirmPassword,
+        agreedToTerms,
       }, { withCredentials: true });
 
       if (response.status === 201) {
@@ -36,7 +46,7 @@ function Signup() {
       }
     } catch (error) {
       console.error("Error signing up:", error);
-      if (error.response && error.response.data && error.response.data.message) {
+      if (error.response.data.message) {
         setMessage(error.response.data.message);
       } else {
         setMessage("Signup failed, try again.");
@@ -47,6 +57,7 @@ function Signup() {
 
   return (
     <div className='auth-form'>
+      {showMessage && <p className="auth-form__message">{message}</p>}
       {showSignup && 
         <form className='auth-form__signup' onSubmit={handleSubmit}>
           <label htmlFor="email">Email</label>
@@ -57,11 +68,18 @@ function Signup() {
           <input type="password" id="password" name="password" />
           <label htmlFor="confirmPassword">Confirm Password</label>
           <input type="password" id="confirmPassword" name="confirmPassword" />
+          <div className="auth-form__signup__checkbox">
+            <input type="checkbox" id="agreedToTerms" name="agreedToTerms" />
+            <label htmlFor="agreedToTerms">You've read and agreed to our terms of service</label>
+          </div>
+          <div className="auth-form__signup__checkbox">
+            <input type="checkbox" id="receivePromo" name="receivePromo" />
+            <label htmlFor="receivePromo">Receive promotional emails?</label>
+          </div>
           
           <button type="submit">Sign Up</button>
         </form>
       } 
-      {showMessage && <p className="auth-form__message">{message}</p>}
     </div>
   );
 }
