@@ -14,19 +14,7 @@ function Signup() {
     const confirmPassword = e.target.confirmPassword.value;
     const agreedToTerms = e.target.agreedToTerms.checked;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    if (!emailRegex.test(email)) {
-        console.log("Invalid email address");
-        setMessage("Invalid email address");
-        setShowMessage(true);
-        return;
-    }
-
-    if (password !== confirmPassword) {
-      setMessage("Passwords do not match");
-      setShowMessage(true);
-      return;
-    }
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
     console.log("Signing up with:", username, password, email);
 
@@ -40,21 +28,24 @@ function Signup() {
       }, { withCredentials: true });
 
       if (response.status === 201) {
-        setMessage("Signup successful! Check your email to verify your account before logging in.");
+        console.log(response);
+        setMessage(response.data.message);
         setShowMessage(true);
         setShowSignup(false);
       }
     } catch (error) {
       console.error("Error signing up:", error);
-      if (error.response.data.message) {
+      if (error.response && error.response.data && error.response.data.message) {
         setMessage(error.response.data.message);
+      } else if (error.message) {
+        setMessage(error.message);
       } else {
         setMessage("Signup failed, try again.");
       }
       setShowMessage(true);
     }
   };
-
+  
   return (
     <div className='auth-form'>
       {showMessage && <p className="auth-form__message">{message}</p>}

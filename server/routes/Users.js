@@ -96,9 +96,37 @@ router.get('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res) 
  
 // Create a new user (register)
 router.post('/register', async (req, res) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?;])[A-Za-z\d!@#$%^&*?;]{8,}$/;
     
-    if (!req.body.username || !req.body.email) {
-        res.status(400).json({ message: 'Username and email are required' });
+    if (!req.body.email || !req.body.username || !req.body.password || !req.body.confirmPassword) {
+        res.status(400).json({ message: 'All fields are required' });
+        return;
+    }
+
+    if (!emailRegex.test(req.body.email)) {
+        res.status(400).json({ message: 'Invalid email address' });
+        return;
+    }
+
+    const existingEmail = await User.findOne({ where: { email: req.body.email } });
+    const existingUser = await User.findOne({ where: { username: req.body.username } });
+
+    if (existingEmail) {
+        res.status(400).json({ message: 'Email already in use' });
+        return;
+    }
+
+    if (existingUser) {
+        res.status(400).json({ message: 'Username is taken' });
+        return;
+    }
+
+    console.log(req.body.password);
+    console.log(passwordRegex.test(req.body.password));
+
+    if (!passwordRegex.test(req.body.password)) {
+        res.status(400).json({ message: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one special character' });
         return;
     }
 
@@ -112,27 +140,18 @@ router.post('/register', async (req, res) => {
         return;
     }
 
-    const user = req.body;
-    user.password = await hashPassword(user.password);
-    user.role = 'user'; // Default role
-    user.image = 'https://placehold.co/500x500' // Default image
-    const existingUser = await User.findOne({ where: { username: user.username } });
-    const existingEmail = await User.findOne({ where: { email: user.email } });
-    
-    if (existingUser) {
-        res.status(400).json({ message: 'Username is taken' });
-        return;
-    }
-
-    if (existingEmail) {
-        res.status(400).json({ message: 'Email already in use' });
-        return;
-    }
-
-    const newUser = await User.create(user);
+    const hashedPassword = await hashPassword(req.body.password);
+    const newUser = await User.create({
+        username: req.body.username,
+        email: req.body.email,
+        password: hashedPassword,
+        role: 'user', // Default role
+        image: 'https://placehold.co/500x500', // Default image
+        agreedToTerms: req.body.agreedToTerms
+    });
     const token = jwt.sign({ id: newUser.id, email: newUser.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
     sendConfirmationEmail(newUser, token);
-    res.status(201).json(newUser);
+    res.status(201).json({message: "Signup successful! Check your email to verify your account before logging in."});
 });
 
 // Confirm email route
@@ -177,9 +196,14 @@ router.post('/forgot-password', async (req, res) => {
 router.post('/reset-password/:token', async (req, res) => {
     const { token } = req.params;
     const { newPassword, confirmPassword } = req.body;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
     if (!newPassword || !confirmPassword) {
         return res.status(400).json({ message: 'Password fields are required' });
+    }
+
+    if (!passwordRegex.test(newPassword)) {
+        return res.status(400).json({ message: 'Password must be at least 8 characters long and contain at least one uppercase letter and one special character' });
     }
 
     if (newPassword !== confirmPassword) {

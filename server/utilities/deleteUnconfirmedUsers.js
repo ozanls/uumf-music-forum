@@ -3,7 +3,7 @@
 // The purpose of this function is to prevent the database from filling up with unconfirmed accounts that are not being used.
 
 const { Op } = require('sequelize');
-const User = require('../models');
+const { User } = require('../models');
 
 async function deleteUnconfirmedUsers() {
     const timeThreshold = new Date(new Date() - 60 * 60 * 1000); // 1 hour
