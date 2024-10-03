@@ -35,17 +35,15 @@ function Signup() {
       }
     } catch (error) {
       console.error("Error signing up:", error);
-      if (error.response && error.response.data && error.response.data.message) {
+      if (error.response.data.message) {
         setMessage(error.response.data.message);
-      } else if (error.message) {
-        setMessage(error.message);
       } else {
         setMessage("Signup failed, try again.");
       }
       setShowMessage(true);
     }
   };
-  
+
   return (
     <div className='auth-form'>
       {showMessage && <p className="auth-form__message">{message}</p>}

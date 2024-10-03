@@ -99,59 +99,55 @@ router.post('/register', async (req, res) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?;])[A-Za-z\d!@#$%^&*?;]{8,}$/;
     
-    if (!req.body.email || !req.body.username || !req.body.password || !req.body.confirmPassword) {
-        res.status(400).json({ message: 'All fields are required' });
-        return;
+    try {
+        if (!req.body.email || !req.body.username || !req.body.password || !req.body.confirmPassword) {
+            throw new Error('All fields are required');
+        }
+
+        if (!emailRegex.test(req.body.email)) {
+            throw new Error('Invalid email address');
+        }
+
+        if (!req.body.agreedToTerms) {
+            throw new Error('You must agree to the terms and conditions');
+        }
+
+        const existingEmail = await User.findOne({ where: { email: req.body.email } });
+        const existingUser = await User.findOne({ where: { username: req.body.username } });
+
+        if (existingEmail) {
+            throw new Error('Email already in use');
+        }
+
+        if (existingUser) {
+            throw new Error('Username is taken');
+        }
+
+        if (!passwordRegex.test(req.body.password)) {
+            throw new Error('Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one special character');
+        }
+
+        if (req.body.password !== req.body.confirmPassword) {
+            throw new Error('Passwords do not match');
+        }
+
+        const hashedPassword = await hashPassword(req.body.password, 10);
+        const newUser = await User.create({
+            username: req.body.username,
+            email: req.body.email,
+            password: hashedPassword,
+            role: 'user', // Default role
+            image: 'https://placehold.co/500x500', // Default image
+            agreedToTerms: req.body.agreedToTerms
+        });
+
+        const token = jwt.sign({ id: newUser.id, email: newUser.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        sendConfirmationEmail(newUser, token);
+        res.status(201).json({ message: "Signup successful! Check your email to verify your account before logging in." });
+    } catch (error) {
+        console.error('Error during registration:', error);
+        res.status(400).json({ message: error.message });
     }
-
-    if (!emailRegex.test(req.body.email)) {
-        res.status(400).json({ message: 'Invalid email address' });
-        return;
-    }
-
-    const existingEmail = await User.findOne({ where: { email: req.body.email } });
-    const existingUser = await User.findOne({ where: { username: req.body.username } });
-
-    if (existingEmail) {
-        res.status(400).json({ message: 'Email already in use' });
-        return;
-    }
-
-    if (existingUser) {
-        res.status(400).json({ message: 'Username is taken' });
-        return;
-    }
-
-    console.log(req.body.password);
-    console.log(passwordRegex.test(req.body.password));
-
-    if (!passwordRegex.test(req.body.password)) {
-        res.status(400).json({ message: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one special character' });
-        return;
-    }
-
-    if (req.body.password !== req.body.confirmPassword) {
-        res.status(400).json({ message: 'Passwords do not match' });
-        return;
-    }
-
-    if (req.body.agreedToTerms !== true) {
-        res.status(400).json({ message: 'You must agree to the terms and conditions' });
-        return;
-    }
-
-    const hashedPassword = await hashPassword(req.body.password);
-    const newUser = await User.create({
-        username: req.body.username,
-        email: req.body.email,
-        password: hashedPassword,
-        role: 'user', // Default role
-        image: 'https://placehold.co/500x500', // Default image
-        agreedToTerms: req.body.agreedToTerms
-    });
-    const token = jwt.sign({ id: newUser.id, email: newUser.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    sendConfirmationEmail(newUser, token);
-    res.status(201).json({message: "Signup successful! Check your email to verify your account before logging in."});
 });
 
 // Confirm email route
