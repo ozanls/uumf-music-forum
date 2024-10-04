@@ -21,12 +21,16 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create a new comment
-router.post('/', isAuthenticated, async (req, res) => {
+router.post('/:id', isAuthenticated, async (req, res) => {
     const comment = req.body;
-    const post = await Post.findByPk(req.body.postId);
+    req.body.userId = req.user.id;
+    req.body.likes = 0;
+    req.body.status = 'active';
+    const postId = req.params.id;
+    const post = await Post.findByPk(postId);
     const transaction = await sequelize.transaction();
     try {
-        await Comment.create(comment, { transaction });
+        await Comment.create({ ...comment, postId }, { transaction });
         await post.increment('comments', { by: 1, transaction });
         await transaction.commit();
         res.status(201).json(comment);
@@ -38,7 +42,7 @@ router.post('/', isAuthenticated, async (req, res) => {
 });
 
 // Update a comment
-router.post('/:id', verifyAuthorization(Comment, 'id', ['admin', 'moderator']), async (req, res) => {
+router.post('/:id/update', verifyAuthorization(Comment, 'id', ['admin', 'moderator']), async (req, res) => {
     const comment = req.body;
     const commentId = req.params.id;
     try {

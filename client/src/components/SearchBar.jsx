@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+
 function SearchBar() {
   const [boards, setBoards] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
-  const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
   useEffect(() => {
     const fetchBoards = async () => {
       try {
-        const response = await axios.get(`${VITE_SERVER_URL}/boards`);
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/boards`);
         setBoards(response.data);
       } catch (error) {
         console.error("Error fetching boards:", error);
@@ -16,7 +16,7 @@ function SearchBar() {
     };
 
     fetchBoards();
-  }, [VITE_SERVER_URL]);
+  }, []);
 
   useEffect(() => {
     console.log("Search results:", searchResults);
@@ -35,7 +35,7 @@ function SearchBar() {
     console.log("Searching for:", search, "in board:", board);
     try {
       const response = await axios.get(
-        `${VITE_SERVER_URL}/posts/search/${board}/${search}`,
+        `${import.meta.env.VITE_SERVER_URL}/posts/search/${board}/${search}`,
       );
       setSearchResults(response.data);
     } catch (error) {

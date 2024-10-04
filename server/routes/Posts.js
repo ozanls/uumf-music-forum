@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Post, Comment, Tag, PostTag, PostLike, Save, sequelize } = require('../models');
+const { Post, Comment, Tag, PostTag, PostLike, Save, User, sequelize } = require('../models');
 const getRandomColor = require('../utilities/GetRandomColor');
 const { isAuthenticated, verifyAuthorization , isOwner } = require('../utilities/auth');
 const { Op } = require('sequelize');
@@ -20,7 +20,18 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const postId = req.params.id;
     try {
-        const post = await Post.findByPk(postId);
+        const post = await Post.findByPk(postId, {
+            include: [{
+                model: User,
+                as: 'user',
+                attributes: ['username']
+            }]
+        });
+
+        if (!post) {
+            return res.status(404).json({ error: 'Post not found' });
+        }
+
         res.status(200).json(post);
     } catch (error) {
         console.error('Error getting post by id:', error);
@@ -32,8 +43,16 @@ router.get('/:id', async (req, res) => {
 router.get('/:postId/comments', async (req, res) => {
     const postId = req.params.postId;
     try {
-        const allComments = await Comment.findAll({ where: { postId } });
-        res.status(200).json(allComments);
+        const allComments = await Comment.findAll({
+            where: { postId },
+            include: [{
+                model: User,
+                as: 'user',
+                attributes: ['username']
+            }]
+        });        
+        commentsNewFirst = allComments.reverse();
+        res.status(200).json(commentsNewFirst);
     } catch (error) {
         console.error('Error getting comments for post:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -44,6 +63,8 @@ router.get('/:postId/comments', async (req, res) => {
 router.post('/', isAuthenticated, async (req, res) => {
     const post = req.body;
     req.body.userId = req.user.id;
+    req.body.likes = 0;
+    req.body.status = 'active';
 
     try {
         const newPost = await Post.create(post);

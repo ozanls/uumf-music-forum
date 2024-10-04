@@ -1,26 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from 'axios';
 
-function Auth(props) {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [user, setUser] = useState(null);
-    const {showLogin, showSignup, setShowLogin, setShowSignup} = props;
-
-    useEffect(() => {
-        const checkAuthStatus = async () => {
-            try {
-                const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/auth/status`, { withCredentials: true });
-                if (response.status === 200) {
-                    setIsAuthenticated(true);
-                    setUser(response.data);
-                }
-            } catch (error) {
-                setIsAuthenticated(false);
-            }
-        };
-
-        checkAuthStatus();
-    }, []);
+function Auth(props) {;
+    const {user, setUser, isAuthenticated, setIsAuthenticated, showLogin, showSignup, setShowLogin, setShowSignup} = props;
 
     const logOut = async () => {
         try {
@@ -42,7 +24,6 @@ function Auth(props) {
     const toggleSignup = () => {
         setShowLogin(false);
         setShowSignup(!showSignup);
-        console.log(user);
     }
 
     return (

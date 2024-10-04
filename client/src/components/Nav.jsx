@@ -5,9 +5,10 @@ import Login from './Login';
 import Signup from './Signup';
 import logo from "../assets/logo.png";
 
-function Nav() {
+function Nav(props) {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
+  const {user, setUser, isAuthenticated, setIsAuthenticated} = props;
 
   return (
     <>
@@ -16,11 +17,18 @@ function Nav() {
           <img src={logo} className="nav__logo" alt="UUMF Logo" />
       </a>    
       <SearchBar />
+      {user && user.role === "admin" && (
+        <button onClick={() => window.location.href = "/admin"}>Admin Menu</button>
+      )}
       <Auth 
-        showLogin={showLogin} 
-        setShowLogin={setShowLogin} 
-        showSignup={showSignup} 
-        setShowSignup={setShowSignup} 
+        user={user}
+        isAuthenticated={isAuthenticated}
+        setIsAuthenticated={setIsAuthenticated}
+        setUser={setUser}
+        showLogin={showLogin}
+        setShowLogin={setShowLogin}
+        showSignup={showSignup}
+        setShowSignup={setShowSignup}
       />
     </nav>
     {showLogin && <Login />}

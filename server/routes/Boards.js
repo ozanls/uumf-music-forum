@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Board, Tag, Post, PostTag, sequelize } = require('../models');
+const { Board, Tag, Post, User, PostTag, sequelize, TrendingTag } = require('../models');
 const { verifyAuthorization } = require('../utilities/auth');
 const updateTrendingTags = require('../utilities/updateTrendingTags');
 const { Op } = require('sequelize');
@@ -28,11 +28,27 @@ router.get('/trendingTags', async (req, res) => {
     }
 });
 
-// Get a board by id
-router.get('/:id', async (req, res) => {
+// Get trending tags for a board
+router.get('/:id/trendingTags', async (req, res) => {
     const boardId = req.params.id;
     try {
-        const board = await Board.findByPk(boardId);
+        const trendingTags = await TrendingTag.findAll({
+            where: { boardId },
+            include: [{ model: Tag, as: 'tag' }]
+        });
+        console.log('Trending tags:', trendingTags);
+        res.status(200).json(trendingTags);
+    } catch (error) {
+        console.error('Error fetching trending tags:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Get a board by name
+router.get('/:name', async (req, res) => {
+    const boardName = req.params.name;
+    try {
+        const board = await Board.findOne({ where: { name: req.params.name } });
         if (board) {
             res.status(200).json(board);
         } else {
@@ -60,8 +76,17 @@ router.get('/:boardId/tags', async (req, res) => {
 router.get('/:boardId/posts', async (req, res) => {
     const boardId = req.params.boardId;
     try {
-        const allPosts = await Post.findAll({ where: { boardId } });
-        res.status(200).json(allPosts);
+        const allPosts = await Post.findAll({ 
+            where: { boardId },
+            include: [{
+                model: User,
+                as: 'user',
+                attributes: ['username']
+            }]
+        });
+
+        const postsNewFirst = allPosts.reverse();
+        res.status(200).json(postsNewFirst);
     } catch (error) {
         console.error('Error getting posts for board:', error);
         res.status(500).json({ error: 'Internal server error' });
