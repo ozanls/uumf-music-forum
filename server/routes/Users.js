@@ -198,7 +198,7 @@ router.post('/register', async (req, res) => {
             email: req.body.email,
             password: hashedPassword,
             role: 'user', // Default role
-            image: 'https://placehold.co/500x500', // Default image
+            image: 'https://placehold.co/200x200', // Default image
             agreedToTerms: req.body.agreedToTerms
         });
 

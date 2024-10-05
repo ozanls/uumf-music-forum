@@ -73,7 +73,7 @@ function UserDetails(props) {
             <h1>{userData.username}</h1>
             <p>Member since {new Date(userData.createdAt).toLocaleDateString()}</p>
             <p>{userData.bio}</p>
-            <img src={userData.image} alt={userData.username} />
+            <img src={`.././public/${userData.image}`} alt={userData.username} />
 
             <h2>Posts</h2>
             <ul>

@@ -8,6 +8,7 @@ function PostDetails(props) {
   const { postId } = useParams();
   const [post, setPost] = useState(null);
   const [postToDelete, setPostToDelete] = useState(null);
+  const [postLiked, setPostLiked] = useState(false);
   const [postDeleted, setPostDeleted] = useState(false);
   const [comments, setComments] = useState([]);
   const [tags, setTags] = useState([]);
@@ -28,31 +29,45 @@ function PostDetails(props) {
   }, [postId]);
 
   useEffect(() => {
-    if (post) {
-      const fetchComments = async () => {
-        try {
-          const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}/comments`);
-          setComments(response.data);
-        } catch (error) {
-          console.error('Error fetching comments:', error);
-          setError('Error fetching comments');
-        }
-      };
+    const fetchComments = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}/comments`);
+        setComments(response.data);
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+        setError('Error fetching comments');
+      }
+    };
 
-      const fetchTags = async () => {
-        try {
-          const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}/tags`);
-          setTags(response.data);
-        } catch (error) {
-          console.error('Error fetching tags:', error);
-          setError('Error fetching tags');
-        }
-      };
+    const fetchTags = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}/tags`);
+        setTags(response.data);
+      } catch (error) {
+        console.error('Error fetching tags:', error);
+        setError('Error fetching tags');
+      }
+    };
 
-      fetchComments();
-      fetchTags();
+    fetchComments();
+    fetchTags();
+  }, [postId]);
+
+  useEffect(() => {
+    const fetchLikeStatus = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}/liked`, { withCredentials: true });
+        setPostLiked(response.data.liked);
+      } catch (error) {
+        console.error('Error fetching like status:', error);
+        setError('Error fetching like status');
+      }
+    };
+
+    if (user) {
+      fetchLikeStatus();
     }
-  }, [post]);
+  }, [user, postId]);
 
   const handleDelete = (postId) => {
     setPostToDelete(postId);
@@ -88,6 +103,23 @@ function PostDetails(props) {
     window.location.reload();
   };
 
+  const handleLike = async () => {
+    try {
+      if (postLiked) {
+        await axios.post(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}/like`, {}, { withCredentials: true });
+        setPostLiked(false);
+        setPost((prevPost) => ({ ...prevPost, likes: prevPost.likes - 1 }));
+      } else {
+        await axios.post(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}/like`, {}, { withCredentials: true });
+        setPostLiked(true);
+        setPost((prevPost) => ({ ...prevPost, likes: prevPost.likes + 1 }));
+      }
+    } catch (error) {
+      console.error('Error liking/unliking post:', error);
+      setError('Error liking/unliking post');
+    }
+  };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -117,10 +149,21 @@ function PostDetails(props) {
     <div>
       <h1>{post.title}</h1>
       <p>{post.likes} Likes</p>
+      {user ? (
+        postLiked ? (
+          <button onClick={handleLike}>Unlike</button>
+        ) : (
+          <button onClick={handleLike}>Like</button>
+        )
+      ) : (
+        <p>Log in to like this post</p>
+      )}
       <p>Posted by 
           <a href={`/u/${post.user.username}`}>{post.user.username}</a>
       </p>
-      <p>{formatDate(post.createdAt)}</p>
+      <p>{formatDate(post.createdAt)} 
+          {post.createdAt !== post.updatedAt && ` (edited ${formatDate(post.updatedAt)})`}
+      </p>
       <p>{post.body}</p>
       
       {tags.length !== 0 && 

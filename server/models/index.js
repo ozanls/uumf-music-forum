@@ -43,14 +43,14 @@ db.Post.belongsToMany(db.Tag, {
   foreignKey: 'postId',
   otherKey: 'tagId',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+ // onUpdate: 'CASCADE'
 });
 db.Tag.belongsToMany(db.Post, {
   through: 'PostTags',
   foreignKey: 'tagId',
   otherKey: 'postId',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+ // onUpdate: 'CASCADE'
 });
 // UserBadges Associations
 db.User.belongsToMany(db.Badge, {
@@ -58,14 +58,14 @@ db.User.belongsToMany(db.Badge, {
   foreignKey: 'userId',
   otherKey: 'badgeId',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+ // onUpdate: 'CASCADE'
 });
 db.Badge.belongsToMany(db.User, {
   through: 'UserBadges',
   foreignKey: 'badgeId',
   otherKey: 'userId',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+ // onUpdate: 'CASCADE'
 });
 // TrendingTags Associations
 db.Board.belongsToMany(db.Tag, {
@@ -73,58 +73,56 @@ db.Board.belongsToMany(db.Tag, {
   foreignKey: 'boardId',
   otherKey: 'tagId',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+ // onUpdate: 'CASCADE'
 });
 db.Tag.belongsToMany(db.Board, {
   through: 'TrendingTags',
   foreignKey: 'tagId',
   otherKey: 'boardId',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+ // onUpdate: 'CASCADE'
 });
 // PostLikes Associations
 db.User.hasMany(db.PostLike, {
   foreignKey: 'userId',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+ // onUpdate: 'CASCADE'
 });
 db.Post.hasMany(db.PostLike, {
   foreignKey: 'postId',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+ // onUpdate: 'CASCADE'
 });
 // CommentLikes Associations
 db.User.hasMany(db.CommentLike, {
   foreignKey: 'userId',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+ // onUpdate: 'CASCADE'
 });
 db.Comment.hasMany(db.CommentLike, {
   foreignKey: 'commentId',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+ // onUpdate: 'CASCADE'
 });
 // Saves Associations
 db.User.hasMany(db.Save, {
   foreignKey: 'userId',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+ // onUpdate: 'CASCADE'
 });
 db.Post.hasMany(db.Save, {
   foreignKey: 'postId',
   onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+ // onUpdate: 'CASCADE'
 });
 // Comments Associations
 db.User.hasMany(db.Comment, {
   foreignKey: 'userId',
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+  onDelete: 'CASCADE'
 });
 db.Post.hasMany(db.Comment, {
   foreignKey: 'postId',
-  onDelete: 'CASCADE',
-  onUpdate: 'CASCADE'
+  onDelete: 'CASCADE'
 });
 
 

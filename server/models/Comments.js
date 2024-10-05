@@ -45,7 +45,7 @@ module.exports = (sequelize) => {
       foreignKey: 'userId',
       as: 'user',
       onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
+      // onUpdate: 'CASCADE'
     });
   };
 

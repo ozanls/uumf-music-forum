@@ -99,8 +99,10 @@ function Comment(props) {
                 <p>{comment.likes} Like</p> : 
                 <p>{comment.likes} Likes</p>
             }
-            <p>{formatDate(comment.createdAt)}</p>
-            {!toggleEdit && !commentToDelete && user && (
+                <p>{formatDate(comment.createdAt)} 
+                    {comment.createdAt !== comment.updatedAt && ` (edited ${formatDate(comment.updatedAt)})`}
+                </p>            
+                    {!toggleEdit && !commentToDelete && user && (
                 <>
                     {user.id === comment.userId && (
                     <button onClick={() => setToggleEdit(true)}>Edit</button>
