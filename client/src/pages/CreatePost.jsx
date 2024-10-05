@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-function CreatePost() {
+function CreatePost(props) {
+    const { user, setError } = props;
     const [boards, setBoards] = useState([]);
     const navigate = useNavigate();
 
@@ -29,7 +30,7 @@ function CreatePost() {
         const tags = event.target.tags.value.split(',').map(tag => tag.trim()).filter(tag => tag);
 
         if (!title || !body) {
-            console.error("Title and body are required");
+            setError("Title and body are required");
             return;
         }
 
@@ -42,10 +43,10 @@ function CreatePost() {
             }, {
                 withCredentials: true
             });
-            const postId = response.data.id;
-            navigate(`/${boardId}/${postId}`);
+            const post = response.data;
+            navigate(`/p/${post.id}`);
         } catch (error) {
-            console.error("Error creating post:", error);
+            setError("Error creating post:", error);
         }
     }
 

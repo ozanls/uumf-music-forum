@@ -4,16 +4,16 @@ const bcrypt = require('bcrypt');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    const hashedTeamUUMFPassword = await bcrypt.hash('hello123', 10);
-    const hashedAdminPassword = await bcrypt.hash('hello123', 10);
-    const hashedUserPassword = await bcrypt.hash('hello123', 10);
+    const hashedTeamUUMFPassword = await bcrypt.hash('Hello12345%', 10);
+    const hashedAdminPassword = await bcrypt.hash('Hello12345%', 10);
+    const hashedUserPassword = await bcrypt.hash('Hello12345%', 10);
 
     await queryInterface.bulkInsert('users', [
       {
         username: 'teamuumf',
         role: 'admin',
         password: hashedTeamUUMFPassword,
-        email: 'teamuumf@gmail.com',
+        email: 'teamuumf@uumf.com',
         image: 'https://placehold.co/500x500',
         bio: 'I am Team UUMF',
         confirmedEmail: true,
@@ -46,6 +46,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('users', { username: ['admin', 'user'] }, {});
+    await queryInterface.bulkDelete('users', { username: ['teamuumf', 'admin', 'user'] }, {});
   } 
 };

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function SearchBar() {
   const [boards, setBoards] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -18,45 +19,31 @@ function SearchBar() {
     fetchBoards();
   }, []);
 
-  useEffect(() => {
-    console.log("Search results:", searchResults);
-  }, [searchResults]);
-
-  const handleSearch = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const board = event.target.board.value;
-    const search = event.target.search.value.trim();
+    
+    const boardId = event.target.board.value;
+    const query = event.target.query.value.trim();
 
-    if (!search) {
-      console.error("Search term is required");
-      return;
+    if (!query) {
+      return; 
     }
 
-    console.log("Searching for:", search, "in board:", board);
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_SERVER_URL}/posts/search/${board}/${search}`,
-      );
-      setSearchResults(response.data);
+      navigate(`/s/${boardId}/${query}`);
     } catch (error) {
       console.error("Error fetching search results:", error);
     }
-  };
+  }
 
   return (
-    <form className="nav__search" onSubmit={handleSearch}>
-      <select id="board" name="board">
-        {boards.map((board) => (
-          <option key={board.id} value={board.id}>
-            {board.name}
-          </option>
+    <form onSubmit={handleSubmit}>
+      <select name="board">
+        {boards.map(board => (
+          <option key={board.id} value={board.name}>{board.name}</option>
         ))}
       </select>
-      <input
-        type="text"
-        name="search"
-        placeholder="Enter your search terms..."
-      />
+      <input type="text" name="query" placeholder="Search..." />
       <button type="submit">Search</button>
     </form>
   );

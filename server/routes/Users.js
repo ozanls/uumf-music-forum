@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const { User, Save, Post } = require('../models');
+const { User, Save, Post, Comment } = require('../models');
 const { hashPassword } = require('../utilities/hashing');
 const { isAuthenticated, verifyAuthorization } = require('../utilities/auth');
 const sendConfirmationEmail = require('../utilities/sendConfirmationEmail');
@@ -10,15 +10,18 @@ const sendForgotPasswordEmail = require('../utilities/sendForgotPasswordEmail');
 const deleteUnconfirmedUsers = require('../utilities/deleteUnconfirmedUsers');
 require('dotenv').config();
 
+const usernameRegex = /^[a-zA-Z][a-zA-Z0-9]{2,}$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]{8,}$/;
 
 // Authenticate a user (login)
 router.post('/auth', (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
+    passport.authenticate('local', (err, user) => {
         if (err) {
             return res.status(500).json({ message: 'Server error' });
         }
         if (!user) {
-            return res.status(401).json({ message: 'Invalid username/password' });
+            return res.status(401).json({ message: 'Invalid email/password' });
         }
         if (!user.confirmedEmail) {
             return res.status(401).json({ message: 'Please confirm your email address' });
@@ -60,18 +63,60 @@ router.get('/', verifyAuthorization(User, 'id', ['admin']), async (req, res) => 
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+ 
+// Get all posts for a user
+router.get('/:id/posts', async (req, res) => {
+    const userId = req.params.id;
+    try{
+        const posts = await Post.findAll({
+            where: { userId },
+            include: [{ model: User, as: 'user' }],
+            order: [['createdAt', 'DESC']]
+        });
+        res.status(200).json(posts);
+    }
+    catch(error){
+        console.error('Error getting posts for user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Get all comments for a user
+router.get('/:id/comments', async (req, res) => {
+    const userId = req.params.id;
+    try {
+        const comments = await Comment.findAll({
+            where: { userId },
+            include: [{ model: User, as: 'user' }],
+            order: [['createdAt', 'DESC']]
+        });
+        res.status(200).json(comments);
+    } catch (error) {
+        console.error('Error getting comments for user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 
 // Get all saved posts for a user
-router.get('/saved', isAuthenticated, async (req, res) => {
-    const userId = req.user.id;
+router.get('/:id/saved', verifyAuthorization(User, 'id', ['admin']), async (req, res) => {
+    const userId = req.params.id;
 
     try {
         const saves = await Save.findAll({
             where: { userId },
-            include: [{
-                model: Post,
-                as: 'post'
-            }]
+            include: [
+                {
+                    model: Post,
+                    as: 'post',
+                    include: [
+                        {
+                            model: User,
+                            as: 'user'
+                        }
+                    ]
+                }
+            ]
         });
 
         res.status(200).json(saves);
@@ -94,11 +139,23 @@ router.get('/:id', verifyAuthorization(User, 'id', ['admin']), async (req, res) 
     }
 });
  
+// Get a user by username
+router.get('/username/:username', async (req, res) => {
+    const username = req.params.username;
+    try{
+        const user = await User.findOne({ where: { username } });
+        user ? res.status(200).json(user) : res.status(404).json({ message: 'User not found' });
+    }
+    catch(error){
+        console.error('Error getting user by username:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+ 
+
 // Create a new user (register)
 router.post('/register', async (req, res) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?;])[A-Za-z\d!@#$%^&*?;]{8,}$/;
-    
+
     try {
         if (!req.body.email || !req.body.username || !req.body.password || !req.body.confirmPassword) {
             throw new Error('All fields are required');
@@ -106,6 +163,10 @@ router.post('/register', async (req, res) => {
 
         if (!emailRegex.test(req.body.email)) {
             throw new Error('Invalid email address');
+        }
+
+        if (!usernameRegex.test(req.body.username)) {
+            throw new Error('Username must be between 3 and 20 characters long and can only contain letters and numbers. Username cannot start with a number.');
         }
 
         if (!req.body.agreedToTerms) {
@@ -192,14 +253,13 @@ router.post('/forgot-password', async (req, res) => {
 router.post('/reset-password/:token', async (req, res) => {
     const { token } = req.params;
     const { newPassword, confirmPassword } = req.body;
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
     if (!newPassword || !confirmPassword) {
         return res.status(400).json({ message: 'Password fields are required' });
     }
 
     if (!passwordRegex.test(newPassword)) {
-        return res.status(400).json({ message: 'Password must be at least 8 characters long and contain at least one uppercase letter and one special character' });
+        return res.status(400).json({ message: 'Password must be at least 8 characters long and contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character' });
     }
 
     if (newPassword !== confirmPassword) {

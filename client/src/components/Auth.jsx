@@ -28,19 +28,21 @@ function Auth(props) {;
 
     return (
         <>
-        <div className="auth">
-            {isAuthenticated ? (
-                <>
-                    <p className="auth__welcome">Welcome, {user.username}!</p>
-                    <button onClick={logOut}>Log Out</button>
-                </>
-            ) : (
-                <>
-                    <button onClick={toggleLogin}>Log In</button>
-                    <button onClick={toggleSignup}>Sign Up</button>
-                </>
-            )}
-        </div>
+            <div className="auth">
+                {isAuthenticated ? (
+                    <>
+                        <p className="auth__welcome">
+                            Welcome, <a href={`/u/${user.username}`}>{user.username}</a>!
+                        </p>
+                        <button onClick={logOut}>Log Out</button>
+                    </>
+                ) : (
+                    <>
+                        <button onClick={toggleLogin}>Log In</button>
+                        <button onClick={toggleSignup}>Sign Up</button>
+                    </>
+                )}
+            </div>
         </>
     );
 }

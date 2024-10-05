@@ -17,6 +17,9 @@ function Nav(props) {
           <img src={logo} className="nav__logo" alt="UUMF Logo" />
       </a>    
       <SearchBar />
+      {user && (
+        <button onClick={() => window.location.href = "/new"}>+ Create a Post</button>
+      )}
       {user && user.role === "admin" && (
         <button onClick={() => window.location.href = "/admin"}>Admin Menu</button>
       )}

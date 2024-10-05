@@ -29,6 +29,12 @@ router.post('/:id', isAuthenticated, async (req, res) => {
     const postId = req.params.id;
     const post = await Post.findByPk(postId);
     const transaction = await sequelize.transaction();
+
+    if (!req.body.body) {
+        await transaction.rollback();
+        return res.status(400).json({ error: 'Comment body is required' });
+    }
+    
     try {
         await Comment.create({ ...comment, postId }, { transaction });
         await post.increment('comments', { by: 1, transaction });
@@ -43,11 +49,12 @@ router.post('/:id', isAuthenticated, async (req, res) => {
 
 // Update a comment
 router.post('/:id/update', verifyAuthorization(Comment, 'id', ['admin', 'moderator']), async (req, res) => {
-    const comment = req.body;
     const commentId = req.params.id;
+    const updatedComment = { body: req.body.body };
+
     try {
-        await Comment.update(comment, { where: { id: commentId } });
-        res.status(200).json(comment);
+        await Comment.update(updatedComment, { where: { id: commentId } });
+        res.status(200).json(updatedComment);
     } catch (error) {
         console.error('Error updating comment:', error);
         res.status(500).json({ error: 'Internal server error' });

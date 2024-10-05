@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import BoardCard from '../components/BoardCard';
 import axios from 'axios';
 
 const BoardsList = () => {
@@ -24,7 +25,7 @@ const BoardsList = () => {
       <ul>
         {boards.map(board => (
           <li key={board.name}>
-            <Link to={`/b/${board.name}`}>{board.name}</Link>
+            <BoardCard board={board} />
           </li>
         ))}
       </ul>

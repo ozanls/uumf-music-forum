@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Post, Comment, Tag, PostTag, PostLike, Save, User, sequelize } = require('../models');
+const { Post, Comment, Tag, PostTag, PostLike, Save, User, Board, sequelize } = require('../models');
 const getRandomColor = require('../utilities/GetRandomColor');
 const { isAuthenticated, verifyAuthorization , isOwner } = require('../utilities/auth');
 const { Op } = require('sequelize');
@@ -43,18 +43,36 @@ router.get('/:id', async (req, res) => {
 router.get('/:postId/comments', async (req, res) => {
     const postId = req.params.postId;
     try {
-        const allComments = await Comment.findAll({
+        const comments = await Comment.findAll({
             where: { postId },
             include: [{
                 model: User,
                 as: 'user',
                 attributes: ['username']
-            }]
-        });        
-        commentsNewFirst = allComments.reverse();
-        res.status(200).json(commentsNewFirst);
+            }],
+            order: [['createdAt', 'DESC']]
+        });
+        res.status(200).json(comments);
     } catch (error) {
         console.error('Error getting comments for post:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Get all tags for a post
+router.get('/:postId/tags', async (req, res) => {
+    const postId = req.params.postId;
+    try {
+        const postTags = await PostTag.findAll({
+            where: { postId },
+            include: [{
+                model: Tag,
+                as: 'tag'
+            }]
+        });
+        res.status(200).json(postTags);
+    } catch (error) {
+        console.error('Error getting tags for post:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -191,17 +209,40 @@ router.post('/:id/unsave', isAuthenticated, async (req, res) => {
 });
 
 // Search for posts within a board
-router.get('/search/:boardId/:query', async (req, res) => {
-    const boardId = req.params.boardId;
+router.get('/search/:boardName/:query', async (req, res) => {
+    const boardName = req.params.boardName;
     const query = req.params.query;
 
     try {
         const posts = await Post.findAll({
-            where: {
-                boardId,
-                title: {
-                    [Op.like]: `%${query}%`
+            include: [
+                {
+                    model: Board,
+                    as: 'board',
+                    where: {
+                        name: boardName
+                    },
+                    attributes: []
+                },
+                {
+                    model: User,
+                    as: 'user',
+                    attributes: ['username']
                 }
+            ],
+            where: {
+                [Op.or]: [
+                    {
+                        title: {
+                            [Op.like]: `%${query}%`
+                        }
+                    },
+                    {
+                        body: {
+                            [Op.like]: `%${query}%`
+                        }
+                    }
+                ]
             }
         });
 

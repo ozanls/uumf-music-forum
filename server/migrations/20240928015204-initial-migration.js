@@ -115,7 +115,9 @@ module.exports = {
         references: {
           model: 'boards',
           key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -123,7 +125,9 @@ module.exports = {
         references: {
           model: 'users',
           key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       },
       title: {
         type: Sequelize.STRING(100),
@@ -171,7 +175,9 @@ module.exports = {
         references: {
           model: 'posts',
           key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -179,7 +185,9 @@ module.exports = {
         references: {
           model: 'users',
           key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       },
       body: {
         type: Sequelize.TEXT,
@@ -245,45 +253,45 @@ module.exports = {
       }
     });
 
-        // Create CommentLikes table
-        await queryInterface.createTable('commentlikes', {
-          id: {
-            type: Sequelize.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-            allowNull: false
-          },
-          commentId: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            references: {
-              model: 'comments',
-              key: 'id'
-            },
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE'
-          },
-          userId: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            references: {
-              model: 'users',
-              key: 'id'
-            },
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE'
-          },
-          createdAt: {
-            type: Sequelize.DATE,
-            allowNull: false,
-            defaultValue: Sequelize.NOW
-          },
-          updatedAt: {
-            type: Sequelize.DATE,
-            allowNull: false,
-            defaultValue: Sequelize.NOW
-          }
-        });
+    // Create CommentLikes table
+    await queryInterface.createTable('commentlikes', {
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+      },
+      commentId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'comments',
+          key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      },
+      userId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW
+      }
+    });
 
     // Create Saves table
     await queryInterface.createTable('saves', {
@@ -551,7 +559,6 @@ module.exports = {
       name: 'unique_comment_like'
     });
   },
-  
 
   async down (queryInterface, Sequelize) {
     await queryInterface.dropTable('posttags');
@@ -565,6 +572,5 @@ module.exports = {
     await queryInterface.dropTable('badges');
     await queryInterface.dropTable('users');
     await queryInterface.dropTable('trendingtags');
-
   }
 };

@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const { Tag, PostTag } = require('../models');
+const { Tag, PostTag, Post, User } = require('../models');
 const getRandomColor = require('../utilities/GetRandomColor');
 const { verifyAuthorization } = require('../utilities/auth');
 
-// Get a tag by id
-router.get('/:id', async (req, res) => {
-    const tagId = req.params.id;
+// Get a tag by name
+router.get('/:name', async (req, res) => {
+    const tagName = req.params.name;
     try {
-        const tag = await Tag.findByPk(tagId);
+        const tag = await Tag.findOne({ where: { name: tagName } });
         if (tag) {
             res.status(200).json(tag);
         } else {
             res.status(404).json({ error: 'Tag not found' });
         }
     } catch (error) {
-        console.error('Error getting tag by id:', error);
+        console.error('Error getting tag by name:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -66,12 +66,47 @@ router.delete('/:id', verifyAuthorization(Tag, 'id', ['admin', 'moderator']), as
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
-// Return number of entries for a tag
-router.get('/:id/count', async (req, res) => {
-    const tagId = req.params.id;
+ 
+// Return all posts for a tag by tag name
+router.get('/:tag/posts', async (req, res) => {
+    const tagName = req.params.tag;
     try {
-        const count = await PostTag.count({ where: { id: tagId } });
+        const posts = await PostTag.findAll({
+            include: [
+                {
+                    model: Tag,
+                    as: 'tag',
+                    where: { name: tagName },
+                    attributes: []
+                },
+                {
+                    model: Post,
+                    as: 'post',
+                    include: [{
+                        model: User,
+                        as: 'user',
+                        attributes: ['username']
+                    }]
+                }
+            ]
+        });
+        res.status(200).json(posts);
+    } catch (error) {
+        console.error('Error getting posts for tag:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Return number of entries for a tag by tag name
+router.get('/:name/count', async (req, res) => {
+    const tagName = req.params.name;
+    try {
+        const tag = await Tag.findOne({ where: { name: tagName } });
+        if (!tag) {
+            return res.status(404).json({ error: 'Tag not found' });
+        }
+
+        const count = await PostTag.count({ where: { tagId: tag.id } });
         res.status(200).json({ count });
     } catch (error) {
         console.error('Error getting tag count:', error);

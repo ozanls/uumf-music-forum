@@ -3,6 +3,7 @@
   padding:0;
   box-sizing:border-box;
   font-family: 'Kanit', sans-serif;
+  text-decoration: none;
 }
 
 nav{
@@ -48,4 +49,18 @@ nav{
 
 .auth-form__message{
   color: red;
+}
+
+.tags-container{
+  display:flex;
+  flex-direction: row;
+  gap: 0.2em;
+}
+
+.board-tag{
+  display:block;
+  padding: 0.2em;
+  border-radius: 0.5em;
+  color:#ffffff;
+  cursor: pointer;
 }

@@ -23,21 +23,25 @@ passport.deserializeUser( async (id, done) => {
 })
 
 passport.use(
-    new Strategy(async (username, password, done) => {
-        try {
-            const findUser = await User.findOne({ where: { username } });
-            if (!findUser) {
-                return done(null, false, { message: 'User not found' });
+    new Strategy(
+        { usernameField: 'email' }, 
+        async (email, password, done) => {
+            try {
+                const findUser = await User.findOne({ where: { email } });
+                if (!findUser) {
+                    return done(null, false, { message: 'User not found' });
+                }
+                const isMatch = await comparePassword(password, findUser.password);
+                if (!isMatch) {
+                    return done(null, false, { message: 'Invalid Credentials' });
+                }
+                return done(null, findUser);
+            } catch (error) {
+                return done(error);
             }
-            const isMatch = await comparePassword(password, findUser.password);
-            if (!isMatch) {
-                return done(null, false, { message: 'Invalid Credentials' });
-            }
-            return done(null, findUser);
-        } catch (error) {
-            return done(error);
         }
-    })
+    )
 );
+
 
 module.exports = passport;

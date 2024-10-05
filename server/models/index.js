@@ -115,6 +115,19 @@ db.Post.hasMany(db.Save, {
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE'
 });
+// Comments Associations
+db.User.hasMany(db.Comment, {
+  foreignKey: 'userId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
+db.Post.hasMany(db.Comment, {
+  foreignKey: 'postId',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+});
+
+
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

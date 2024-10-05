@@ -1,34 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import PostCard from '../components/PostCard';
+import Tag from '../components/Tag';
 import axios from 'axios';
 
 const BoardDetails = (props) => {
-  const { user } = props;
+  const { user, setError } = props;
   const { name } = useParams();
   const [board, setBoard] = useState(null);
   const [posts, setPosts] = useState([]);
   const [trendingTags, setTrendingTags] = useState([]);
-  const [error, setError] = useState(null);
-
-  const handleDelete = async (postId) => {
-    try {
-      const response = await axios.delete(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}`, { withCredentials: true });
-      if (response.status === 204) {
-        setPosts(posts.filter(post => post.id !== postId));
-      }
-    } catch (error) {
-      console.error('Error deleting post:', error);
-      setError('Error deleting post');
-    }
-
-    window.location.reload();
-  }
 
   useEffect(() => {
     const fetchBoard = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/boards/${name}`);
         setBoard(response.data);
+
       } catch (error) {
         console.error('Error fetching board:', error);
         setError('Error fetching board');
@@ -49,13 +37,6 @@ const BoardDetails = (props) => {
           setError('Error fetching tags');
         }
       };
-
-      fetchTrendingTags();
-    }
-  }, [board]);
-
-  useEffect(() => {
-    if (board) {
       const fetchPosts = async () => {
         try {
           const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/boards/${board.id}/posts`);
@@ -66,14 +47,12 @@ const BoardDetails = (props) => {
         }
       };
 
+      fetchTrendingTags();
       fetchPosts();
+
     }
   }, [board]);
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
+  
   if (!board) {
     return <div>Loading...</div>;
   }
@@ -82,21 +61,21 @@ const BoardDetails = (props) => {
     <div>
       <h1>{board.name}</h1>
       <p>{board.description}</p>
+      {trendingTags.length !== 0 && 
+      <>
       <h2>Trending Tags</h2>
-      <ul>
-        {trendingTags.map(trendingTag => (
-          <li key={trendingTag.id}>{trendingTag.tag.name}</li>
-        ))}
-      </ul>
+        <ul className="tags-container">
+          {trendingTags.map(tag => (
+            <Tag key={tag.id} tag={tag}/>
+          ))}
+        </ul>
+      </>
+      }
       <h2>Posts</h2>
       <ul>
         {posts.map(post => (
           <li key={post.id}>
-            <a href={`/p/${post.id}`}>
-              <h3>{post.title}</h3>
-            </a>
-            <p>posted by {post.user.username}</p>
-            {user && user.id === post.userId && <button onClick={() => handleDelete(post.id)}>Delete</button>}
+            <PostCard post={post} user={user} posts={posts} setError={setError}/>
           </li>
         ))}
       </ul>

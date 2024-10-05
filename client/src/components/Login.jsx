@@ -10,14 +10,14 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const username = e.target.username.value;
+        const email = e.target.email.value;
         const password = e.target.password.value;
 
-        console.log("Logging in with:", username, password);
+        console.log("Logging in with:", email, password);
         
         try {
             const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/auth`, {
-                username,
+                email,
                 password
             }, { withCredentials: true });
 
@@ -25,7 +25,7 @@ function Login() {
                 console.log("Login successful:", response);
                 setMessage("Login successful! Please wait...");
                 setShowMessage(true);
-                window.location.href = "/";
+                window.location.reload();
             } else {
                 console.log(response.message);
                 setMessage(response.message);
@@ -46,8 +46,8 @@ function Login() {
             {!showResetPassword &&
                 <>
                     <form className='auth-form__signup' onSubmit={handleSubmit}>
-                        <label htmlFor="username">Username</label>
-                        <input type="text" id="username" name="username" />
+                        <label htmlFor="email">Email</label>
+                        <input type="text" id="email" name="email" />
                         <label htmlFor="password">Password</label>
                         <input type="password" id="password" name="password" />
                         <button type="submit">Log In</button>
