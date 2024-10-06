@@ -18,22 +18,26 @@ function TagDetails(props) {
       }
 
       try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/tags/${tagName}`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/tags/${tagName}`
+        );
         setTag(response.data);
-        console.log('tag:', response.data);
+        console.log("tag:", response.data);
       } catch (error) {
-        console.error('Error fetching tag:', error);
-        setError('Error fetching tag');
+        console.error("Error fetching tag:", error);
+        setError("Error fetching tag");
       }
     };
 
     const fetchNumberOfPosts = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/tags/${tagName}/count`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/tags/${tagName}/count`
+        );
         setNumberOfPosts(response.data.count);
       } catch (error) {
-        console.error('Error fetching number of posts:', error);
-        setError('Error fetching number of posts');
+        console.error("Error fetching number of posts:", error);
+        setError("Error fetching number of posts");
       }
     };
 
@@ -44,11 +48,13 @@ function TagDetails(props) {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/tags/${tagName}/posts`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/tags/${tagName}/posts`
+        );
         setPosts(response.data);
       } catch (error) {
-        console.error('Error fetching posts:', error);
-        setError('Error fetching posts');
+        console.error("Error fetching posts:", error);
+        setError("Error fetching posts");
       }
     };
 
@@ -65,9 +71,14 @@ function TagDetails(props) {
       {numberOfPosts === 1 ? <p>1 post</p> : <p>{numberOfPosts} posts</p>}
       <h2>Posts</h2>
       <ul>
-        {posts.map(post => (
+        {posts.map((post) => (
           <li key={post.post.id}>
-            <PostCard post={post.post} user={user} posts={posts} setError={setError} />
+            <PostCard
+              post={post.post}
+              user={user}
+              posts={posts}
+              setError={setError}
+            />
           </li>
         ))}
       </ul>

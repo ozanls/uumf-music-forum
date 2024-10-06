@@ -1,20 +1,15 @@
 function BoardCard(props) {
-    
-const { board } = props;
+  const { board } = props;
 
   return (
     <div>
-      <h2>
-        {board.name}
-    </h2>
-    <p> 
-        {board.description}
-    </p>
-    <a href={`/b/${board.name}`}>
+      <h2>{board.name}</h2>
+      <p>{board.description}</p>
+      <a href={`/b/${board.name}`}>
         <div>Visit /{board.name}/</div>
-    </a>
+      </a>
     </div>
   );
 }
 
-export default BoardCard
+export default BoardCard;

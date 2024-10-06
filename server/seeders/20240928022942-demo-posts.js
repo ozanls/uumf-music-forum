@@ -1,22 +1,116 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkInsert('posts', [
-      {
-        boardId: 1,
-        userId: 1,
-        title: 'Example post',
-        body: 'This is an example post body.',
-        likes: 0,
-        status: 'active',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-    ], {});
+    await queryInterface.bulkInsert(
+      "posts",
+      [
+        {
+          boardId: 1,
+          userId: 1,
+          title: "The Evolution of Kendrick Lamar's Sound 🎤🎶",
+          body: "From Section.80 to Mr. Morale & the Big Steppers, Kendrick's sound has constantly evolved. 🎧 Each album brings something new to the table, reflecting not just changes in his personal life but also shifts in the world around him. Fans often debate whether his more introspective albums like 'To Pimp a Butterfly' mark the pinnacle of his artistry, or if the raw energy of his earlier works is where he shines the brightest. How do you feel about his transition from the hard-hitting lyricism of 'Good Kid, M.A.A.D City' to the more experimental sounds in his later work? Which era do you think represents his peak?",
+          likes: 0,
+          status: "active",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          boardId: 1,
+          userId: 2,
+          title: "Underground Battle Rap Scene 🔥🎤",
+          body: "Let's talk about the current state of underground battle rap. 🤼‍♂️ With so many leagues popping up across the globe, it feels like the scene is more alive than ever, but are the new battlers keeping the essence of battle rap intact? There are plenty of rising stars who are making waves, but not all of them are getting the recognition they deserve. Who do you think are the most promising new battlers? And do you think the underground scene is evolving in a way that stays true to its roots, or has it become too commercialized?",
+          likes: 0,
+          status: "active",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          boardId: 1,
+          userId: 3,
+          title: "The Influence of J Dilla on Modern Producers 🎛️🎹",
+          body: "J Dilla's impact on hip-hop production is undeniable. 🎶 His use of off-beat drum patterns and sample-based production techniques reshaped how producers approach beats today. Even though he's no longer with us, his signature sound can still be heard in the works of artists across genres. From soulful loops to innovative time signatures, Dilla changed the game in ways that are still being felt. Which current producers do you think carry on his legacy the best, and how do they incorporate his influence into their own unique sound?",
+          likes: 0,
+          status: "active",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          boardId: 1,
+          userId: 1,
+          title: "Best Storytelling Tracks of the 2020s 📜🎧",
+          body: "Storytelling has always been a crucial part of hip-hop. 📝 In the 2020s, we're seeing artists bring narrative elements back into the spotlight with deeply personal and thought-provoking tracks. Whether it's exploring themes of trauma, triumph, or social justice, these songs often tell stories that resonate on a universal level. But with so much music being released, it's easy for some of the best storytelling tracks to fly under the radar. What are some of the best narrative tracks you've heard in the 2020s so far? And what do you think makes a hip-hop story truly compelling?",
+          likes: 0,
+          status: "active",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          boardId: 1,
+          userId: 2,
+          title: "The Rise of Drill Music Globally 🌍🎤",
+          body: "Drill started in Chicago but has spread worldwide. 🌐 What began as a regional movement with artists like Chief Keef has now evolved into a global phenomenon with variations in the UK, New York, and even Australia. Each region brings its own flavor to the genre, blending local influences with the gritty, hard-hitting style that defines drill. But with its global rise, some critics say the genre has lost some of its original edge. What are your thoughts on the different regional drill scenes? Do you think the genre has remained true to its roots, or has it become something entirely different?",
+          likes: 0,
+          status: "active",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          boardId: 1,
+          userId: 3,
+          title: "Underrated Female MCs of the 2010s 🎤👩‍🎤",
+          body: "Who are some female rappers from the 2010s that you think didn't get the recognition they deserved? 💫 The 2010s were a transformative time for hip-hop, but a lot of talented female MCs got overshadowed by bigger names. Artists like Rapsody, Jean Grae, and Tierra Whack made incredible contributions to the genre but didn't always get mainstream attention. Do you think their music will stand the test of time and eventually be recognized as ahead of its era? Let's show them some love and highlight the tracks that you think truly define their careers.",
+          likes: 0,
+          status: "active",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          boardId: 1,
+          userId: 1,
+          title: "The Impact of Streaming on Hip-Hop 📱🎧",
+          body: "How do you think streaming platforms have changed hip-hop culture and music? 📊 On one hand, they've made it easier for underground and independent artists to gain exposure, leveling the playing field in some ways. On the other hand, many argue that streaming has contributed to a shift in how music is consumed, with shorter attention spans and a focus on 'playlist-friendly' tracks. Has it been mostly positive or negative? Do you think streaming has democratized the industry, or has it led to a decline in the quality of full-length projects?",
+          likes: 0,
+          status: "active",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          boardId: 1,
+          userId: 2,
+          title: "Best Hip-Hop Produced Albums by Non-Hip-Hop Artists 🎶🎨",
+          body: "From 'Yeezus' to 'Igor', hip-hop production has influenced many non-rap albums. 🎛️ Artists from various genres have turned to hip-hop producers to create innovative soundscapes that push boundaries. Whether it's the hard-hitting drums or the genre-bending use of samples, hip-hop's influence is felt far beyond rap music. What are your favorites? Do you think this crossover is a sign that hip-hop production is becoming more respected in the broader music industry, or is it just another trend?",
+          likes: 0,
+          status: "active",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          boardId: 1,
+          userId: 3,
+          title: "The Art of Sampling in the Digital Age 🎛️💻",
+          body: "With the rise of digital production, how has sampling evolved in hip-hop? 🎚️ In the early days, producers had to dig through crates of vinyl to find that perfect sample, but now, entire libraries of sounds are available at the click of a button. Has this accessibility made sampling more creative, or has it diluted the artistry behind it? And what about the legal aspects—has it become easier or harder for artists to use samples without getting into legal trouble? Is sampling still as crucial to the genre as it once was, or is it becoming a lost art?",
+          likes: 0,
+          status: "active",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          boardId: 1,
+          userId: 1,
+          title: "Hip-Hop's Role in Social Movements ✊🎶",
+          body: "From 'The Message' to 'Alright', hip-hop has always been tied to social commentary. 📢 The genre has long been a voice for the voiceless, tackling issues like systemic racism, police brutality, and poverty. But with so many social movements happening today, is hip-hop still playing the same role it once did? How effective do you think it is in driving change? And are today's artists using their platforms to continue this legacy, or has the message gotten lost in the commercialization of the genre?",
+          likes: 0,
+          status: "active",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      {}
+    );
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('posts', { title: 'Example post' }, {});
-  }
+    await queryInterface.bulkDelete("posts", null, {});
+  },
 };

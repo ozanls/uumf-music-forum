@@ -1,24 +1,26 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import axios from "axios";
 import formatDate from "../utilities/formatDate";
 
-
 function Comment(props) {
-    const { comment, user, setError } = props;
-    const [toggleEdit, setToggleEdit] = useState(false);
-    const [editedComment, setEditedComment] = useState(comment.body);
-    const [commentLiked, setCommentLiked] = useState(false);
-    const [commentToDelete, setCommentToDelete] = useState(null);
-    const [likes, setLikes] = useState(comment.likes);
+  const { comment, user, setError } = props;
+  const [toggleEdit, setToggleEdit] = useState(false);
+  const [editedComment, setEditedComment] = useState(comment.body);
+  const [commentLiked, setCommentLiked] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState(null);
+  const [likes, setLikes] = useState(comment.likes);
 
   useEffect(() => {
     const fetchLikeStatus = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/comments/${comment.id}/liked`, { withCredentials: true });
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/comments/${comment.id}/liked`,
+          { withCredentials: true }
+        );
         setCommentLiked(response.data.liked);
       } catch (error) {
-        console.error('Error fetching like status:', error);
-        setError('Error fetching like status');
+        console.error("Error fetching like status:", error);
+        setError("Error fetching like status");
       }
     };
 
@@ -29,14 +31,18 @@ function Comment(props) {
 
   const handleLike = async () => {
     try {
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/comments/${comment.id}/like`, {}, { withCredentials: true });
+      await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/comments/${comment.id}/like`,
+        {},
+        { withCredentials: true }
+      );
       setCommentLiked(!commentLiked);
-      commentLiked ? 
-        setLikes((prevLikes) => prevLikes - 1) : 
-        setLikes((prevLikes) => prevLikes + 1);
+      commentLiked
+        ? setLikes((prevLikes) => prevLikes - 1)
+        : setLikes((prevLikes) => prevLikes + 1);
     } catch (error) {
-      console.error('Error liking/unliking comment:', error);
-      setError('Error liking/unliking comment');
+      console.error("Error liking/unliking comment:", error);
+      setError("Error liking/unliking comment");
     }
   };
 
@@ -50,11 +56,14 @@ function Comment(props) {
 
   const confirmDelete = async (commentId) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_SERVER_URL}/comments/${commentId}`, { withCredentials: true });
+      await axios.delete(
+        `${import.meta.env.VITE_SERVER_URL}/comments/${commentId}`,
+        { withCredentials: true }
+      );
       window.location.reload();
     } catch (error) {
-      console.error('Error deleting comment:', error);
-      setError('Error deleting comment');
+      console.error("Error deleting comment:", error);
+      setError("Error deleting comment");
     }
   };
 
@@ -64,25 +73,29 @@ function Comment(props) {
     const body = event.target.body.value.trim();
 
     if (!body) {
-        console.error("Comment is required");
-        setError('Comment is required');
-        return;
+      console.error("Comment is required");
+      setError("Comment is required");
+      return;
     }
 
     try {
-        const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/comments/${comment.id}/update`, {
-            body
-        }, {
-            withCredentials: true
-        });
-        setToggleEdit(false);
-        console.log('Comment edited successfully:', response.data);
-        window.location.reload();
+      const response = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/comments/${comment.id}/update`,
+        {
+          body,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      setToggleEdit(false);
+      console.log("Comment edited successfully:", response.data);
+      window.location.reload();
     } catch (error) {
-        console.error("Error editing comment:", error);
-        setError('Error editing comment');
+      console.error("Error editing comment:", error);
+      setError("Error editing comment");
     }
-  }
+  };
 
   return (
     <div className="comment">
@@ -99,32 +112,43 @@ function Comment(props) {
             rows="4"
             cols="25"
           />
-          <button type="button" onClick={() => setToggleEdit(false)}>Cancel</button>
+          <button type="button" onClick={() => setToggleEdit(false)}>
+            Cancel
+          </button>
           <button type="submit">Save</button>
         </form>
       )}
-      <p>Posted by 
+      <p>
+        Posted by
         <a href={`/u/${comment.user.username}`}>{comment.user.username}</a>
       </p>
-      <p>{formatDate(comment.createdAt)} 
-        {comment.createdAt !== comment.updatedAt && ` (edited ${formatDate(comment.updatedAt)})`}
+      <p>
+        {formatDate(comment.createdAt)}
+        {comment.createdAt !== comment.updatedAt &&
+          ` (edited ${formatDate(comment.updatedAt)})`}
       </p>
-      <p>{likes}
-        {likes === 1 ? ' like' : ' likes'}
+      <p>
+        {likes}
+        {likes === 1 ? " like" : " likes"}
       </p>
-    
+
       {!toggleEdit && !commentToDelete && user && (
         <>
-        {commentLiked ? (
-          <button onClick={handleLike}>Unlike</button>
-        ) : (
-          <button onClick={handleLike}>Like</button>
-        )}      
+          {commentLiked ? (
+            <button onClick={handleLike}>Unlike</button>
+          ) : (
+            <button onClick={handleLike}>Like</button>
+          )}
           {user.id === comment.userId && (
             <button onClick={() => setToggleEdit(true)}>Edit</button>
           )}
-          {(user.id === comment.userId || user.role === 'admin') && (
-            <button onClick={() => handleDelete(comment.id)} data-comment-id={comment.id}>Delete</button>
+          {(user.id === comment.userId || user.role === "admin") && (
+            <button
+              onClick={() => handleDelete(comment.id)}
+              data-comment-id={comment.id}
+            >
+              Delete
+            </button>
           )}
         </>
       )}

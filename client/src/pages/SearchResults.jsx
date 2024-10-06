@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import PostCard from '../components/PostCard';
+import PostCard from "../components/PostCard";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
 function SearchResults(props) {
-    const { user } = props;
-    const { board, query } = useParams();
-    const [posts, setPosts] = useState([]);
-    const [message, setMessage] = useState("");
+  const { user } = props;
+  const { board, query } = useParams();
+  const [posts, setPosts] = useState([]);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const handleSearch = async () => {
@@ -27,7 +27,7 @@ function SearchResults(props) {
       }
     };
 
-    if (board && query){
+    if (board && query) {
       handleSearch();
     } else {
       return;
@@ -44,13 +44,13 @@ function SearchResults(props) {
 
       {message && <p>{message}</p>}
       {posts && posts.length > 0 && (
-            <ul>
-            {posts.map(post => (
-                <li key={post.id}>
-                <PostCard post={post} user={user} posts={posts}/>
-                </li>
-            ))}
-            </ul>
+        <ul>
+          {posts.map((post) => (
+            <li key={post.id}>
+              <PostCard post={post} user={user} posts={posts} />
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );

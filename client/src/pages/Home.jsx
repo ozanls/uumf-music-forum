@@ -1,5 +1,5 @@
-import React from 'react';
-import BoardsList from './BoardsList';
+import React from "react";
+import BoardsList from "./BoardsList";
 
 function Home() {
   return (

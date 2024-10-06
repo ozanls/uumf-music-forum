@@ -1,53 +1,58 @@
 // auth.js
 // Middleware functions for authenticating and authorizing users.
-const { Post } = require('../models');
+const { Post } = require("../models");
 
 // Check if the user is authenticated
 function isAuthenticated(req, res, next) {
+  // If the user is authenticated, continue
+  if (req.isAuthenticated()) {
+    return next();
+  }
 
-    // If the user is authenticated, continue
-    if (req.isAuthenticated()) {
-        return next();
-    }
-
-    // If the user is not authenticated, return 401
-    res.status(401).json({ message: 'Unauthorized: Please log in and try again.' });
+  // If the user is not authenticated, return 401
+  res
+    .status(401)
+    .json({ message: "Unauthorized: Please log in and try again." });
 }
 
 function verifyAuthorization(model, resourceIdParam, permissions) {
-    return async (req, res, next) => {
-        const userRole = req.user?.role;
+  return async (req, res, next) => {
+    const userRole = req.user?.role;
 
-        // Check if the user is not logged in
-        if (!req.user || req.user.id === null) {
-            return res.status(403).json({ message: 'Unauthorized: Please log in and try again.' });
-        }
+    // Check if the user is not logged in
+    if (!req.user || req.user.id === null) {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized: Please log in and try again." });
+    }
 
-        // If the user has the required role, continue
-        if (permissions.includes(userRole)) {
-            return next();
-        }
+    // If the user has the required role, continue
+    if (permissions.includes(userRole)) {
+      return next();
+    }
 
-        const resourceId = req.params[resourceIdParam];
-        const resource = await model.findByPk(resourceId);
+    const resourceId = req.params[resourceIdParam];
+    const resource = await model.findByPk(resourceId);
 
-        // If the resource exists, check if the user is the owner of the resource
-        if (resource && resource.userId === req.user.id) {
-            req.resource = resource;
-            return next();
-        }
+    // If the resource exists, check if the user is the owner of the resource
+    if (resource && resource.userId === req.user.id) {
+      req.resource = resource;
+      return next();
+    }
 
-        // Check if the user has one of the required roles
-        if (permissions.includes(userRole)) {
-            return next();
-        }
+    // Check if the user has one of the required roles
+    if (permissions.includes(userRole)) {
+      return next();
+    }
 
-        // If none of the above conditions are met, deny access
-        res.status(403).json({ message: 'Forbidden: You do not have access to this resource.' });
-    };
+    // If none of the above conditions are met, deny access
+    res
+      .status(403)
+      .json({ message: "Forbidden: You do not have access to this resource." });
+  };
 }
 
 module.exports = {
-    isAuthenticated,
-    verifyAuthorization
+  isAuthenticated,
+  verifyAuthorization,
 };

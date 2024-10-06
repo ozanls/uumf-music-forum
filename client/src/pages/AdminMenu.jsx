@@ -1,19 +1,23 @@
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function AdminMenu(props) {
-    const { user, setError } = props;
-    const navigate = useNavigate();
+  const { user, setError } = props;
+  const navigate = useNavigate();
 
-    if (user && user.role === 'admin') {
-        return (
-            <h1>Admin Menu</h1>
-        );
+  useEffect(() => {
+    if (!user) {
+      setError("Log in to access this page");
     } else {
-        setError('You do not have permission to access this page');
-        return (
-            <button onClick={() => navigate(-1)}>Go Back</button>
-        );
+      setError("");
     }
+  }, [user, setError]);
+
+  if (user && user.role === "admin") {
+    return <h1>Admin Menu</h1>;
+  } else {
+    return <button onClick={() => navigate(-1)}>Go Back</button>;
+  }
 }
 
 export default AdminMenu;

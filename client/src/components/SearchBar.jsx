@@ -9,7 +9,9 @@ function SearchBar() {
   useEffect(() => {
     const fetchBoards = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/boards`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/boards`
+        );
         setBoards(response.data);
       } catch (error) {
         console.error("Error fetching boards:", error);
@@ -21,12 +23,12 @@ function SearchBar() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     const boardId = event.target.board.value;
     const query = event.target.query.value.trim();
 
     if (!query) {
-      return; 
+      return;
     }
 
     try {
@@ -34,13 +36,15 @@ function SearchBar() {
     } catch (error) {
       console.error("Error fetching search results:", error);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
       <select name="board">
-        {boards.map(board => (
-          <option key={board.id} value={board.name}>{board.name}</option>
+        {boards.map((board) => (
+          <option key={board.id} value={board.name}>
+            {board.name}
+          </option>
         ))}
       </select>
       <input type="text" name="query" placeholder="Search..." />

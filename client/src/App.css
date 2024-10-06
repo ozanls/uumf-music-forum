@@ -1,37 +1,37 @@
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family: 'Dela Gothic One', sans-serif;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Dela Gothic One", sans-serif;
   text-decoration: none;
 }
 
-nav{
-  display:flex;
+nav {
+  display: flex;
   background-color: #000000;
   align-items: center;
   display: flex;
   justify-content: space-between;
-  padding:0.5em;
+  padding: 0.5em;
 }
 
-.nav__logo{
+.nav__logo {
   height: 1em;
   display: block;
 }
 
-.auth{
-  display:flex;
+.auth {
+  display: flex;
   align-items: center;
   column-gap: 1em;
 }
 
-.auth__welcome{
+.auth__welcome {
   color: #ffffff;
 }
 
-.auth-form{
-  display:flex;
+.auth-form {
+  display: flex;
   flex-direction: column;
   gap: 1em;
   position: absolute;
@@ -41,26 +41,28 @@ nav{
   padding: 1em;
 }
 
-.auth-form__signup, .auth-form__login, .auth-form__reset-password{
-  display:flex;
+.auth-form__signup,
+.auth-form__login,
+.auth-form__reset-password {
+  display: flex;
   flex-direction: column;
   gap: 1em;
 }
 
-.auth-form__message{
+.auth-form__message {
   color: red;
 }
 
-.tags-container{
-  display:flex;
+.tags-container {
+  display: flex;
   flex-direction: row;
   gap: 0.2em;
 }
 
-.board-tag{
-  display:block;
+.board-tag {
+  display: block;
   padding: 0.2em;
   border-radius: 0.5em;
-  color:#ffffff;
+  color: #ffffff;
   cursor: pointer;
 }

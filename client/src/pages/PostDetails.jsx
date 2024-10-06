@@ -18,11 +18,13 @@ function PostDetails(props) {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/posts/${postId}`
+        );
         setPost(response.data);
       } catch (error) {
-        console.error('Error fetching post:', error);
-        setError('Error fetching post');
+        console.error("Error fetching post:", error);
+        setError("Error fetching post");
       }
     };
 
@@ -32,21 +34,25 @@ function PostDetails(props) {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}/comments`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/posts/${postId}/comments`
+        );
         setComments(response.data);
       } catch (error) {
-        console.error('Error fetching comments:', error);
-        setError('Error fetching comments');
+        console.error("Error fetching comments:", error);
+        setError("Error fetching comments");
       }
     };
 
     const fetchTags = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}/tags`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/posts/${postId}/tags`
+        );
         setTags(response.data);
       } catch (error) {
-        console.error('Error fetching tags:', error);
-        setError('Error fetching tags');
+        console.error("Error fetching tags:", error);
+        setError("Error fetching tags");
       }
     };
 
@@ -57,11 +63,14 @@ function PostDetails(props) {
   useEffect(() => {
     const fetchLikeStatus = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}/liked`, { withCredentials: true });
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/posts/${postId}/liked`,
+          { withCredentials: true }
+        );
         setPostLiked(response.data.liked);
       } catch (error) {
-        console.error('Error fetching like status:', error);
-        setError('Error fetching like status');
+        console.error("Error fetching like status:", error);
+        setError("Error fetching like status");
       }
     };
 
@@ -80,12 +89,15 @@ function PostDetails(props) {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`${import.meta.env.VITE_SERVER_URL}/posts/${postToDelete}`, { withCredentials: true });
+      await axios.delete(
+        `${import.meta.env.VITE_SERVER_URL}/posts/${postToDelete}`,
+        { withCredentials: true }
+      );
       setPostDeleted(true);
-      window.location.href = '/';
+      window.location.href = "/";
     } catch (error) {
-      console.error('Error deleting post:', error);
-      setError('Error deleting post');
+      console.error("Error deleting post:", error);
+      setError("Error deleting post");
     }
   };
 
@@ -95,10 +107,14 @@ function PostDetails(props) {
     const comment = { body: commentBody };
 
     try {
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/comments/${postId}`, comment, { withCredentials: true });
+      await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/comments/${postId}`,
+        comment,
+        { withCredentials: true }
+      );
     } catch (error) {
-      console.error('Error creating comment:', error);
-      setError('Error creating comment');
+      console.error("Error creating comment:", error);
+      setError("Error creating comment");
     }
 
     window.location.reload();
@@ -106,14 +122,18 @@ function PostDetails(props) {
 
   const handleLike = async () => {
     try {
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}/like`, {}, { withCredentials: true });
+      await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/posts/${postId}/like`,
+        {},
+        { withCredentials: true }
+      );
       setPostLiked(!postLiked);
-      postLiked ? 
-        setPost((prevPost) => ({ ...prevPost, likes: prevPost.likes - 1 })) :
-        setPost((prevPost) => ({ ...prevPost, likes: prevPost.likes + 1 }));
+      postLiked
+        ? setPost((prevPost) => ({ ...prevPost, likes: prevPost.likes - 1 }))
+        : setPost((prevPost) => ({ ...prevPost, likes: prevPost.likes + 1 }));
     } catch (error) {
-      console.error('Error liking/unliking post:', error);
-      setError('Error liking/unliking post');
+      console.error("Error liking/unliking post:", error);
+      setError("Error liking/unliking post");
     }
   };
 
@@ -124,37 +144,41 @@ function PostDetails(props) {
   return (
     <div>
       <h1>{post.title}</h1>
-      <p>Posted by 
+      <p>
+        Posted by
         <a href={`/u/${post.user.username}`}>{post.user.username}</a>
       </p>
       <p>{post.body}</p>
-      <p>{formatDate(post.createdAt)} 
-        {post.createdAt !== post.updatedAt && ` (edited ${formatDate(post.updatedAt)})`}
-      </p>
-      
-      {tags.length !== 0 && 
-      <>
-        <ul className="tags-container">
-          {tags.map(tag => (
-            <Tag key={tag.id} tag={tag.tag} />
-          ))}
-        </ul>
-      </>
-      }
-
-      <p>{post.likes}           
-        {post.likes === 1 ? ' like' : ' likes'}
+      <p>
+        {formatDate(post.createdAt)}
+        {post.createdAt !== post.updatedAt &&
+          ` (edited ${formatDate(post.updatedAt)})`}
       </p>
 
-      {user && postToDelete === null && (
-        postLiked ? (
+      {tags.length !== 0 && (
+        <>
+          <ul className="tags-container">
+            {tags.map((tag) => (
+              <Tag key={tag.id} tag={tag.tag} />
+            ))}
+          </ul>
+        </>
+      )}
+
+      <p>
+        {post.likes}
+        {post.likes === 1 ? " like" : " likes"}
+      </p>
+
+      {user &&
+        postToDelete === null &&
+        (postLiked ? (
           <button onClick={handleLike}>Unlike</button>
         ) : (
           <button onClick={handleLike}>Like</button>
-        )
-      )}
+        ))}
 
-      {(user && (user.id === post.userId || user.role === 'admin')) && (
+      {user && (user.id === post.userId || user.role === "admin") && (
         <>
           {postToDelete !== post.id && (
             <button onClick={() => handleDelete(post.id)}>Delete</button>
@@ -169,19 +193,25 @@ function PostDetails(props) {
           {postDeleted && <p>Post deleted</p>}
         </>
       )}
-      
+
       <h2>Comments</h2>
       {user ? (
-      <form onSubmit={handleSubmit}>
-        <textarea name="comment" id="comment" placeholder="Add a comment" rows="4" cols="25"/>
-        <button type="submit">Submit</button>
-      </form>
-    ) : (
-      <p>Log in to comment on this post</p>
-    )}
+        <form onSubmit={handleSubmit}>
+          <textarea
+            name="comment"
+            id="comment"
+            placeholder="Add a comment"
+            rows="4"
+            cols="25"
+          />
+          <button type="submit">Submit</button>
+        </form>
+      ) : (
+        <p>Log in to comment on this post</p>
+      )}
       {comments.length === 0 && <p>No comments yet</p>}
       <ul>
-        {comments.map(comment => (
+        {comments.map((comment) => (
           <li key={comment.id}>
             <Comment comment={comment} user={user} setError={setError} />
           </li>

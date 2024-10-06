@@ -1,576 +1,576 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     // Create Users table
-    await queryInterface.createTable('users', {
+    await queryInterface.createTable("users", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false
+        allowNull: false,
       },
       username: {
         type: Sequelize.STRING(30),
         allowNull: false,
-        unique: true
+        unique: true,
       },
       password: {
         type: Sequelize.STRING(255),
-        allowNull: false
+        allowNull: false,
       },
       email: {
         type: Sequelize.STRING(100),
         allowNull: false,
         unique: true,
         validate: {
-          isEmail: true
-        }
+          isEmail: true,
+        },
       },
       bio: {
         type: Sequelize.STRING(255),
-        allowNull: true
+        allowNull: true,
       },
       status: {
         type: Sequelize.STRING(20),
-        defaultValue: 'active'
+        defaultValue: "active",
       },
       image: {
         type: Sequelize.STRING(255),
-        allowNull: true
+        allowNull: true,
       },
       role: {
         type: Sequelize.STRING(10),
         allowNull: false,
-        defaultValue: 'user'
+        defaultValue: "user",
       },
       confirmedEmail: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
-        allowNull: false
+        allowNull: false,
       },
       agreedToTerms: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
-        allowNull: false
+        allowNull: false,
       },
       receivePromo: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
-        allowNull: false
+        allowNull: false,
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
-      }
+        defaultValue: Sequelize.NOW,
+      },
     });
 
     // Create Boards table
-    await queryInterface.createTable('boards', {
+    await queryInterface.createTable("boards", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false
+        allowNull: false,
       },
       name: {
         type: Sequelize.STRING(100),
         allowNull: false,
-        unique: true
+        unique: true,
       },
       description: {
         type: Sequelize.STRING(255),
-        allowNull: true
+        allowNull: true,
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
-      }
+        defaultValue: Sequelize.NOW,
+      },
     });
 
     // Create Posts table
-    await queryInterface.createTable('posts', {
+    await queryInterface.createTable("posts", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false
+        allowNull: false,
       },
       boardId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'boards',
-          key: 'id'
+          model: "boards",
+          key: "id",
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
-          key: 'id'
+          model: "users",
+          key: "id",
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       title: {
         type: Sequelize.STRING(100),
-        allowNull: false
+        allowNull: false,
       },
       body: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
       },
       likes: {
         type: Sequelize.INTEGER,
-        defaultValue: 0
+        defaultValue: 0,
       },
       comments: {
         type: Sequelize.INTEGER,
-        defaultValue: 0
+        defaultValue: 0,
       },
       status: {
         type: Sequelize.STRING(20),
-        defaultValue: 'active'
+        defaultValue: "active",
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
-      }
+        defaultValue: Sequelize.NOW,
+      },
     });
 
     // Create Comments table
-    await queryInterface.createTable('comments', {
+    await queryInterface.createTable("comments", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false
+        allowNull: false,
       },
       postId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'posts',
-          key: 'id'
+          model: "posts",
+          key: "id",
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
-          key: 'id'
+          model: "users",
+          key: "id",
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       body: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
       },
       likes: {
         type: Sequelize.INTEGER,
-        defaultValue: 0
+        defaultValue: 0,
       },
       status: {
         type: Sequelize.STRING(20),
-        defaultValue: 'active'
+        defaultValue: "active",
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
-      }
+        defaultValue: Sequelize.NOW,
+      },
     });
 
     // Create PostLikes table
-    await queryInterface.createTable('postlikes', {
+    await queryInterface.createTable("postlikes", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false
+        allowNull: false,
       },
       postId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'posts',
-          key: 'id'
+          model: "posts",
+          key: "id",
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
-          key: 'id'
+          model: "users",
+          key: "id",
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
-      }
+        defaultValue: Sequelize.NOW,
+      },
     });
 
     // Create CommentLikes table
-    await queryInterface.createTable('commentlikes', {
+    await queryInterface.createTable("commentlikes", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false
+        allowNull: false,
       },
       commentId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'comments',
-          key: 'id'
+          model: "comments",
+          key: "id",
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
-          key: 'id'
+          model: "users",
+          key: "id",
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
-      }
+        defaultValue: Sequelize.NOW,
+      },
     });
 
     // Create Saves table
-    await queryInterface.createTable('saves', {
+    await queryInterface.createTable("saves", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false
+        allowNull: false,
       },
       postId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'posts',
-          key: 'id'
+          model: "posts",
+          key: "id",
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
-          key: 'id'
+          model: "users",
+          key: "id",
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
-      }
+        defaultValue: Sequelize.NOW,
+      },
     });
 
     // Create Badges table
-    await queryInterface.createTable('badges', {
+    await queryInterface.createTable("badges", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false
+        allowNull: false,
       },
       name: {
         type: Sequelize.STRING(100),
         allowNull: false,
-        unique: true
+        unique: true,
       },
       description: {
         type: Sequelize.STRING(255),
-        allowNull: true
+        allowNull: true,
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
-      }
+        defaultValue: Sequelize.NOW,
+      },
     });
 
     // Create UserBadges table
-    await queryInterface.createTable('userbadges', {
+    await queryInterface.createTable("userbadges", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false
+        allowNull: false,
       },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
-          key: 'id'
+          model: "users",
+          key: "id",
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       badgeId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'badges',
-          key: 'id'
+          model: "badges",
+          key: "id",
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
-      }
+        defaultValue: Sequelize.NOW,
+      },
     });
 
     // Create Tags table
-    await queryInterface.createTable('tags', {
+    await queryInterface.createTable("tags", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false
+        allowNull: false,
       },
       boardId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'boards',
-          key: 'id'
-        }
+          model: "boards",
+          key: "id",
+        },
       },
       name: {
         type: Sequelize.STRING(100),
-        allowNull: false
+        allowNull: false,
       },
       hexCode: {
         type: Sequelize.STRING(7),
         allowNull: true,
         validate: {
-          is: /^#[0-9A-F]{6}$/i
-        }
+          is: /^#[0-9A-F]{6}$/i,
+        },
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
-      }
+        defaultValue: Sequelize.NOW,
+      },
     });
 
     // Create PostTags table
-    await queryInterface.createTable('posttags', {
+    await queryInterface.createTable("posttags", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false
+        allowNull: false,
       },
       postId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'posts',
-          key: 'id'
+          model: "posts",
+          key: "id",
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       tagId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'tags',
-          key: 'id'
+          model: "tags",
+          key: "id",
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW
-      }
+        defaultValue: Sequelize.NOW,
+      },
     });
 
-    await queryInterface.createTable('TrendingTags', {
+    await queryInterface.createTable("TrendingTags", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false
+        allowNull: false,
       },
       boardId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'boards',
-          key: 'id'
+          model: "boards",
+          key: "id",
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       tagId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'tags',
-          key: 'id'
+          model: "tags",
+          key: "id",
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       count: {
         type: Sequelize.INTEGER,
-        defaultValue: 0
+        defaultValue: 0,
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.fn('NOW')
+        defaultValue: Sequelize.fn("NOW"),
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.fn('NOW')
-      }
+        defaultValue: Sequelize.fn("NOW"),
+      },
     });
 
-    await queryInterface.addIndex('TrendingTags', ['boardId', 'tagId'], {
+    await queryInterface.addIndex("TrendingTags", ["boardId", "tagId"], {
       unique: true,
-      name: 'unique_trending_tag'
+      name: "unique_trending_tag",
     });
 
-    await queryInterface.addIndex('posttags', ['postId', 'tagId'], {
+    await queryInterface.addIndex("posttags", ["postId", "tagId"], {
       unique: true,
-      name: 'unique_post_tag'
+      name: "unique_post_tag",
     });
 
-    await queryInterface.addIndex('userbadges', ['userId', 'badgeId'], {
+    await queryInterface.addIndex("userbadges", ["userId", "badgeId"], {
       unique: true,
-      name: 'unique_user_badge'
+      name: "unique_user_badge",
     });
 
-    await queryInterface.addIndex('tags', ['boardId', 'name'], {
+    await queryInterface.addIndex("tags", ["boardId", "name"], {
       unique: true,
-      name: 'unique_board_tag'
+      name: "unique_board_tag",
     });
 
-    await queryInterface.addIndex('saves', ['postId', 'userId'], {
+    await queryInterface.addIndex("saves", ["postId", "userId"], {
       unique: true,
-      name: 'unique_post_save'
+      name: "unique_post_save",
     });
 
-    await queryInterface.addIndex('postlikes', ['postId', 'userId'], {
+    await queryInterface.addIndex("postlikes", ["postId", "userId"], {
       unique: true,
-      name: 'unique_post_like'
+      name: "unique_post_like",
     });
 
-    await queryInterface.addIndex('commentlikes', ['commentId', 'userId'], {
+    await queryInterface.addIndex("commentlikes", ["commentId", "userId"], {
       unique: true,
-      name: 'unique_comment_like'
+      name: "unique_comment_like",
     });
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('posttags');
-    await queryInterface.dropTable('tags');
-    await queryInterface.dropTable('saves');
-    await queryInterface.dropTable('posts');
-    await queryInterface.dropTable('likes');
-    await queryInterface.dropTable('comments');
-    await queryInterface.dropTable('boards');
-    await queryInterface.dropTable('userbadges');
-    await queryInterface.dropTable('badges');
-    await queryInterface.dropTable('users');
-    await queryInterface.dropTable('trendingtags');
-  }
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable("posttags");
+    await queryInterface.dropTable("tags");
+    await queryInterface.dropTable("saves");
+    await queryInterface.dropTable("posts");
+    await queryInterface.dropTable("likes");
+    await queryInterface.dropTable("comments");
+    await queryInterface.dropTable("boards");
+    await queryInterface.dropTable("userbadges");
+    await queryInterface.dropTable("badges");
+    await queryInterface.dropTable("users");
+    await queryInterface.dropTable("trendingtags");
+  },
 };
