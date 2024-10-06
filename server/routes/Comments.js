@@ -112,4 +112,22 @@ router.post('/:id/like', isAuthenticated, async (req, res) => {
     }
 });
 
+// Check if a comment is liked by the user
+router.get('/:id/liked', isAuthenticated, async (req, res) => {
+    const commentId = req.params.id;
+    const userId = req.user.id;
+
+    try {
+        const like = await CommentLike.findOne({ where: { commentId, userId } });
+        if (like) {
+            return res.status(200).json({ liked: true });
+        } else {
+            return res.status(200).json({ liked: false });
+        }
+    } catch (error) {
+        console.error('Error checking if comment is liked:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;

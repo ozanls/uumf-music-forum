@@ -53,6 +53,9 @@ function PostCard(props) {
       <p>Posted by 
           <a href={`/u/${post.user.username}`}>{post.user.username}</a>
         </p>
+        <p> {post.likes} 
+          {post.likes === 1 ? ' like' : ' likes'}
+        </p>
       {tags.length !== 0 && 
       <>
         <ul className="tags-container">

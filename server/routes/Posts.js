@@ -39,24 +39,6 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Check if a post is liked by a user
-router.get('/:id/liked', isAuthenticated, async (req, res) => {
-    const postId = req.params.id;
-    const userId = req.user.id;
-
-    try {
-        const like = await PostLike.findOne({ where: { postId, userId } });
-        if (like) {
-            return res.status(200).json({ liked: true });
-        } else {
-            return res.status(200).json({ liked: false });
-        }
-    } catch (error) {
-        console.error('Error checking if post is liked:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
 // Get all comments for a post
 router.get('/:postId/comments', async (req, res) => {
     const postId = req.params.postId;
@@ -173,6 +155,24 @@ router.post('/:id/like', isAuthenticated, async (req, res) => {
     } catch (error) {
         await transaction.rollback();
         console.error('Error liking/unliking post:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Check if a post is liked by the user
+router.get('/:id/liked', isAuthenticated, async (req, res) => {
+    const postId = req.params.id;
+    const userId = req.user.id;
+
+    try {
+        const like = await PostLike.findOne({ where: { postId, userId } });
+        if (like) {
+            return res.status(200).json({ liked: true });
+        } else {
+            return res.status(200).json({ liked: false });
+        }
+    } catch (error) {
+        console.error('Error checking if post is liked:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

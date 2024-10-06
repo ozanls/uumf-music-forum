@@ -148,23 +148,13 @@ function PostDetails(props) {
   return (
     <div>
       <h1>{post.title}</h1>
-      <p>{post.likes} Likes</p>
-      {user ? (
-        postLiked ? (
-          <button onClick={handleLike}>Unlike</button>
-        ) : (
-          <button onClick={handleLike}>Like</button>
-        )
-      ) : (
-        <p>Log in to like this post</p>
-      )}
       <p>Posted by 
-          <a href={`/u/${post.user.username}`}>{post.user.username}</a>
-      </p>
-      <p>{formatDate(post.createdAt)} 
-          {post.createdAt !== post.updatedAt && ` (edited ${formatDate(post.updatedAt)})`}
+        <a href={`/u/${post.user.username}`}>{post.user.username}</a>
       </p>
       <p>{post.body}</p>
+      <p>{formatDate(post.createdAt)} 
+        {post.createdAt !== post.updatedAt && ` (edited ${formatDate(post.updatedAt)})`}
+      </p>
       
       {tags.length !== 0 && 
       <>
@@ -175,6 +165,18 @@ function PostDetails(props) {
         </ul>
       </>
       }
+
+      <p>{post.likes}           
+        {post.likes === 1 ? ' like' : ' likes'}
+      </p>
+
+      {user && postToDelete === null && (
+        postLiked ? (
+          <button onClick={handleLike}>Unlike</button>
+        ) : (
+          <button onClick={handleLike}>Like</button>
+        )
+      )}
 
       {(user && (user.id === post.userId || user.role === 'admin')) && (
         <>
