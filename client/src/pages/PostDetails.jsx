@@ -9,8 +9,10 @@ function PostDetails(props) {
   const { postId } = useParams();
   const [post, setPost] = useState(null);
   const [postToDelete, setPostToDelete] = useState(null);
-  const [postLiked, setPostLiked] = useState(false);
   const [postDeleted, setPostDeleted] = useState(false);
+  const [postLiked, setPostLiked] = useState(false);
+  const [likes, setLikes] = useState(0);
+  const [toggleEdit, setToggleEdit] = useState(false);
   const [comments, setComments] = useState([]);
   const [tags, setTags] = useState([]);
   const { user, setError } = props;
@@ -22,6 +24,7 @@ function PostDetails(props) {
           `${import.meta.env.VITE_SERVER_URL}/posts/${postId}`
         );
         setPost(response.data);
+        setLikes(response.data.likes);
       } catch (error) {
         console.error("Error fetching post:", error);
         setError("Error fetching post");
@@ -129,11 +132,35 @@ function PostDetails(props) {
       );
       setPostLiked(!postLiked);
       postLiked
-        ? setPost((prevPost) => ({ ...prevPost, likes: prevPost.likes - 1 }))
-        : setPost((prevPost) => ({ ...prevPost, likes: prevPost.likes + 1 }));
+        ? setLikes((prevLikes) => prevLikes - 1)
+        : setLikes((prevLikes) => prevLikes + 1);
     } catch (error) {
       console.error("Error liking/unliking post:", error);
       setError("Error liking/unliking post");
+    }
+  };
+
+  const handleSave = async (event) => {
+    event.preventDefault();
+    const body = event.target.body.value.trim();
+    const tags = event.target.tags.value
+      .trim()
+      .split(",")
+      .map((tag) => tag.trim());
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/posts/${postId}/update`,
+        {
+          body,
+          tags,
+        },
+        { withCredentials: true }
+      );
+      setToggleEdit(false);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error updating post:", error);
+      setError("Error updating post");
     }
   };
 
@@ -143,31 +170,49 @@ function PostDetails(props) {
 
   return (
     <div>
-      <h1>{post.title}</h1>
       <p>
         Posted by
         <a href={`/u/${post.user.username}`}>{post.user.username}</a>
       </p>
-      <p>{post.body}</p>
+      <h1>{post.title}</h1>
+      {!toggleEdit ? (
+        <>
+          <p>{post.body}</p>
+        </>
+      ) : (
+        <>
+          <form onSubmit={handleSave}>
+            <textarea name="body" id="body" defaultValue={post.body} />
+            <label htmlFor="tags">Tags:</label>
+            <input
+              type="text"
+              name="tags"
+              id="tags"
+              defaultValue={tags.map((tag) => tag.tag.name).join(", ")}
+            />
+            <button type="submit">Save</button>
+            <button type="button" onClick={() => setToggleEdit(false)}>
+              Cancel
+            </button>
+          </form>
+        </>
+      )}
+      {!toggleEdit && tags.length !== 0 && (
+        <ul className="tags-container">
+          {tags.map((tag) => (
+            <Tag key={tag.id} tag={tag.tag} />
+          ))}
+        </ul>
+      )}
       <p>
         {formatDate(post.createdAt)}
         {post.createdAt !== post.updatedAt &&
           ` (edited ${formatDate(post.updatedAt)})`}
       </p>
 
-      {tags.length !== 0 && (
-        <>
-          <ul className="tags-container">
-            {tags.map((tag) => (
-              <Tag key={tag.id} tag={tag.tag} />
-            ))}
-          </ul>
-        </>
-      )}
-
       <p>
-        {post.likes}
-        {post.likes === 1 ? " like" : " likes"}
+        {likes}
+        {likes === 1 ? " like" : " likes"}
       </p>
 
       {user &&
@@ -177,6 +222,10 @@ function PostDetails(props) {
         ) : (
           <button onClick={handleLike}>Like</button>
         ))}
+
+      {user && user.id === post.userId && (
+        <button onClick={() => setToggleEdit(true)}>Edit</button>
+      )}
 
       {user && (user.id === post.userId || user.role === "admin") && (
         <>

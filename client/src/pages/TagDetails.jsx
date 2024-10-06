@@ -25,7 +25,6 @@ function TagDetails(props) {
         console.log("tag:", response.data);
       } catch (error) {
         console.error("Error fetching tag:", error);
-        setError("Error fetching tag");
       }
     };
 
@@ -37,7 +36,6 @@ function TagDetails(props) {
         setNumberOfPosts(response.data.count);
       } catch (error) {
         console.error("Error fetching number of posts:", error);
-        setError("Error fetching number of posts");
       }
     };
 
@@ -54,7 +52,6 @@ function TagDetails(props) {
         setPosts(response.data);
       } catch (error) {
         console.error("Error fetching posts:", error);
-        setError("Error fetching posts");
       }
     };
 
@@ -62,26 +59,32 @@ function TagDetails(props) {
   }, [tag]);
 
   if (!tag) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <h1>#{tagName}</h1>
+        <p>0 posts</p>
+      </div>
+    );
   }
 
   return (
     <div>
       <h1>#{tag.name}</h1>
       {numberOfPosts === 1 ? <p>1 post</p> : <p>{numberOfPosts} posts</p>}
-      <h2>Posts</h2>
-      <ul>
-        {posts.map((post) => (
-          <li key={post.post.id}>
-            <PostCard
-              post={post.post}
-              user={user}
-              posts={posts}
-              setError={setError}
-            />
-          </li>
-        ))}
-      </ul>
+      {posts.length > 0 && (
+        <ul>
+          {posts.map((post) => (
+            <li key={post.post.id}>
+              <PostCard
+                post={post.post}
+                user={user}
+                posts={posts}
+                setError={setError}
+              />
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

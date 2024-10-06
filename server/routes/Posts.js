@@ -125,22 +125,35 @@ router.post("/", isAuthenticated, async (req, res) => {
 
 // Update a post
 router.post(
-  "/:id",
+  "/:id/update",
   verifyAuthorization(Post, "id", ["admin", "moderator"]),
   async (req, res) => {
-    const post = req.body;
     const postId = req.params.id;
+    const updatedPostData = req.body;
 
     try {
-      await Post.update(post, { where: { id: postId } });
-      const postTags = post.tags;
+      const originalPost = await Post.findByPk(postId);
+
+      if (!originalPost) {
+        return res.status(404).json({ error: "Post not found" });
+      }
+
+      updatedPostData.boardId = originalPost.boardId;
+      updatedPostData.title = originalPost.title;
+      updatedPostData.likes = originalPost.likes;
+      updatedPostData.comments = originalPost.comments;
+      updatedPostData.userId = req.user.id;
+
+      await Post.update(updatedPostData, { where: { id: postId } });
+
+      const postTags = updatedPostData.tags;
 
       if (postTags) {
         await PostTag.destroy({ where: { postId: postId } });
 
         for (const tag of postTags) {
           const [newTag] = await Tag.findOrCreate({
-            where: { boardId: post.boardId, name: tag },
+            where: { boardId: originalPost.boardId, name: tag },
             defaults: { hexCode: getRandomColor() },
           });
 
@@ -148,7 +161,7 @@ router.post(
         }
       }
 
-      res.status(200).json(post);
+      res.status(200).json(updatedPostData);
     } catch (error) {
       console.error("Error updating post:", error);
       res.status(500).json({ error: "Internal server error" });

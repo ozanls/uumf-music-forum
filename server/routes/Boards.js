@@ -109,6 +109,15 @@ router.post(
   verifyAuthorization(Board, "id", ["admin"]),
   async (req, res) => {
     const board = req.body;
+    if (!board.name || !board.description) {
+      res.status(400).json({ error: "Name and description are required" });
+      return;
+    }
+    const existingBoard = await Board.findOne({ where: { name: board.name } });
+    if (existingBoard) {
+      res.status(400).json({ error: "Board name already exists" });
+      return;
+    }
     try {
       const newBoard = await Board.create(board);
       res.status(201).json(newBoard);
