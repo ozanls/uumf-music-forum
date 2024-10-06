@@ -50,27 +50,34 @@ function CreatePost(props) {
         }
     }
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="title">Title</label>
-            <input type="text" id="title" name="title" />
-            
-            <label htmlFor="board">Board</label>
-            <select id="board" name="board">
-                {boards.map((board) => (
-                    <option key={board.id} value={board.id}>{board.name}</option>
-                ))}
-            </select>
-
-            <label htmlFor="body">Body</label>
-            <textarea id="body" name="body"></textarea>
-
-            <label htmlFor="tags">Tags (comma separated)</label>
-            <input type="text" id="tags" name="tags" />
-
-            <button type="submit">Submit</button>
-        </form>
-    );
+    if (user) {
+        return (
+            <form onSubmit={handleSubmit}>
+                <label htmlFor="title">Title</label>
+                <input type="text" id="title" name="title" />
+                
+                <label htmlFor="board">Board</label>
+                <select id="board" name="board">
+                    {boards.map((board) => (
+                        <option key={board.id} value={board.id}>{board.name}</option>
+                    ))}
+                </select>
+    
+                <label htmlFor="body">Body</label>
+                <textarea id="body" name="body"></textarea>
+    
+                <label htmlFor="tags">Tags (comma separated)</label>
+                <input type="text" id="tags" name="tags" />
+    
+                <button type="submit">Submit</button>
+            </form>
+        );
+    } else {
+        setError('Log in to create a post');
+        return (
+            <button onClick={() => navigate(-1)}>Go Back</button>
+        );
+    }
 }
 
 export default CreatePost;

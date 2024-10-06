@@ -12,24 +12,31 @@ function Comment(props) {
     const formatDate = (dateString) => {
       const date = new Date(dateString);
       const now = new Date();
-      const seconds = Math.floor((now - date) / 1000);
-      const minutes = Math.floor(seconds / 60);
-      const hours = Math.floor(minutes / 60);
-      const days = Math.floor(hours / 24);
-
-      if (seconds < 60) {
-          return `${seconds} seconds ago`;
+      const diff = now - date;
+    
+      const minutes = Math.floor(diff / (1000 * 60));
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    
+      if (minutes < 1) {
+        return 'a few seconds ago';
+      } else if (minutes === 1) {
+        return '1 minute ago';
       } else if (minutes < 60) {
-          return `${minutes} minutes ago`;
+        return `${minutes} minutes ago`;
+      } else if (hours === 1) {
+        return '1 hour ago';
       } else if (hours < 24) {
-          return `${hours} hours ago`;
+        return `${hours} hours ago`;
+      } else if (days === 1) {
+        return '1 day ago';
       } else if (days < 30) {
-          return `${days} days ago`;
+        return `${days} days ago`;
       } else {
-          const options = { year: 'numeric', month: 'long', day: 'numeric' };
-          return date.toLocaleDateString(undefined, options);
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return date.toLocaleDateString(undefined, options);
       }
-  };
+    };
 
   useEffect(() => {
     const fetchLikeStatus = async () => {
@@ -49,15 +56,11 @@ function Comment(props) {
 
   const handleLike = async () => {
     try {
-      if (commentLiked) {
-        await axios.post(`${import.meta.env.VITE_SERVER_URL}/comments/${comment.id}/like`, {}, { withCredentials: true });
-        setCommentLiked(false);
-        setLikes((prevLikes) => prevLikes - 1);
-      } else {
-        await axios.post(`${import.meta.env.VITE_SERVER_URL}/comments/${comment.id}/like`, {}, { withCredentials: true });
-        setCommentLiked(true);
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/comments/${comment.id}/like`, {}, { withCredentials: true });
+      setCommentLiked(!commentLiked);
+      commentLiked ? 
+        setLikes((prevLikes) => prevLikes - 1) : 
         setLikes((prevLikes) => prevLikes + 1);
-      }
     } catch (error) {
       console.error('Error liking/unliking comment:', error);
       setError('Error liking/unliking comment');
@@ -134,7 +137,7 @@ function Comment(props) {
         {comment.createdAt !== comment.updatedAt && ` (edited ${formatDate(comment.updatedAt)})`}
       </p>
       <p>{likes}
-        {likes === 1 ? ' Like' : ' Likes'}
+        {likes === 1 ? ' like' : ' likes'}
       </p>
     
       {!toggleEdit && !commentToDelete && user && (

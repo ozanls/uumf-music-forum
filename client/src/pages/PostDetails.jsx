@@ -14,6 +14,35 @@ function PostDetails(props) {
   const [tags, setTags] = useState([]);
   const { user, setError } = props;
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diff = now - date;
+  
+    const minutes = Math.floor(diff / (1000 * 60));
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  
+    if (minutes < 1) {
+      return 'a few seconds ago';
+    } else if (minutes === 1) {
+      return '1 minute ago';
+    } else if (minutes < 60) {
+      return `${minutes} minutes ago`;
+    } else if (hours === 1) {
+      return '1 hour ago';
+    } else if (hours < 24) {
+      return `${hours} hours ago`;
+    } else if (days === 1) {
+      return '1 day ago';
+    } else if (days < 30) {
+      return `${days} days ago`;
+    } else {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return date.toLocaleDateString(undefined, options);
+    }
+  };
+
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -105,39 +134,14 @@ function PostDetails(props) {
 
   const handleLike = async () => {
     try {
-      if (postLiked) {
-        await axios.post(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}/like`, {}, { withCredentials: true });
-        setPostLiked(false);
-        setPost((prevPost) => ({ ...prevPost, likes: prevPost.likes - 1 }));
-      } else {
-        await axios.post(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}/like`, {}, { withCredentials: true });
-        setPostLiked(true);
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/posts/${postId}/like`, {}, { withCredentials: true });
+      setPostLiked(!postLiked);
+      postLiked ? 
+        setPost((prevPost) => ({ ...prevPost, likes: prevPost.likes - 1 })) :
         setPost((prevPost) => ({ ...prevPost, likes: prevPost.likes + 1 }));
-      }
     } catch (error) {
       console.error('Error liking/unliking post:', error);
       setError('Error liking/unliking post');
-    }
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diff = now - date;
-
-    const minutes = Math.floor(diff / (1000 * 60));
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-    if (minutes < 60) {
-      return `${minutes} minutes ago`;
-    } else if (hours < 24) {
-      return `${hours} hours ago`;
-    } else if (days < 30) {
-      return `${days} days ago`;
-    } else {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return date.toLocaleDateString(undefined, options);
     }
   };
 
