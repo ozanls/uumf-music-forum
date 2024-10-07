@@ -70,7 +70,9 @@ const BoardDetails = (props) => {
           <h2>Trending Tags</h2>
           <ul className="tags-container">
             {trendingTags.map((tag) => (
-              <Tag key={tag.id} tag={tag} />
+              <li key={tag.id}>
+                <Tag tag={tag.tag} />
+              </li>
             ))}
           </ul>
         </>

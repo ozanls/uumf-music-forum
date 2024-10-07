@@ -24,14 +24,28 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get trending tags for all boards
-router.get("/trendingTags", async (req, res) => {
+// Update trending tags for all boards
+router.get("/trendingTags/update", async (req, res) => {
   try {
     const trendingTags = await updateTrendingTags();
     console.log("Trending tags:", trendingTags);
     res.status(200).json(trendingTags);
   } catch (error) {
     console.error("Error updating trending tags:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Get trending tags for all boards
+router.get("/trendingTags", async (req, res) => {
+  try {
+    const trendingTags = await TrendingTag.findAll({
+      include: [{ model: Tag, as: "tag" }],
+    });
+    console.log("Trending tags:", trendingTags);
+    res.status(200).json(trendingTags);
+  } catch (error) {
+    console.error("Error fetching trending tags:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

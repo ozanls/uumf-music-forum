@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import BoardCard from "../components/BoardCard";
 
 function AdminMenu(props) {
   const { user, setError } = props;
@@ -83,8 +84,7 @@ function AdminMenu(props) {
         <ul>
           {boards.map((board) => (
             <li key={board.name}>
-              <h3>{board.name}</h3>
-              <p>{board.description}</p>
+              <BoardCard board={board} />
             </li>
           ))}
         </ul>
