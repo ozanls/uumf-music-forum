@@ -45,7 +45,31 @@ function verifyAuthorization(model, resourceIdParam, permissions) {
   };
 }
 
+function verifyAdmin() {
+  return async (req, res, next) => {
+    const userRole = req.user?.role;
+
+    // Check if the user is not logged in
+    if (!req.user || req.user.id === null) {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized: Please log in and try again." });
+    }
+
+    // If the user has the admin role, allow access
+    if (userRole === "admin") {
+      return next();
+    }
+
+    // If the user does not have the admin role, deny access
+    res
+      .status(403)
+      .json({ message: "Forbidden: You do not have access to this resource." });
+  };
+}
+
 module.exports = {
   isAuthenticated,
   verifyAuthorization,
+  verifyAdmin,
 };

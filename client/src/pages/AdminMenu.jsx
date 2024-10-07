@@ -5,8 +5,10 @@ import BoardCard from "../components/BoardCard";
 
 function AdminMenu(props) {
   const { user, setError } = props;
-  const navigate = useNavigate();
+  const [users, setUsers] = useState([]);
   const [boards, setBoards] = useState([]);
+  const [roles, setRoles] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -31,7 +33,7 @@ function AdminMenu(props) {
     }
   }, [user, setError]);
 
-  const handleSubmit = async (event) => {
+  const handleSubmitBoard = async (event) => {
     event.preventDefault();
     const name = event.target.name.value;
     const description = event.target.description.value;
@@ -58,11 +60,64 @@ function AdminMenu(props) {
     }
   };
 
+  const handleUserSearch = async (event) => {
+    event.preventDefault();
+    const username = event.target.username.value;
+
+    if (!username) {
+      setError("Username is required");
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/users/search/${username}`
+      );
+      setUsers(response.data);
+      setError("");
+    } catch (error) {
+      console.error("Error searching for user:", error);
+      setError("Error searching for user");
+    }
+  };
+
+  const handleRoleChange = (userId, newRole) => {
+    setRoles((prevRoles) => ({
+      ...prevRoles,
+      [userId]: newRole,
+    }));
+  };
+
+  const handleSubmitUser = async (userId) => {
+    const role = roles[userId];
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/users/${userId}/update-role`,
+        { role },
+        { withCredentials: true }
+      );
+      setUsers((prevUsers) =>
+        prevUsers.map((user) => (user.id === userId ? { ...user, role } : user))
+      );
+      setRoles((prevRoles) => {
+        const newRoles = { ...prevRoles };
+        delete newRoles[userId];
+        return newRoles;
+      });
+      setError("`Users role has been updated successfully!`");
+    } catch (error) {
+      console.error("Error updating user:", error);
+      setError("Error updating user");
+    }
+  };
+
   if (user && user.role === "admin") {
     return (
       <>
         <h1>Admin Menu</h1>
-        <form onSubmit={handleSubmit}>
+
+        <h2>Create a board</h2>
+        <form onSubmit={handleSubmitBoard}>
           <label htmlFor="name">Board Name:</label>
           <input
             type="text"
@@ -88,6 +143,64 @@ function AdminMenu(props) {
             </li>
           ))}
         </ul>
+
+        <h2>Search for a user</h2>
+        <form onSubmit={handleUserSearch}>
+          <input
+            type="text"
+            name="username"
+            id="username"
+            placeholder="Enter username"
+          />
+          <button type="submit">Search</button>
+        </form>
+        {users.length === 0 && <p>No users found</p>}
+        {users.length > 0 && (
+          <>
+            <table>
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Confirmed Email</th>
+                  <th>Receive Promo</th>
+                  <th>Created At</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user) => (
+                  <tr key={user.id}>
+                    <td>{user.username}</td>
+                    <td>{user.email}</td>
+                    <td>
+                      <select
+                        value={roles[user.id] || user.role}
+                        onChange={(e) =>
+                          handleRoleChange(user.id, e.target.value)
+                        }
+                      >
+                        <option value="admin">Admin</option>
+                        <option value="moderator">Moderator</option>
+                        <option value="vip">VIP</option>
+                        <option value="user">User</option>
+                      </select>
+                    </td>
+                    <td>{user.confirmedEmail ? "Yes" : "No"}</td>
+                    <td>{user.receivePromo ? "Yes" : "No"}</td>
+                    <td>{new Date(user.createdAt).toLocaleString()}</td>
+                    <td>
+                      <button onClick={() => handleSubmitUser(user.id)}>
+                        Save
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
       </>
     );
   } else {

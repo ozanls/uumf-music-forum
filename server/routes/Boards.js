@@ -1,15 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const {
-  Board,
-  Tag,
-  Post,
-  User,
-  PostTag,
-  sequelize,
-  TrendingTag,
-} = require("../models");
-const { verifyAuthorization } = require("../utilities/auth");
+const { Board, Tag, Post, User, sequelize, TrendingTag } = require("../models");
+const { verifyAdmin } = require("../utilities/auth");
 const updateTrendingTags = require("../utilities/updateTrendingTags");
 const { Op } = require("sequelize");
 
@@ -118,70 +110,58 @@ router.get("/:boardId/posts", async (req, res) => {
 });
 
 // Create a new board
-router.post(
-  "/",
-  verifyAuthorization(Board, "id", ["admin"]),
-  async (req, res) => {
-    const board = req.body;
-    if (!board.name || !board.description) {
-      res.status(400).json({ error: "Name and description are required" });
-      return;
-    }
-    const existingBoard = await Board.findOne({ where: { name: board.name } });
-    if (existingBoard) {
-      res.status(400).json({ error: "Board name already exists" });
-      return;
-    }
-    try {
-      const newBoard = await Board.create(board);
-      res.status(201).json(newBoard);
-    } catch (error) {
-      console.error("Error creating board:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
+router.post("/", verifyAdmin(), async (req, res) => {
+  const board = req.body;
+  if (!board.name || !board.description) {
+    res.status(400).json({ error: "Name and description are required" });
+    return;
   }
-);
+  const existingBoard = await Board.findOne({ where: { name: board.name } });
+  if (existingBoard) {
+    res.status(400).json({ error: "Board name already exists" });
+    return;
+  }
+  try {
+    const newBoard = await Board.create(board);
+    res.status(201).json(newBoard);
+  } catch (error) {
+    console.error("Error creating board:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 // Update a board
-router.post(
-  "/:id",
-  verifyAuthorization(Board, "id", ["admin"]),
-  async (req, res) => {
-    const board = req.body;
-    const boardId = req.params.id;
-    try {
-      const [updated] = await Board.update(board, { where: { id: boardId } });
-      if (updated) {
-        const updatedBoard = await Board.findByPk(boardId);
-        res.status(200).json(updatedBoard);
-      } else {
-        res.status(404).json({ error: "Board not found" });
-      }
-    } catch (error) {
-      console.error("Error updating board:", error);
-      res.status(500).json({ error: "Internal server error" });
+router.post("/:id", verifyAdmin(), async (req, res) => {
+  const board = req.body;
+  const boardId = req.params.id;
+  try {
+    const [updated] = await Board.update(board, { where: { id: boardId } });
+    if (updated) {
+      const updatedBoard = await Board.findByPk(boardId);
+      res.status(200).json(updatedBoard);
+    } else {
+      res.status(404).json({ error: "Board not found" });
     }
+  } catch (error) {
+    console.error("Error updating board:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
-);
+});
 
 // Delete a board
-router.delete(
-  "/:id",
-  verifyAuthorization(Board, "id", ["admin"]),
-  async (req, res) => {
-    const boardId = req.params.id;
-    try {
-      const deleted = await Board.destroy({ where: { id: boardId } });
-      if (deleted) {
-        res.status(200).json({ message: "Board deleted" });
-      } else {
-        res.status(404).json({ error: "Board not found" });
-      }
-    } catch (error) {
-      console.error("Error deleting board:", error);
-      res.status(500).json({ error: "Internal server error" });
+router.delete("/:id", verifyAdmin(), async (req, res) => {
+  const boardId = req.params.id;
+  try {
+    const deleted = await Board.destroy({ where: { id: boardId } });
+    if (deleted) {
+      res.status(200).json({ message: "Board deleted" });
+    } else {
+      res.status(404).json({ error: "Board not found" });
     }
+  } catch (error) {
+    console.error("Error deleting board:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
-);
+});
 
 module.exports = router;

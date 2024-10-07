@@ -122,7 +122,7 @@ router.post("/", isAuthenticated, async (req, res) => {
 // Update a post
 router.post(
   "/:id/update",
-  verifyAuthorization(Post, "id", ["admin", "moderator"]),
+  verifyAuthorization(Post, "id", ["admin"]),
   async (req, res) => {
     const postId = req.params.id;
     const updatedPostData = req.body;

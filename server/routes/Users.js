@@ -2,9 +2,14 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
+const { Op } = require("sequelize");
 const { User, Save, Post, Comment } = require("../models");
 const { hashPassword } = require("../utilities/hashing");
-const { isAuthenticated, verifyAuthorization } = require("../utilities/auth");
+const {
+  isAuthenticated,
+  verifyAuthorization,
+  verifyAdmin,
+} = require("../utilities/auth");
 const sendConfirmationEmail = require("../utilities/sendConfirmationEmail");
 const sendForgotPasswordEmail = require("../utilities/sendForgotPasswordEmail");
 const deleteUnconfirmedUsers = require("../utilities/deleteUnconfirmedUsers");
@@ -60,19 +65,15 @@ router.get("/auth/status", isAuthenticated, (req, res) => {
 });
 
 // Get all users
-router.get(
-  "/",
-  verifyAuthorization(User, "id", ["admin"]),
-  async (req, res) => {
-    try {
-      const allUsers = await User.findAll();
-      res.status(200).json(allUsers);
-    } catch (error) {
-      console.error("Error getting all users:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
+router.get("/", verifyAdmin(), async (req, res) => {
+  try {
+    const allUsers = await User.findAll();
+    res.status(200).json(allUsers);
+  } catch (error) {
+    console.error("Error getting all users:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
-);
+});
 
 // Get all posts for a user
 router.get("/:id/posts", async (req, res) => {
@@ -139,22 +140,18 @@ router.get(
 );
 
 // Get a user by id
-router.get(
-  "/:id",
-  verifyAuthorization(User, "id", ["admin"]),
-  async (req, res) => {
-    const userId = req.params.id;
-    try {
-      const user = await User.findByPk(userId);
-      user
-        ? res.status(200).json(user)
-        : res.status(404).json({ message: "User not found" });
-    } catch (error) {
-      console.error("Error getting user by id:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
+router.get("/:id", verifyAdmin(), async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const user = await User.findByPk(userId);
+    user
+      ? res.status(200).json(user)
+      : res.status(404).json({ message: "User not found" });
+  } catch (error) {
+    console.error("Error getting user by id:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
-);
+});
 
 // Get a user by username
 router.get("/username/:username", async (req, res) => {
@@ -166,6 +163,20 @@ router.get("/username/:username", async (req, res) => {
       : res.status(404).json({ message: "User not found" });
   } catch (error) {
     console.error("Error getting user by username:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Search for a user by query
+router.get("/search/:query", async (req, res) => {
+  const { query } = req.params;
+  try {
+    const users = await User.findAll({
+      where: { username: { [Op.like]: `%${query}%` } },
+    });
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error searching for user:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -385,37 +396,35 @@ router.post("/update/password", isAuthenticated, async (req, res) => {
   }
 });
 
-// Update a user
-router.post(
-  "/:id",
-  verifyAuthorization(User, "id", ["admin"]),
-  async (req, res) => {
-    const user = req.body;
-    const userId = req.params.id;
-    try {
-      await User.update(user, { where: { id: userId } });
-      res.status(200).json(user);
-    } catch (error) {
-      console.error("Error updating user:", error);
-      res.status(500).json({ error: "Internal server error" });
+// Update a user role
+router.post("/:id/update-role", verifyAdmin(), async (req, res) => {
+  const { id } = req.params;
+  const { role } = req.body;
+
+  try {
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    await user.update({ role });
+    res.status(200).json({ message: "User role updated successfully" });
+  } catch (error) {
+    console.error("Error updating user role:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
-);
+});
 
 // Delete all accounts over 1hr old with unconfirmed emails
-router.delete(
-  "/delete-unconfirmed",
-  verifyAuthorization(User, "id", ["admin"]),
-  async (req, res) => {
-    try {
-      await deleteUnconfirmedUsers();
-      res.status(200).json({ message: "Unconfirmed accounts deleted" });
-    } catch (error) {
-      console.error("Error deleting unconfirmed accounts:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
+router.delete("/delete-unconfirmed", verifyAdmin(), async (req, res) => {
+  try {
+    await deleteUnconfirmedUsers();
+    res.status(200).json({ message: "Unconfirmed accounts deleted" });
+  } catch (error) {
+    console.error("Error deleting unconfirmed accounts:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
-);
+});
 
 // Delete a user account
 router.delete(
