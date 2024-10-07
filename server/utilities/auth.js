@@ -26,22 +26,15 @@ function verifyAuthorization(model, resourceIdParam, permissions) {
         .json({ message: "Unauthorized: Please log in and try again." });
     }
 
-    // If the user has the required role, continue
-    if (permissions.includes(userRole)) {
-      return next();
-    }
-
     const resourceId = req.params[resourceIdParam];
-    const resource = await model.findByPk(resourceId);
 
-    // If the resource exists, check if the user is the owner of the resource
-    if (resource && resource.userId === req.user.id) {
-      req.resource = resource;
+    // If the user has one of the required roles, allow access
+    if (permissions.includes(userRole)) {
       return next();
     }
 
-    // Check if the user has one of the required roles
-    if (permissions.includes(userRole)) {
+    // If the resourceId matches the user's own id, allow access
+    if (resourceId === req.user.id.toString()) {
       return next();
     }
 

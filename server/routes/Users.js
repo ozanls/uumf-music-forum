@@ -237,12 +237,10 @@ router.post("/register", async (req, res) => {
       { expiresIn: "1h" }
     );
     sendConfirmationEmail(newUser, token);
-    res
-      .status(201)
-      .json({
-        message:
-          "Signup successful! Check your email to verify your account before logging in.",
-      });
+    res.status(201).json({
+      message:
+        "Signup successful! Check your email to verify your account before logging in.",
+    });
   } catch (error) {
     console.error("Error during registration:", error);
     res.status(400).json({ message: error.message });
@@ -284,20 +282,16 @@ router.post("/forgot-password", async (req, res) => {
       );
       await sendForgotPasswordEmail(user, token);
     }
-    res
-      .status(200)
-      .json({
-        message:
-          "If an account with that email exists, you'll receive a password reset email shortly...",
-      });
+    res.status(200).json({
+      message:
+        "If an account with that email exists, you'll receive a password reset email shortly...",
+    });
   } catch (error) {
     console.error("Error in forgot-password route:", error);
-    res
-      .status(500)
-      .json({
-        message:
-          "An error occurred while processing your request. Please try again later.",
-      });
+    res.status(500).json({
+      message:
+        "An error occurred while processing your request. Please try again later.",
+    });
   }
 });
 
@@ -311,12 +305,10 @@ router.post("/reset-password/:token", async (req, res) => {
   }
 
   if (!passwordRegex.test(newPassword)) {
-    return res
-      .status(400)
-      .json({
-        message:
-          "Password must be at least 8 characters long and contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character",
-      });
+    return res.status(400).json({
+      message:
+        "Password must be at least 8 characters long and contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character",
+    });
   }
 
   if (newPassword !== confirmPassword) {
@@ -450,11 +442,9 @@ router.delete(
           }
           req.session.destroy((err) => {
             if (err) {
-              return res
-                .status(500)
-                .json({
-                  error: "An error occurred while destroying the session",
-                });
+              return res.status(500).json({
+                error: "An error occurred while destroying the session",
+              });
             }
             res
               .status(200)

@@ -9,31 +9,31 @@ function PostCard(props) {
   const [postDeleted, setPostDeleted] = useState(false);
   const [tags, setTags] = useState([]);
 
-  const handleDelete = (postId) => {
-    setPostToDelete(postId);
-  };
+  // const handleDelete = (postId) => {
+  //   setPostToDelete(postId);
+  // };
 
-  const cancelDelete = () => {
-    setPostToDelete(null);
-  };
+  // const cancelDelete = () => {
+  //   setPostToDelete(null);
+  // };
 
-  const confirmDelete = async () => {
-    try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_SERVER_URL}/posts/${postToDelete}`,
-        { withCredentials: true }
-      );
-      if (response.status === 204) {
-        setPosts(posts.filter((post) => post.id !== postToDelete));
-        setPostDeleted(true);
-      }
-    } catch (error) {
-      console.error("Error deleting post:", error);
-      setError("Error deleting post");
-    }
+  // const confirmDelete = async () => {
+  //   try {
+  //     const response = await axios.delete(
+  //       `${import.meta.env.VITE_SERVER_URL}/posts/${postToDelete}`,
+  //       { withCredentials: true }
+  //     );
+  //     if (response.status === 204) {
+  //       setPosts(posts.filter((post) => post.id !== postToDelete));
+  //       setPostDeleted(true);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting post:", error);
+  //     setError("Error deleting post");
+  //   }
 
-    window.location.reload();
-  };
+  //   window.location.reload();
+  // };
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -62,9 +62,12 @@ function PostCard(props) {
       </p>
       <p>{formatDate(post.createdAt)} </p>
       <p>
-        {" "}
         {post.likes}
         {post.likes === 1 ? " like" : " likes"}
+      </p>
+      <p>
+        {post.comments}
+        {post.comments === 1 ? " comment" : " comments"}
       </p>
       {tags.length !== 0 && (
         <>
@@ -75,7 +78,7 @@ function PostCard(props) {
           </ul>
         </>
       )}
-      {user && (user.id === post.userId || user.role === "admin") && (
+      {/* {user && (user.id === post.userId || user.role === "admin") && (
         <>
           <button onClick={() => handleDelete(post.id)}>Delete</button>
           {postToDelete === post.id && (
@@ -87,7 +90,7 @@ function PostCard(props) {
           )}
           {postDeleted && <p>Post deleted</p>}
         </>
-      )}
+      )} */}
     </>
   );
 }

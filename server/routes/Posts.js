@@ -12,11 +12,7 @@ const {
   sequelize,
 } = require("../models");
 const getRandomColor = require("../utilities/GetRandomColor");
-const {
-  isAuthenticated,
-  verifyAuthorization,
-  isOwner,
-} = require("../utilities/auth");
+const { isAuthenticated, verifyAuthorization } = require("../utilities/auth");
 const { Op } = require("sequelize");
 
 // Get all posts
@@ -217,7 +213,7 @@ router.get("/:id/liked", isAuthenticated, async (req, res) => {
   }
 });
 
-// Save a post
+// Save/unsave a post
 router.post("/:id/save", isAuthenticated, async (req, res) => {
   const postId = req.params.id;
   const userId = req.user.id;
@@ -226,15 +222,14 @@ router.post("/:id/save", isAuthenticated, async (req, res) => {
   try {
     const existingSave = await Save.findOne({ where: { postId, userId } });
     if (existingSave) {
-      await transaction.rollback();
-      return res
-        .status(400)
-        .json({ message: "You have already saved this post" });
+      await Save.destroy({ where: { postId, userId }, transaction });
+      await transaction.commit();
+      res.status(200).json({ message: "Post unsaved" });
+    } else {
+      const save = await Save.create({ postId, userId }, { transaction });
+      await transaction.commit();
+      res.status(201).json(save);
     }
-
-    const save = await Save.create({ postId, userId }, { transaction });
-    await transaction.commit();
-    res.status(201).json(save);
   } catch (error) {
     await transaction.rollback();
     console.error("Error saving post:", error);
@@ -242,28 +237,20 @@ router.post("/:id/save", isAuthenticated, async (req, res) => {
   }
 });
 
-// Unsave a post
-router.post("/:id/unsave", isAuthenticated, async (req, res) => {
+// Check if a post is saved by the user
+router.get("/:id/saved", isAuthenticated, async (req, res) => {
   const postId = req.params.id;
   const userId = req.user.id;
-  const transaction = await sequelize.transaction();
 
   try {
-    const saveDestroyed = await Save.destroy({
-      where: { postId, userId },
-      transaction,
-    });
-
-    if (saveDestroyed) {
-      await transaction.commit();
-      res.status(200).json({ message: "Post unsaved" });
+    const save = await Save.findOne({ where: { postId, userId } });
+    if (save) {
+      return res.status(200).json({ saved: true });
     } else {
-      await transaction.rollback();
-      res.status(404).json({ message: "Save not found" });
+      return res.status(200).json({ saved: false });
     }
   } catch (error) {
-    await transaction.rollback();
-    console.error("Error unsaving post:", error);
+    console.error("Error checking if post is saved:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

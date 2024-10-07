@@ -63,7 +63,7 @@ module.exports = {
           postId: 6,
           userId: 2,
           body: "Rapsody deserves way more recognition. Her lyricism and flow are top-tier.",
-          likes: 7,
+          likes: 0,
           status: "active",
           createdAt: new Date(),
           updatedAt: new Date(),

@@ -11,6 +11,7 @@ function PostDetails(props) {
   const [postToDelete, setPostToDelete] = useState(null);
   const [postDeleted, setPostDeleted] = useState(false);
   const [postLiked, setPostLiked] = useState(false);
+  const [postSaved, setPostSaved] = useState(false);
   const [likes, setLikes] = useState(0);
   const [toggleEdit, setToggleEdit] = useState(false);
   const [comments, setComments] = useState([]);
@@ -76,9 +77,22 @@ function PostDetails(props) {
         setError("Error fetching like status");
       }
     };
+    const fetchSaveStatus = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/posts/${postId}/saved`,
+          { withCredentials: true }
+        );
+        setPostSaved(response.data.saved);
+      } catch (error) {
+        console.error("Error fetching save status:", error);
+        setError("Error fetching save status");
+      }
+    };
 
     if (user) {
       fetchLikeStatus();
+      fetchSaveStatus();
     }
   }, [user, postId]);
 
@@ -140,7 +154,21 @@ function PostDetails(props) {
     }
   };
 
-  const handleSave = async (event) => {
+  const handleSave = async () => {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/posts/${postId}/save`,
+        {},
+        { withCredentials: true }
+      );
+      setPostSaved(!postSaved);
+    } catch (error) {
+      console.error("Error saving/unsaving post:", error);
+      setError("Error saving/unsaving post");
+    }
+  };
+
+  const handleEdit = async (event) => {
     event.preventDefault();
     const body = event.target.body.value.trim();
     const tags = event.target.tags.value
@@ -181,7 +209,7 @@ function PostDetails(props) {
         </>
       ) : (
         <>
-          <form onSubmit={handleSave}>
+          <form onSubmit={handleEdit}>
             <textarea name="body" id="body" defaultValue={post.body} />
             <label htmlFor="tags">Tags:</label>
             <input
@@ -215,6 +243,11 @@ function PostDetails(props) {
         {likes === 1 ? " like" : " likes"}
       </p>
 
+      <p>
+        {post.comments}
+        {post.comments === 1 ? " comment" : " comments"}
+      </p>
+
       {user &&
         postToDelete === null &&
         (postLiked ? (
@@ -223,8 +256,16 @@ function PostDetails(props) {
           <button onClick={handleLike}>Like</button>
         ))}
 
-      {user && user.id === post.userId && (
-        <button onClick={() => setToggleEdit(true)}>Edit</button>
+      {user &&
+        postToDelete === null &&
+        (postSaved ? (
+          <button onClick={handleSave}>Unsave</button>
+        ) : (
+          <button onClick={handleSave}>Save</button>
+        ))}
+
+      {user && !postToDelete && user.id === post.userId && (
+        <button onClick={() => setToggleEdit(!toggleEdit)}>Edit</button>
       )}
 
       {user && (user.id === post.userId || user.role === "admin") && (
