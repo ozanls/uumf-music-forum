@@ -52,33 +52,29 @@ function PostCard(props) {
   }, [post.id]);
 
   return (
-    <>
-      <a href={`/p/${post.id}`}>
+    <a href={`/p/${post.id}`}>
+      <div className="post-card">
         <h3>{post.title}</h3>
-      </a>
-      <p>
-        Posted by
-        <a href={`/u/${post.user.username}`}>{post.user.username}</a>
-      </p>
-      <p>{formatDate(post.createdAt)} </p>
-      <p>
-        {post.likes}
-        {post.likes === 1 ? " like" : " likes"}
-      </p>
-      <p>
-        {post.comments}
-        {post.comments === 1 ? " comment" : " comments"}
-      </p>
-      {tags.length !== 0 && (
-        <>
-          <ul className="tags-container">
-            {tags.map((tag) => (
-              <Tag key={tag.id} tag={tag.tag} />
-            ))}
-          </ul>
-        </>
-      )}
-      {/* {user && (user.id === post.userId || user.role === "admin") && (
+        {tags.length !== 0 && (
+          <>
+            <ul className="tags-container">
+              {tags.map((tag) => (
+                <Tag key={tag.id} tag={tag.tag} />
+              ))}
+            </ul>
+          </>
+        )}
+        <p>
+          Posted by
+          <a href={`/u/${post.user.username}`}>{post.user.username}</a>
+        </p>
+        <p>{formatDate(post.createdAt)} </p>
+        <p>
+          {post.likes}
+          {post.likes === 1 ? " like" : " likes"} · {post.comments}
+          {post.comments === 1 ? " comment" : " comments"}
+        </p>
+        {/* {user && (user.id === post.userId || user.role === "admin") && (
         <>
           <button onClick={() => handleDelete(post.id)}>Delete</button>
           {postToDelete === post.id && (
@@ -91,7 +87,8 @@ function PostCard(props) {
           {postDeleted && <p>Post deleted</p>}
         </>
       )} */}
-    </>
+      </div>
+    </a>
   );
 }
 

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import BoardCard from "../components/BoardCard";
 import axios from "axios";
 
-const BoardsList = () => {
+const BoardsList = (props) => {
+  const { user } = props;
   const [boards, setBoards] = useState([]);
 
   useEffect(() => {
@@ -22,16 +22,15 @@ const BoardsList = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Boards</h1>
+    <section className="boards">
       <ul>
         {boards.map((board) => (
           <li key={board.name}>
-            <BoardCard board={board} />
+            <BoardCard board={board} user={user} />
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   );
 };
 

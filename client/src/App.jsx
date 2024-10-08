@@ -9,6 +9,7 @@ import PostDetails from "./pages/PostDetails";
 import SearchResults from "./pages/SearchResults";
 import AdminMenu from "./pages/AdminMenu";
 import Nav from "./components/Nav";
+import Error from "./components/Error";
 import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
 import "./App.css";
@@ -38,50 +39,48 @@ function App() {
   }, []);
 
   return (
-    <>
-      <Router>
-        <Nav
-          user={user}
-          setUser={setUser}
-          isAuthenticated={isAuthenticated}
-          setIsAuthenticated={setIsAuthenticated}
+    <Router>
+      <Nav
+        user={user}
+        setUser={setUser}
+        isAuthenticated={isAuthenticated}
+        setIsAuthenticated={setIsAuthenticated}
+      />
+      {error && <Error error={error} />}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<h1>About</h1>} />
+        <Route path="/b" element={<BoardsList />} />
+        <Route
+          path="/b/:name"
+          element={<BoardDetails user={user} setError={setError} />}
         />
-        {error && <p>{error}</p>}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<h1>About</h1>} />
-          <Route path="/b" element={<BoardsList />} />
-          <Route
-            path="/b/:name"
-            element={<BoardDetails user={user} setError={setError} />}
-          />
-          <Route
-            path="/p/:postId"
-            element={<PostDetails user={user} setError={setError} />}
-          />
-          <Route
-            path="/t/:tagName"
-            element={<TagDetails user={user} setError={setError} />}
-          />
-          <Route
-            path="/s/:board/:query"
-            element={<SearchResults user={user} setError={setError} />}
-          />
-          <Route
-            path="/u/:username"
-            element={<UserDetails user={user} setError={setError} />}
-          />
-          <Route
-            path="/new"
-            element={<CreatePost user={user} setError={setError} />}
-          />
-          <Route
-            path="/admin"
-            element={<AdminMenu user={user} setError={setError} />}
-          />
-        </Routes>
-      </Router>
-    </>
+        <Route
+          path="/p/:postId"
+          element={<PostDetails user={user} setError={setError} />}
+        />
+        <Route
+          path="/t/:tagName"
+          element={<TagDetails user={user} setError={setError} />}
+        />
+        <Route
+          path="/s/:board/:query"
+          element={<SearchResults user={user} setError={setError} />}
+        />
+        <Route
+          path="/u/:username"
+          element={<UserDetails user={user} setError={setError} />}
+        />
+        <Route
+          path="/new"
+          element={<CreatePost user={user} setError={setError} />}
+        />
+        <Route
+          path="/admin"
+          element={<AdminMenu user={user} setError={setError} />}
+        />
+      </Routes>
+    </Router>
   );
 }
 

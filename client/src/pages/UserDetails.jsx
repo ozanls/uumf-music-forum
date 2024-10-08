@@ -78,7 +78,7 @@ function UserDetails(props) {
   }
 
   return (
-    <div>
+    <section className="user">
       <h1>
         {userData.username} ({userData.role})
       </h1>
@@ -87,7 +87,7 @@ function UserDetails(props) {
       <img src={`.././public/${userData.image}`} alt={userData.username} />
 
       <h2>Posts</h2>
-      <ul>
+      <ul className="posts">
         {posts.map((post) => (
           <li key={post.id}>
             <PostCard post={post} user={user} />
@@ -116,7 +116,7 @@ function UserDetails(props) {
           </ul>
         </>
       )}
-    </div>
+    </section>
   );
 }
 

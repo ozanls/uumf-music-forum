@@ -35,7 +35,7 @@ function SearchResults(props) {
   }, [board, query]);
 
   return (
-    <div>
+    <section className="search-results">
       <h1>Search Results</h1>
       <p>Board: {board}</p>
       <p>Search query: {query}</p>
@@ -52,7 +52,7 @@ function SearchResults(props) {
           ))}
         </ul>
       )}
-    </div>
+    </section>
   );
 }
 

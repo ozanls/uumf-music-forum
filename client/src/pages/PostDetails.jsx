@@ -197,7 +197,7 @@ function PostDetails(props) {
   }
 
   return (
-    <div>
+    <section className="post">
       <p>
         Posted by
         <a href={`/u/${post.user.username}`}>{post.user.username}</a>
@@ -300,14 +300,14 @@ function PostDetails(props) {
         <p>Log in to comment on this post</p>
       )}
       {comments.length === 0 && <p>No comments yet</p>}
-      <ul>
+      <ul className="comments">
         {comments.map((comment) => (
           <li key={comment.id}>
             <Comment comment={comment} user={user} setError={setError} />
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   );
 }
 

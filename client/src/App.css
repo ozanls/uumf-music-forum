@@ -1,17 +1,45 @@
+h1,
+h2 {
+  font-family: "Dela Gothic One", sans-serif;
+}
+
+h3,
 * {
+  font-family: "Kanit", sans-serif;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+}
+
+* {
+  list-style: none;
   font-family: "Kanit", sans-serif;
+}
+
+a,
+a:visited {
+  color: inherit;
   text-decoration: none;
 }
 
-ul {
-  list-style-type: none;
+body {
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.error {
+  background-color: #ffa1a1;
+  color: #830000;
+  margin: 1em;
+  padding: 1em;
+  border: 1px solid black;
 }
 
 nav {
   display: flex;
+  width: 100vw;
   background-color: #000000;
   align-items: center;
   display: flex;
@@ -43,6 +71,7 @@ nav {
   border: 1px solid black;
   border-top: none;
   padding: 1em;
+  background-color: #ffffff;
 }
 
 .auth-form__signup,
@@ -57,16 +86,43 @@ nav {
   color: red;
 }
 
+.tag {
+  text-transform: "uppercase";
+  color: #ffffff;
+  border-radius: 0.5em;
+  padding: 0.1em;
+}
+
 .tags-container {
   display: flex;
   flex-direction: row;
   gap: 0.2em;
 }
 
-.board-tag {
-  display: block;
-  padding: 0.2em;
-  border-radius: 0.5em;
+.board__header {
+  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
+  padding: 4em;
   color: #ffffff;
-  cursor: pointer;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 1em;
+  width: 50vw;
+  margin: auto;
+}
+
+.posts,
+.comments {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.post-card,
+.comment {
+  border: 1px solid black;
+  padding: 1em;
 }

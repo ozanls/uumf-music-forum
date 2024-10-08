@@ -62,23 +62,28 @@ const BoardDetails = (props) => {
   }
 
   return (
-    <div>
-      <h1>{board.name}</h1>
-      <p>{board.description}</p>
-      {trendingTags.length !== 0 && (
-        <>
-          <h2>Trending Tags</h2>
-          <ul className="tags-container">
-            {trendingTags.map((tag) => (
-              <li key={tag.id}>
-                <Tag tag={tag.tag} />
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-      <h2>Posts</h2>
-      <ul>
+    <section className="board">
+      <div className="board__header">
+        <div className="board__header__left">
+          <span className="board__header__subtitle">/{board.name}/</span>
+          <h1 className="board__header__title">{board.description}</h1>
+        </div>
+        <div className="board__header__right">
+          {trendingTags.length !== 0 && (
+            <>
+              <h2>Trending Tags</h2>
+              <ul className="tags-container">
+                {trendingTags.map((tag) => (
+                  <li key={tag.id}>
+                    <Tag tag={tag.tag} />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      </div>
+      <ul className="posts">
         {posts.map((post) => (
           <li key={post.id}>
             <PostCard
@@ -90,7 +95,7 @@ const BoardDetails = (props) => {
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   );
 };
 
