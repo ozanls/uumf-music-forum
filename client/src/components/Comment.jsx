@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Username from "./Username";
 import formatDate from "../utilities/formatDate";
 
 function Comment(props) {
@@ -118,15 +119,15 @@ function Comment(props) {
           <button type="submit">Save</button>
         </form>
       )}
-      <p>
+      <span>
         Posted by
-        <a href={`/u/${comment.user.username}`}>{comment.user.username}</a>
-      </p>
-      <p>
+        <Username user={comment.user} />
+      </span>
+      <time>
         {formatDate(comment.createdAt)}
         {comment.createdAt !== comment.updatedAt &&
           ` (edited ${formatDate(comment.updatedAt)})`}
-      </p>
+      </time>
       <p>
         {likes}
         {likes === 1 ? " like" : " likes"}

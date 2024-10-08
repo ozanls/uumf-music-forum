@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Username from "./Username";
 import formatDate from "../utilities/formatDate";
 import Tag from "./Tag";
 import axios from "axios";
 
 function PostCard(props) {
-  const { post, user, setPosts, posts, setError } = props;
-  const [postToDelete, setPostToDelete] = useState(null);
-  const [postDeleted, setPostDeleted] = useState(false);
+  //const [postToDelete, setPostToDelete] = useState(null);
+  //const [postDeleted, setPostDeleted] = useState(false);
+  //const { user, setPosts, posts, } = props;
+  const { post, setError } = props;
   const [tags, setTags] = useState([]);
+  const navigate = useNavigate();
 
   // const handleDelete = (postId) => {
   //   setPostToDelete(postId);
@@ -51,30 +55,37 @@ function PostCard(props) {
     fetchTags();
   }, [post.id]);
 
+  const handleCardClick = () => {
+    navigate(`/p/${post.id}`);
+  };
+
   return (
-    <a href={`/p/${post.id}`}>
-      <div className="post-card">
-        <h3>{post.title}</h3>
-        {tags.length !== 0 && (
-          <>
-            <ul className="tags-container">
-              {tags.map((tag) => (
-                <Tag key={tag.id} tag={tag.tag} />
-              ))}
-            </ul>
-          </>
-        )}
-        <p>
-          Posted by
-          <a href={`/u/${post.user.username}`}>{post.user.username}</a>
-        </p>
-        <p>{formatDate(post.createdAt)} </p>
-        <p>
-          {post.likes}
-          {post.likes === 1 ? " like" : " likes"} · {post.comments}
-          {post.comments === 1 ? " comment" : " comments"}
-        </p>
-        {/* {user && (user.id === post.userId || user.role === "admin") && (
+    <div
+      className="post-card"
+      onClick={handleCardClick}
+      style={{ cursor: "pointer" }}
+    >
+      <h3>{post.title}</h3>
+      {tags.length !== 0 && (
+        <>
+          <ul className="tags">
+            {tags.map((tag) => (
+              <Tag key={tag.id} tag={tag.tag} />
+            ))}
+          </ul>
+        </>
+      )}
+      <span>
+        Posted by
+        <Username user={post.user} />
+      </span>
+      {"  "}· <time>{formatDate(post.createdAt)} </time>
+      <p>
+        {post.likes}
+        {post.likes === 1 ? " like" : " likes"} · {post.comments}
+        {post.comments === 1 ? " comment" : " comments"}
+      </p>
+      {/* {user && (user.id === post.userId || user.role === "admin") && (
         <>
           <button onClick={() => handleDelete(post.id)}>Delete</button>
           {postToDelete === post.id && (
@@ -87,8 +98,7 @@ function PostCard(props) {
           {postDeleted && <p>Post deleted</p>}
         </>
       )} */}
-      </div>
-    </a>
+    </div>
   );
 }
 

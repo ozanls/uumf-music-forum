@@ -82,7 +82,10 @@ function UserDetails(props) {
       <h1>
         {userData.username} ({userData.role})
       </h1>
-      <p>Member since {new Date(userData.createdAt).toLocaleDateString()}</p>
+      <span>
+        Member since{" "}
+        <time>{new Date(userData.createdAt).toLocaleDateString()}</time>
+      </span>
       <p>{userData.bio}</p>
       <img src={`.././public/${userData.image}`} alt={userData.username} />
 
@@ -96,7 +99,7 @@ function UserDetails(props) {
       </ul>
 
       <h2>Comments</h2>
-      <ul>
+      <ul className="comments">
         {comments.map((comment) => (
           <li key={comment.id}>
             <Comment comment={comment} user={user} />
@@ -107,7 +110,7 @@ function UserDetails(props) {
       {userData && user && userData.id === user.id && (
         <>
           <h2>Saved Posts</h2>
-          <ul>
+          <ul className="posts">
             {savedPosts.map((post) => (
               <li key={post.id}>
                 <PostCard post={post.post} user={user} />

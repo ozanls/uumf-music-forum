@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import formatDate from "../utilities/formatDate";
 import Comment from "../components/Comment";
+import Username from "../components/Username";
 import Tag from "../components/Tag";
 import axios from "axios";
 
@@ -198,10 +199,15 @@ function PostDetails(props) {
 
   return (
     <section className="post">
-      <p>
+      <span>
         Posted by
-        <a href={`/u/${post.user.username}`}>{post.user.username}</a>
-      </p>
+        <Username user={post.user} />
+        <time>
+          {formatDate(post.createdAt)}
+          {post.createdAt !== post.updatedAt &&
+            ` (edited ${formatDate(post.updatedAt)})`}
+        </time>
+      </span>
       <h1>{post.title}</h1>
       {!toggleEdit ? (
         <>
@@ -226,30 +232,20 @@ function PostDetails(props) {
         </>
       )}
       {!toggleEdit && tags.length !== 0 && (
-        <ul className="tags-container">
+        <ul className="tags">
           {tags.map((tag) => (
             <Tag key={tag.id} tag={tag.tag} />
           ))}
         </ul>
       )}
-      <p>
-        {formatDate(post.createdAt)}
-        {post.createdAt !== post.updatedAt &&
-          ` (edited ${formatDate(post.updatedAt)})`}
-      </p>
 
-      <p>
+      <span>
         {likes}
-        {likes === 1 ? " like" : " likes"}
-      </p>
-
-      <p>
-        {post.comments}
+        {likes === 1 ? " like" : " likes"} · {post.comments}
         {post.comments === 1 ? " comment" : " comments"}
-      </p>
+      </span>
 
       {user &&
-        postToDelete === null &&
         (postLiked ? (
           <button onClick={handleLike}>Unlike</button>
         ) : (
@@ -257,14 +253,13 @@ function PostDetails(props) {
         ))}
 
       {user &&
-        postToDelete === null &&
         (postSaved ? (
           <button onClick={handleSave}>Unsave</button>
         ) : (
           <button onClick={handleSave}>Save</button>
         ))}
 
-      {user && !postToDelete && user.id === post.userId && (
+      {user && user.id === post.userId && (
         <button onClick={() => setToggleEdit(!toggleEdit)}>Edit</button>
       )}
 
@@ -275,7 +270,7 @@ function PostDetails(props) {
           )}
           {postToDelete === post.id && (
             <div id="confirm-delete">
-              <p>Are you sure you want to delete this post?</p>
+              <span>Are you sure you want to delete this post?</span>
               <button onClick={confirmDelete}>Yes</button>
               <button onClick={cancelDelete}>Cancel</button>
             </div>

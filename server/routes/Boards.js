@@ -86,6 +86,18 @@ router.get("/:boardId/tags", async (req, res) => {
   }
 });
 
+// Return number of posts in a board
+router.get("/:boardId/count", async (req, res) => {
+  const boardId = req.params.boardId;
+  try {
+    const count = await Post.count({ where: { boardId } });
+    res.status(200).json({ count });
+  } catch (error) {
+    console.error("Error getting post count for board:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // Get all posts for a board
 router.get("/:boardId/posts", async (req, res) => {
   const boardId = req.params.boardId;

@@ -9,6 +9,7 @@ const BoardDetails = (props) => {
   const { name } = useParams();
   const [board, setBoard] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [postCount, setPostCount] = useState(0);
   const [trendingTags, setTrendingTags] = useState([]);
 
   useEffect(() => {
@@ -51,9 +52,21 @@ const BoardDetails = (props) => {
           setError("Error fetching posts");
         }
       };
+      const fetchPostCount = async () => {
+        try {
+          const response = await axios.get(
+            `${import.meta.env.VITE_SERVER_URL}/boards/${board.id}/count`
+          );
+          setPostCount(response.data.count);
+        } catch (error) {
+          console.error("Error fetching post count:", error);
+          setError("Error fetching post count");
+        }
+      };
 
       fetchTrendingTags();
       fetchPosts();
+      fetchPostCount();
     }
   }, [board]);
 
@@ -62,17 +75,18 @@ const BoardDetails = (props) => {
   }
 
   return (
-    <section className="board">
+    <section className="board-details">
       <div className="board__header">
         <div className="board__header__left">
           <span className="board__header__subtitle">/{board.name}/</span>
           <h1 className="board__header__title">{board.description}</h1>
+          <span className="board__header__subtitle">{postCount} posts</span>
         </div>
         <div className="board__header__right">
           {trendingTags.length !== 0 && (
             <>
               <h2>Trending Tags</h2>
-              <ul className="tags-container">
+              <ul className="tags">
                 {trendingTags.map((tag) => (
                   <li key={tag.id}>
                     <Tag tag={tag.tag} />

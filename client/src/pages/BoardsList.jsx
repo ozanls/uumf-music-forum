@@ -22,8 +22,8 @@ const BoardsList = (props) => {
   }, []);
 
   return (
-    <section className="boards">
-      <ul>
+    <section className="boards-list">
+      <ul className="boards">
         {boards.map((board) => (
           <li key={board.name}>
             <BoardCard board={board} user={user} />

@@ -68,11 +68,11 @@ function TagDetails(props) {
   }
 
   return (
-    <div>
+    <section className="tag-details">
       <h1>#{tag.name}</h1>
       {numberOfPosts === 1 ? <p>1 post</p> : <p>{numberOfPosts} posts</p>}
       {posts.length > 0 && (
-        <ul>
+        <ul className="posts">
           {posts.map((post) => (
             <li key={post.post.id}>
               <PostCard
@@ -85,7 +85,7 @@ function TagDetails(props) {
           ))}
         </ul>
       )}
-    </div>
+    </section>
   );
 }
 

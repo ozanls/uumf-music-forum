@@ -91,18 +91,17 @@ nav {
   color: #ffffff;
   border-radius: 0.5em;
   padding: 0.1em;
+  transition: 0.2s;
 }
 
-.tags-container {
+.tag:hover {
+  transform: perspective(1px) scale(1.1);
+}
+
+.tags {
   display: flex;
   flex-direction: row;
   gap: 0.2em;
-}
-
-.board__header {
-  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
-  padding: 4em;
-  color: #ffffff;
 }
 
 section {
@@ -115,14 +114,34 @@ section {
 }
 
 .posts,
-.comments {
+.comments,
+.boards {
   display: flex;
   flex-direction: column;
   gap: 1em;
 }
 
 .post-card,
+.board-card,
 .comment {
   border: 1px solid black;
   padding: 1em;
+}
+
+.board-card {
+  display: flex;
+  flex-direction: column;
+  color: #ffffff;
+  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
+  row-gap: 1em;
+}
+
+.board__header {
+  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
+  padding: 4em;
+  color: #ffffff;
+}
+
+.username:hover {
+  color: #9e0091;
 }
