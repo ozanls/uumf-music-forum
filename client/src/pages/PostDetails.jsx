@@ -292,7 +292,7 @@ function PostDetails(props) {
           <button type="submit">Submit</button>
         </form>
       ) : (
-        <p>Log in to comment on this post</p>
+        <p>Sign Up or Log in to comment on this post</p>
       )}
       {comments.length === 0 && <p>No comments yet</p>}
       <ul className="comments">

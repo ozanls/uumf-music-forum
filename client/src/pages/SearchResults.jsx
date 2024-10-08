@@ -44,7 +44,7 @@ function SearchResults(props) {
 
       {message && <p>{message}</p>}
       {posts && posts.length > 0 && (
-        <ul>
+        <ul className="posts">
           {posts.map((post) => (
             <li key={post.id}>
               <PostCard post={post} user={user} posts={posts} />

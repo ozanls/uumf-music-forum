@@ -133,18 +133,13 @@ function AdminMenu(props) {
           <h2>Create a board</h2>
           <form onSubmit={handleSubmitBoard}>
             <label htmlFor="name">Board Name:</label>
-            <input
-              type="text"
-              name="name"
-              id="name"
-              placeholder="Enter board name (e.g. rhh)"
-            />
+            <input type="text" name="name" id="name" placeholder="(e.g. rhh)" />
             <label htmlFor="description">Board Description:</label>
             <input
               type="textarea"
               name="description"
               id="description"
-              placeholder="Enter board description (e.g. Rap & Hip-Hop)"
+              placeholder="(e.g. Rap & Hip-Hop)"
             />
             <button type="submit">Create Board</button>
           </form>
