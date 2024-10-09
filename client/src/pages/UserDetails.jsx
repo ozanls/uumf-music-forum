@@ -107,7 +107,7 @@ function UserDetails(props) {
         ))}
       </ul>
 
-      {userData && user && userData.id === user.id && (
+      {userData && user && userData.id === user.id && savedPosts.length > 0 && (
         <>
           <h2>Saved Posts</h2>
           <ul className="posts">
