@@ -110,7 +110,7 @@ router.get("/:id/comments", async (req, res) => {
 // Get all saved posts for a user
 router.get(
   "/:id/saved",
-  verifyAuthorization(User, "id", ["admin"]),
+  verifyAuthorization(Post, "id", ["admin"]),
   async (req, res) => {
     const userId = req.params.id;
 

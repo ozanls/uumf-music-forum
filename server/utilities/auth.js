@@ -48,11 +48,9 @@ function verifyAuthorization(model, resourceIdParam, permissions) {
       }
 
       // If none of the above conditions are met, deny access
-      res
-        .status(403)
-        .json({
-          message: "Forbidden: You do not have access to this resource.",
-        });
+      res.status(403).json({
+        message: "Forbidden: You do not have access to this resource.",
+      });
     } catch (error) {
       console.error("Error verifying authorization:", error);
       res.status(500).json({ message: "Internal server error." });
