@@ -5,6 +5,10 @@ import Comment from "../components/Comment";
 import Username from "../components/Username";
 import Tag from "../components/Tag";
 import axios from "axios";
+import LikeButton from "../components/buttons/LikeButton";
+import UnlikeButton from "../components/buttons/UnlikeButton";
+import BasicButton from "../components/buttons/BasicButton";
+import DeleteButton from "../components/buttons/DeleteButton";
 
 function PostDetails(props) {
   const { postId } = useParams();
@@ -239,46 +243,59 @@ function PostDetails(props) {
         </ul>
       )}
 
-      <span>
-        {likes}
-        {likes === 1 ? " like" : " likes"} · {post.comments}
-        {post.comments === 1 ? " comment" : " comments"}
-      </span>
+      <div className="stats">
+        <span className="stat-icon">
+          <i className="fa-solid fa-heart like"></i> {likes}
+        </span>
+        <span className="stat-icon">
+          <i className="fa-solid fa-comment icon"></i>
+          {post.comments}
+        </span>
+      </div>
 
-      {user &&
-        (postLiked ? (
-          <button onClick={handleLike}>Unlike</button>
-        ) : (
-          <button onClick={handleLike}>Like</button>
-        ))}
+      <div className="post__actions">
+        {user &&
+          (postLiked ? (
+            <UnlikeButton handleAction={handleLike} text=" Unlike" />
+          ) : (
+            <LikeButton handleAction={handleLike} text=" Like" />
+          ))}
 
-      {user &&
-        (postSaved ? (
-          <button onClick={handleSave}>Unsave</button>
-        ) : (
-          <button onClick={handleSave}>Save</button>
-        ))}
+        {user &&
+          (postSaved ? (
+            <BasicButton handleAction={handleSave} text=" Unsave" />
+          ) : (
+            <BasicButton handleAction={handleSave} text=" Save" />
+          ))}
 
-      {user && user.id === post.userId && (
-        <button onClick={() => setToggleEdit(!toggleEdit)}>Edit</button>
-      )}
+        {user && user.id === post.userId && (
+          <BasicButton
+            handleAction={() => setToggleEdit(!toggleEdit)}
+            text=" Edit"
+          />
+        )}
 
-      {user && (user.id === post.userId || user.role === "admin") && (
-        <>
-          {postToDelete !== post.id && (
-            <button onClick={() => handleDelete(post.id)}>Delete</button>
-          )}
-          {postToDelete === post.id && (
-            <div id="confirm-delete">
-              <span>Are you sure you want to delete this post?</span>
-              <button onClick={confirmDelete}>Yes</button>
-              <button onClick={cancelDelete}>Cancel</button>
-            </div>
-          )}
-          {postDeleted && <p>Post deleted</p>}
-        </>
-      )}
-
+        {user && (user.id === post.userId || user.role === "admin") && (
+          <>
+            {postToDelete !== post.id && (
+              <DeleteButton
+                handleAction={() => handleDelete(post.id)}
+                text="Delete"
+              />
+            )}
+            {postToDelete === post.id && (
+              <>
+                <span>Are you sure you want to delete this post?</span>
+                <button className="delete-button" onClick={confirmDelete}>
+                  Yes
+                </button>
+                <BasicButton handleAction={cancelDelete} text="Cancel" />
+              </>
+            )}
+            {postDeleted && <p>Post deleted</p>}
+          </>
+        )}
+      </div>
       <h2>Comments</h2>
       {user ? (
         <form onSubmit={handleSubmit}>

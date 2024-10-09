@@ -80,11 +80,15 @@ function PostCard(props) {
         <Username user={post.user} />
       </span>
       {"  "}· <time>{formatDate(post.createdAt)} </time>
-      <p>
-        {post.likes}
-        {post.likes === 1 ? " like" : " likes"} · {post.comments}
-        {post.comments === 1 ? " comment" : " comments"}
-      </p>
+      <div className="stats">
+        <span className="stat-icon">
+          <i className="fa-solid fa-heart like"></i> {post.likes}
+        </span>
+        <span className="stat-icon">
+          <i className="fa-solid fa-comment icon"></i>
+          {post.comments}
+        </span>
+      </div>
       {/* {user && (user.id === post.userId || user.role === "admin") && (
         <>
           <button onClick={() => handleDelete(post.id)}>Delete</button>

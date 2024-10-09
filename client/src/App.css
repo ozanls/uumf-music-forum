@@ -1,3 +1,5 @@
+/* Global rules */
+
 h1,
 h2 {
   font-family: "Dela Gothic One", sans-serif;
@@ -29,6 +31,63 @@ body {
   margin: 0;
 }
 
+/* Buttons */
+
+button {
+  font-family: "Kanit", sans-serif;
+  font-weight: bold;
+  padding: 0.2em;
+  cursor: pointer;
+}
+
+.basic-button {
+  background-color: #ffffff;
+  border: 1px solid #000000;
+  color: #000000;
+  padding: 0.5em;
+  border-radius: 0.2em;
+  transition: 0.2s;
+}
+
+.like-button,
+.unlike-button {
+  background-color: #001352;
+  color: #ffffff;
+  border: none;
+  padding: 0.5em;
+  border-radius: 0.2em;
+  transition: 0.2s;
+}
+
+.like,
+.unlike {
+  color: #e22d2d;
+}
+
+.delete-button {
+  background-color: #c72e19;
+  color: #ffffff;
+  border: 1px solid #830000;
+  padding: 0.5em;
+  border-radius: 0.2em;
+  transition: 0.2s;
+}
+
+.basic-button:hover {
+  background-color: #dadada;
+}
+
+.like-button:hover,
+.unlike-button:hover {
+  background-color: #5c70b1;
+}
+
+.delete-button:hover {
+  background-color: #9b2d2d;
+}
+
+/* Error message */
+
 .error {
   background-color: #ffa1a1;
   color: #830000;
@@ -37,6 +96,7 @@ body {
   border: 1px solid black;
 }
 
+/* Navbar & Login/Signup */
 nav {
   display: flex;
   width: 100vw;
@@ -86,22 +146,28 @@ nav {
   color: red;
 }
 
+/* Tags */
 .tag {
   color: #ffffff;
-  border-radius: 0.5em;
+  border-radius: 0.25em;
   padding: 0.2em;
   transition: 0.2s;
-  text-transform: uppercase;
-}
-
-.tag:hover {
-  transform: perspective(1px) scale(1.1);
+  text-transform: lowercase;
+  font-weight: bold;
 }
 
 .tags {
   display: flex;
   flex-direction: row;
   gap: 0.5em;
+}
+.tag__header {
+  padding: 4em;
+  color: #ffffff;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #000000;
+  text-transform: lowercase;
 }
 
 section {
@@ -128,6 +194,12 @@ section {
   padding: 4em;
 }
 
+.post__actions,
+.comment__actions {
+  display: flex;
+  gap: 0.5em;
+}
+
 .board-card {
   display: flex;
   flex-direction: column;
@@ -145,14 +217,18 @@ section {
   border: 1px solid #000000;
 }
 
-.tag__header {
-  padding: 4em;
-  color: #ffffff;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #000000;
-}
-
 .username:hover {
   color: #9e0091;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
+.stat-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.2em;
 }

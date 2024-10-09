@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import BasicButton from "./buttons/BasicButton";
 import axios from "axios";
 
 function Auth(props) {
@@ -51,8 +52,8 @@ function Auth(props) {
           </>
         ) : (
           <>
-            <button onClick={toggleLogin}>Log In</button>
-            <button onClick={toggleSignup}>Sign Up</button>
+            <BasicButton handleAction={toggleLogin} text="Log In" />
+            <BasicButton handleAction={toggleSignup} text="Sign Up" />
           </>
         )}
       </div>

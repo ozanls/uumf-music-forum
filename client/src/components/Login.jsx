@@ -58,7 +58,9 @@ function Login() {
             <input type="text" id="email" name="email" />
             <label htmlFor="password">Password</label>
             <input type="password" id="password" name="password" />
-            <button type="submit">Log In</button>
+            <button className="basic-button" type="submit">
+              Log In
+            </button>
           </form>
           <a onClick={() => setShowResetPassword(true)}>
             Forgot your password?

@@ -1,4 +1,4 @@
-function lightenHex(hex, percent) {
+function alterHex(hex, percent) {
   const num = parseInt(hex.slice(1), 16),
     amt = Math.round(2.55 * percent),
     R = (num >> 16) + amt,
@@ -15,4 +15,4 @@ function lightenHex(hex, percent) {
     .toUpperCase()}`;
 }
 
-export default lightenHex;
+export default alterHex;

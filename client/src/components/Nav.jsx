@@ -4,6 +4,7 @@ import Auth from "./Auth";
 import Login from "./Login";
 import Signup from "./Signup";
 import logo from "../assets/logo.png";
+import BasicButton from "./buttons/BasicButton";
 
 function Nav(props) {
   const [showLogin, setShowLogin] = useState(false);
@@ -18,14 +19,16 @@ function Nav(props) {
         </a>
         <SearchBar />
         {user && (
-          <button onClick={() => (window.location.href = "/new")}>
-            + Create a Post
-          </button>
+          <BasicButton
+            onClick={() => (window.location.href = "/new")}
+            text="+ Create a Post"
+          />
         )}
         {user && user.role === "admin" && (
-          <button onClick={() => (window.location.href = "/admin")}>
-            Admin Menu
-          </button>
+          <BasicButton
+            onClick={() => (window.location.href = "/admin")}
+            text="Admin Menu"
+          />
         )}
         <Auth
           user={user}

@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Username from "./Username";
 import formatDate from "../utilities/formatDate";
+import LikeButton from "./buttons/LikeButton";
+import BasicButton from "./buttons/BasicButton";
+import UnlikeButton from "./buttons/UnlikeButton";
+import DeleteButton from "./buttons/DeleteButton";
 
 function Comment(props) {
   const { comment, user, setError } = props;
@@ -128,38 +132,43 @@ function Comment(props) {
         {comment.createdAt !== comment.updatedAt &&
           ` (edited ${formatDate(comment.updatedAt)})`}
       </time>
-      <p>
-        {likes}
-        {likes === 1 ? " like" : " likes"}
-      </p>
 
-      {!toggleEdit && !commentToDelete && user && (
-        <>
-          {commentLiked ? (
-            <button onClick={handleLike}>Unlike</button>
-          ) : (
-            <button onClick={handleLike}>Like</button>
-          )}
-          {user.id === comment.userId && (
-            <button onClick={() => setToggleEdit(true)}>Edit</button>
-          )}
-          {(user.id === comment.userId || user.role === "admin") && (
-            <button
-              onClick={() => handleDelete(comment.id)}
-              data-comment-id={comment.id}
-            >
-              Delete
-            </button>
-          )}
-        </>
-      )}
-      {commentToDelete === comment.id && (
-        <div id="confirm-delete">
-          <p>Are you sure you want to delete this?</p>
-          <button onClick={() => confirmDelete(comment.id)}>Yes</button>
-          <button onClick={() => cancelDelete()}>Cancel</button>
-        </div>
-      )}
+      <div className="comment__actions">
+        {!toggleEdit && !commentToDelete && user && (
+          <>
+            {commentLiked ? (
+              <UnlikeButton handleAction={handleLike} text={likes} />
+            ) : (
+              <LikeButton handleAction={handleLike} text={likes} />
+            )}
+
+            {user.id === comment.userId && (
+              <BasicButton
+                handleAction={() => setToggleEdit(true)}
+                text="Edit"
+              />
+            )}
+            {(user.id === comment.userId || user.role === "admin") && (
+              <DeleteButton
+                handleAction={() => handleDelete(comment.id)}
+                text="Delete"
+              />
+            )}
+          </>
+        )}
+
+        {commentToDelete === comment.id && (
+          <>
+            <span>Are you sure you want to delete this comment?</span>
+
+            <DeleteButton
+              handleAction={() => confirmDelete(comment.id)}
+              text="Yes"
+            />
+            <BasicButton handleAction={() => cancelDelete()} text="Cancel" />
+          </>
+        )}
+      </div>
     </div>
   );
 }

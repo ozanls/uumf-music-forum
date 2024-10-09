@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PostCard from "../components/PostCard";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import lightenHex from "../utilities/lightenHex";
+import alterHex from "../utilities/alterHex";
 
 function TagDetails(props) {
   const { tagName } = useParams();
@@ -75,7 +75,7 @@ function TagDetails(props) {
     );
   }
 
-  const lighterHex = lightenHex(tag.hexCode, 20);
+  const lighterHex = alterHex(tag.hexCode, 20);
 
   return (
     <section className="tag-details">
