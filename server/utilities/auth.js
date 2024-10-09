@@ -33,15 +33,30 @@ function verifyAuthorization(model, resourceIdParam, permissions) {
       return next();
     }
 
-    // If the resourceId matches the user's own id, allow access
-    if (resourceId === req.user.id.toString()) {
-      return next();
-    }
+    try {
+      // Fetch the resource from the database
+      const resource = await model.findByPk(resourceId);
 
-    // If none of the above conditions are met, deny access
-    res
-      .status(403)
-      .json({ message: "Forbidden: You do not have access to this resource." });
+      // If the resource does not exist, return 404
+      if (!resource) {
+        return res.status(404).json({ message: "Resource not found." });
+      }
+
+      // If the resource's author matches the user's ID, allow access
+      if (resource.userId === req.user.id) {
+        return next();
+      }
+
+      // If none of the above conditions are met, deny access
+      res
+        .status(403)
+        .json({
+          message: "Forbidden: You do not have access to this resource.",
+        });
+    } catch (error) {
+      console.error("Error verifying authorization:", error);
+      res.status(500).json({ message: "Internal server error." });
+    }
   };
 }
 
