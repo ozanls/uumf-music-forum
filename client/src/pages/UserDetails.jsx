@@ -107,16 +107,20 @@ function UserDetails(props) {
         ))}
       </ul>
 
-      {userData && user && userData.id === user.id && savedPosts.length > 0 && (
+      {userData && user && userData.id === user.id && savedPosts && (
         <>
           <h2>Saved Posts</h2>
-          <ul className="posts">
-            {savedPosts.map((post) => (
-              <li key={post.id}>
-                <PostCard post={post.post} user={user} />
-              </li>
-            ))}
-          </ul>
+          {savedPosts.length === 0 ? (
+            <p>No saved posts.</p>
+          ) : (
+            <ul className="posts">
+              {savedPosts.map((post) => (
+                <li key={post.id}>
+                  <PostCard post={post.post} user={user} />
+                </li>
+              ))}
+            </ul>
+          )}
         </>
       )}
     </section>
