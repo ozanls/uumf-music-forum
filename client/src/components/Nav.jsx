@@ -20,13 +20,13 @@ function Nav(props) {
         <SearchBar />
         {user && (
           <BasicButton
-            onClick={() => (window.location.href = "/new")}
+            handleAction={() => (window.location.href = "/new")}
             text="+ Create a Post"
           />
         )}
         {user && user.role === "admin" && (
           <BasicButton
-            onClick={() => (window.location.href = "/admin")}
+            handleAction={() => (window.location.href = "/admin")}
             text="Admin Menu"
           />
         )}
