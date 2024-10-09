@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import PostCard from "../components/PostCard";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import lightenHex from "../utilities/lightenHex";
 
 function TagDetails(props) {
   const { tagName } = useParams();
@@ -60,17 +61,37 @@ function TagDetails(props) {
 
   if (!tag) {
     return (
-      <div>
-        <h1>#{tagName}</h1>
-        <p>0 posts</p>
-      </div>
+      <section className="tag-details">
+        <div
+          className="tag__header"
+          style={{
+            backgroundImage: `linear-gradient(45deg, #000000 0%, #767676 100%)`,
+          }}
+        >
+          <h1>#{tagName}</h1>
+          <span>0 posts</span>
+        </div>
+      </section>
     );
   }
 
+  const lighterHex = lightenHex(tag.hexCode, 20);
+
   return (
     <section className="tag-details">
-      <h1>#{tag.name}</h1>
-      {numberOfPosts === 1 ? <p>1 post</p> : <p>{numberOfPosts} posts</p>}
+      <div
+        className="tag__header"
+        style={{
+          backgroundImage: `linear-gradient(45deg, ${tag.hexCode} 0%, ${lighterHex} 100%)`,
+        }}
+      >
+        <h1>#{tag.name}</h1>
+        {numberOfPosts === 1 ? (
+          <span>1 post</span>
+        ) : (
+          <span>{numberOfPosts} posts</span>
+        )}
+      </div>
       {posts.length > 0 && (
         <ul className="posts">
           {posts.map((post) => (

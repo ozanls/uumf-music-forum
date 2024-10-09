@@ -125,7 +125,7 @@ section {
 .board-card,
 .comment {
   border: 1px solid black;
-  padding: 1em;
+  padding: 4em;
 }
 
 .board-card {
@@ -133,7 +133,6 @@ section {
   flex-direction: column;
   color: #ffffff;
   background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
-  row-gap: 1em;
 }
 
 .board__header {
@@ -143,6 +142,15 @@ section {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border: 1px solid #000000;
+}
+
+.tag__header {
+  padding: 4em;
+  color: #ffffff;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #000000;
 }
 
 .username:hover {

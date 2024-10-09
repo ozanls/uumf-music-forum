@@ -85,7 +85,7 @@ const BoardDetails = (props) => {
         <div className="board__header__right">
           {trendingTags.length !== 0 && (
             <>
-              <h2>Trending Tags</h2>
+              <h3>Trending Tags</h3>
               <ul className="tags">
                 {trendingTags.map((tag) => (
                   <li key={tag.id}>

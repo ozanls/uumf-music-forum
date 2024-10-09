@@ -30,7 +30,7 @@ function AdminMenu(props) {
   // Check if user is an admin
   // If not, display an error message
   useEffect(() => {
-    if (!user || !user.role === "admin") {
+    if (!user || user.role !== "admin") {
       setError("You must be an admin to access this page.");
     } else {
       setError("");

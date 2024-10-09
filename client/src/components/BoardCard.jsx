@@ -3,8 +3,8 @@ function BoardCard(props) {
 
   return (
     <div className="board-card">
-      <h2>/{board.name}/</h2>
-      <h3>{board.description}</h3>
+      <span>/{board.name}/</span>
+      <h2>{board.description}</h2>
       <a href={`/b/${board.name}`}>
         <button>Visit /{board.name}/</button>
       </a>
