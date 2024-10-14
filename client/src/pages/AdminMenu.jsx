@@ -8,6 +8,12 @@ function AdminMenu(props) {
   const [users, setUsers] = useState([]);
   const [boards, setBoards] = useState([]);
   const [roles, setRoles] = useState({});
+  const [boardFormData, setBoardFormData] = useState({
+    name: "",
+    description: "",
+  });
+  const [editingBoard, setEditingBoard] = useState(null);
+
   const navigate = useNavigate();
 
   // Fetch all boards
@@ -37,10 +43,28 @@ function AdminMenu(props) {
     }
   }, [user, setError]);
 
+  // Handle board form change
+  const handleBoardChange = (e) => {
+    const { name, value } = e.target;
+    setBoardFormData({
+      ...boardFormData,
+      [name]: value,
+    });
+  };
+  // Handle editing board change
+  const handleEditBoardChange = (e, boardId) => {
+    const { name, value } = e.target;
+    setBoards((prevBoards) =>
+      prevBoards.map((board) =>
+        board.id === boardId ? { ...board, [name]: value } : board
+      )
+    );
+  };
+
   // Create a board
   // POST /boards
   // Request body: { name: string, description: string }
-  const handleSubmitBoard = async (event) => {
+  const createBoard = async (event) => {
     event.preventDefault();
     const name = event.target.name.value;
     const description = event.target.description.value;
@@ -59,11 +83,27 @@ function AdminMenu(props) {
         },
         { withCredentials: true }
       );
-      setError("");
-      navigate(`/b/${name}`);
+      window.location.reload();
     } catch (error) {
       console.error("Error creating board:", error);
       setError("Error creating board", error);
+    }
+  };
+
+  // Save edited board
+  const saveEditedBoard = async (boardId) => {
+    const board = boards.find((board) => board.id === boardId);
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/boards/${boardId}`,
+        { name: board.name, description: board.description },
+        { withCredentials: true }
+      );
+      setEditingBoard(null);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error updating board:", error);
+      setError("Error updating board");
     }
   };
 
@@ -124,36 +164,124 @@ function AdminMenu(props) {
     }
   };
 
+  const deleteBoard = async (boardId) => {
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_SERVER_URL}/boards/${boardId}`,
+        { withCredentials: true }
+      );
+      setBoards((prevBoards) =>
+        prevBoards.filter((board) => board.id !== boardId)
+      );
+      setError("Board has been deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting board:", error);
+      setError("Error deleting board");
+    }
+  };
+
   // If user is an admin, display the admin menu
   return (
     <section className="admin-menu">
       {user && user.role === "admin" ? (
         <>
           <h1>Admin Menu</h1>
-          <h2>Create a board</h2>
-          <form onSubmit={handleSubmitBoard}>
-            <label htmlFor="name">Board Name:</label>
-            <input type="text" name="name" id="name" placeholder="(e.g. rhh)" />
-            <label htmlFor="description">Board Description:</label>
-            <input
-              type="textarea"
-              name="description"
-              id="description"
-              placeholder="(e.g. Rap & Hip-Hop)"
-            />
-            <button type="submit">Create Board</button>
-          </form>
-
           <h2>Boards</h2>
-          <ul>
-            {boards.map((board) => (
-              <li key={board.name}>
-                <BoardCard board={board} />
-              </li>
-            ))}
-          </ul>
-
-          <h2>Search for a user</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {boards.map((board) => (
+                <tr key={board.id}>
+                  <td>
+                    {editingBoard === board.id ? (
+                      <input
+                        type="text"
+                        name="name"
+                        value={board.name}
+                        onChange={(e) => handleEditBoardChange(e, board.id)}
+                      />
+                    ) : (
+                      board.name
+                    )}
+                  </td>
+                  <td>
+                    {editingBoard === board.id ? (
+                      <input
+                        type="text"
+                        name="description"
+                        value={board.description}
+                        onChange={(e) => handleEditBoardChange(e, board.id)}
+                      />
+                    ) : (
+                      board.description
+                    )}
+                  </td>
+                  <td>
+                    {editingBoard === board.id ? (
+                      <>
+                        <button onClick={() => saveEditedBoard(board.id)}>
+                          Save
+                        </button>
+                        <button onClick={() => setEditingBoard(null)}>
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <a href={`/b/${board.name}`}>
+                          <button>Visit /{board.name}/</button>
+                        </a>
+                        <button onClick={() => setEditingBoard(board.id)}>
+                          Edit
+                        </button>
+                        <button onClick={() => deleteBoard(board.id)}>
+                          Delete
+                        </button>
+                      </>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <form onSubmit={createBoard}>
+            <table>
+              <tbody>
+                <tr>
+                  <td>
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      placeholder="(e.g. rhh)"
+                      value={boardFormData.name}
+                      onChange={handleBoardChange}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="textarea"
+                      name="description"
+                      id="description"
+                      placeholder="(e.g. Rap & Hip-Hop)"
+                      value={boardFormData.description}
+                      onChange={handleBoardChange}
+                    />
+                  </td>
+                  <td>
+                    <button type="submit">Create Board</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </form>
+          <h2>Users</h2>
           <form onSubmit={handleUserSearch}>
             <input
               type="text"
@@ -212,7 +340,6 @@ function AdminMenu(props) {
           )}
         </>
       ) : (
-        // If not an admin, display a return button
         <button onClick={() => navigate(-1)}>Go Back</button>
       )}
     </section>
