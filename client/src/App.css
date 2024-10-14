@@ -34,19 +34,20 @@ body {
 /* Buttons */
 
 button {
-  font-family: "Georama", sans-serif;
   font-weight: bold;
   padding: 0.2em;
   cursor: pointer;
-}
-
-.basic-button {
   background-color: #ffffff;
   border: 1px solid #001352;
   color: #001352;
   padding: 0.5em;
   border-radius: 0.2em;
   transition: 0.2s;
+  margin: 0.2em;
+}
+
+button:hover {
+  background-color: #dadada;
 }
 
 .like-button,
@@ -73,10 +74,6 @@ button {
   transition: 0.2s;
 }
 
-.basic-button:hover {
-  background-color: #dadada;
-}
-
 .like-button:hover,
 .unlike-button:hover {
   background-color: #5c70b1;
@@ -88,9 +85,25 @@ button {
 
 /* Error message */
 
-.error {
+.error-message {
   background-color: #ffa1a1;
   color: #830000;
+  margin: 1em;
+  padding: 1em;
+  border: 1px solid black;
+}
+
+.success-message {
+  background-color: #a1ffa9;
+  color: #00832c;
+  margin: 1em;
+  padding: 1em;
+  border: 1px solid black;
+}
+
+.info-message {
+  background-color: #a1c9ff;
+  color: #004a8f;
   margin: 1em;
   padding: 1em;
   border: 1px solid black;
@@ -190,7 +203,6 @@ section {
 .post__actions,
 .comment__actions {
   display: flex;
-  gap: 0.5em;
 }
 
 .board-card {

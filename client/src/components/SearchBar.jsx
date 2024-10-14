@@ -48,9 +48,7 @@ function SearchBar() {
         ))}
       </select>
       <input type="text" name="query" placeholder="Search..." />
-      <button className="basic-button" type="submit">
-        Search
-      </button>
+      <button type="submit">Search</button>
     </form>
   );
 }

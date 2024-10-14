@@ -21,7 +21,7 @@ function PostDetails(props) {
   const [toggleEdit, setToggleEdit] = useState(false);
   const [comments, setComments] = useState([]);
   const [tags, setTags] = useState([]);
-  const { user, setError } = props;
+  const { user, setMessage } = props;
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -33,7 +33,7 @@ function PostDetails(props) {
         setLikes(response.data.likes);
       } catch (error) {
         console.error("Error fetching post:", error);
-        setError("Error fetching post");
+        setMessage({ type: "error", message: "Error fetching post" });
       }
     };
 
@@ -49,7 +49,7 @@ function PostDetails(props) {
         setComments(response.data);
       } catch (error) {
         console.error("Error fetching comments:", error);
-        setError("Error fetching comments");
+        setMessage({ type: "error", message: "Error fetching comments" });
       }
     };
 
@@ -61,7 +61,7 @@ function PostDetails(props) {
         setTags(response.data);
       } catch (error) {
         console.error("Error fetching tags:", error);
-        setError("Error fetching tags");
+        setMessage({ type: "error", message: "Error fetching tags" });
       }
     };
 
@@ -79,7 +79,7 @@ function PostDetails(props) {
         setPostLiked(response.data.liked);
       } catch (error) {
         console.error("Error fetching like status:", error);
-        setError("Error fetching like status");
+        setMessage({ type: "error", message: "Error fetching like status" });
       }
     };
     const fetchSaveStatus = async () => {
@@ -91,7 +91,7 @@ function PostDetails(props) {
         setPostSaved(response.data.saved);
       } catch (error) {
         console.error("Error fetching save status:", error);
-        setError("Error fetching save status");
+        setMessage({ type: "error", message: "Error fetching save status" });
       }
     };
 
@@ -119,7 +119,7 @@ function PostDetails(props) {
       window.location.href = "/";
     } catch (error) {
       console.error("Error deleting post:", error);
-      setError("Error deleting post");
+      setMessage({ type: "error", message: "Error deleting post" });
     }
   };
 
@@ -136,7 +136,7 @@ function PostDetails(props) {
       );
     } catch (error) {
       console.error("Error creating comment:", error);
-      setError("Error creating comment");
+      setMessage({ type: "error", message: "Error creating comment" });
     }
 
     window.location.reload();
@@ -155,7 +155,7 @@ function PostDetails(props) {
         : setLikes((prevLikes) => prevLikes + 1);
     } catch (error) {
       console.error("Error liking/unliking post:", error);
-      setError("Error liking/unliking post");
+      setMessage({ type: "error", message: "Error liking/unliking post" });
     }
   };
 
@@ -169,7 +169,7 @@ function PostDetails(props) {
       setPostSaved(!postSaved);
     } catch (error) {
       console.error("Error saving/unsaving post:", error);
-      setError("Error saving/unsaving post");
+      setMessage({ type: "error", message: "Error saving/unsaving post" });
     }
   };
 
@@ -193,7 +193,7 @@ function PostDetails(props) {
       window.location.reload();
     } catch (error) {
       console.error("Error updating post:", error);
-      setError("Error updating post");
+      setMessage({ type: "error", message: "Error updating post" });
     }
   };
 
@@ -314,7 +314,7 @@ function PostDetails(props) {
       <ul className="comments">
         {comments.map((comment) => (
           <li key={comment.id}>
-            <Comment comment={comment} user={user} setError={setError} />
+            <Comment comment={comment} user={user} setMessage={setMessage} />
           </li>
         ))}
       </ul>

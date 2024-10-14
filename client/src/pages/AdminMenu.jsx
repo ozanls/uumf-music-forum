@@ -5,7 +5,7 @@ import AdminBoards from "../components/admin/AdminBoards";
 import AdminUsers from "../components/admin/AdminUsers";
 
 function AdminMenu(props) {
-  const { user, setError } = props;
+  const { user, setMessage } = props;
   const [users, setUsers] = useState([]);
   const [boards, setBoards] = useState([]);
   const [roles, setRoles] = useState({});
@@ -14,6 +14,7 @@ function AdminMenu(props) {
     description: "",
   });
   const [editingBoard, setEditingBoard] = useState(null);
+  const [boardToDelete, setBoardToDelete] = useState(null);
 
   const navigate = useNavigate();
 
@@ -38,11 +39,14 @@ function AdminMenu(props) {
   // If not, display an error message
   useEffect(() => {
     if (!user || user.role !== "admin") {
-      setError("You must be an admin to access this page.");
+      setMessage({
+        type: "error",
+        message: "You must be an admin to access this page.",
+      });
     } else {
-      setError("");
+      setMessage({ type: "", message: "" });
     }
-  }, [user, setError]);
+  }, [user, setMessage]);
 
   // Handle board form change
   const handleBoardChange = (e) => {
@@ -62,6 +66,16 @@ function AdminMenu(props) {
     );
   };
 
+  // Set board to delete
+  const handleBoardDelete = (boardId) => {
+    setBoardToDelete(boardId);
+  };
+
+  // Cancel board delete
+  const cancelBoardDelete = () => {
+    setBoardToDelete(null);
+  };
+
   // Create a board
   // POST /boards
   // Request body: { name: string, description: string }
@@ -71,7 +85,10 @@ function AdminMenu(props) {
     const description = event.target.description.value;
 
     if (!name || !description) {
-      setError("Name and description are required");
+      setMessage({
+        type: "error",
+        message: "Name and description are required",
+      });
       return;
     }
 
@@ -87,7 +104,7 @@ function AdminMenu(props) {
       window.location.reload();
     } catch (error) {
       console.error("Error creating board:", error);
-      setError("Error creating board", error);
+      setMessage({ type: "error", message: "Error creating board", error });
     }
   };
 
@@ -101,10 +118,13 @@ function AdminMenu(props) {
         { withCredentials: true }
       );
       setEditingBoard(null);
-      window.location.reload();
+      setMessage({
+        type: "success",
+        message: "Board has been updated successfully!",
+      });
     } catch (error) {
       console.error("Error updating board:", error);
-      setError("Error updating board");
+      setMessage({ type: "error", message: "Error updating board" });
     }
   };
 
@@ -115,7 +135,7 @@ function AdminMenu(props) {
     const username = event.target.username.value;
 
     if (!username) {
-      setError("Username is required");
+      setMessage({ type: "error", message: "Username is required" });
       return;
     }
 
@@ -124,10 +144,10 @@ function AdminMenu(props) {
         `${import.meta.env.VITE_SERVER_URL}/users/search/${username}`
       );
       setUsers(response.data);
-      setError("");
+      setMessage({ type: "", message: "" });
     } catch (error) {
       console.error("Error searching for user:", error);
-      setError("Error searching for user");
+      setMessage({ type: "error", message: "Error searching for user" });
     }
   };
 
@@ -158,10 +178,13 @@ function AdminMenu(props) {
         delete newRoles[userId];
         return newRoles;
       });
-      setError("User has been updated successfully!");
+      setMessage({
+        type: "success",
+        message: "User has been updated successfully!",
+      });
     } catch (error) {
       console.error("Error updating user:", error);
-      setError("Error updating user");
+      setMessage({ type: "error", message: "Error updating user" });
     }
   };
 
@@ -174,10 +197,13 @@ function AdminMenu(props) {
       setBoards((prevBoards) =>
         prevBoards.filter((board) => board.id !== boardId)
       );
-      setError("Board has been deleted successfully!");
+      setMessage({
+        type: "success",
+        message: "Board has been deleted successfully!",
+      });
     } catch (error) {
       console.error("Error deleting board:", error);
-      setError("Error deleting board");
+      setMessage({ type: "error", message: "Error deleting board" });
     }
   };
 
@@ -197,6 +223,9 @@ function AdminMenu(props) {
             createBoard={createBoard}
             boardFormData={boardFormData}
             handleBoardChange={handleBoardChange}
+            boardToDelete={boardToDelete}
+            handleBoardDelete={handleBoardDelete}
+            cancelBoardDelete={cancelBoardDelete}
           />
           <AdminUsers
             users={users}

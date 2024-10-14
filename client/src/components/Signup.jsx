@@ -40,7 +40,7 @@ function Signup() {
       if (error.response.data.message) {
         setMessage(error.response.data.message);
       } else {
-        setMessage("Signup failed, try again.");
+        setMessage({ type: "error", message: "Signup failed, try again." });
       }
       setShowMessage(true);
     }

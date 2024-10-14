@@ -21,7 +21,10 @@ function ResetPassword(props) {
       if (error.response.data.message) {
         setMessage(error.response.data.message);
       } else {
-        setMessage("Error resetting password, try again.");
+        setMessage({
+          type: "error",
+          message: "Error resetting password, try again.",
+        });
       }
       setShowMessage(true);
       console.error("Error resetting password:", error);

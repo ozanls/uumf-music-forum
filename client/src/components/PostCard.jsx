@@ -9,7 +9,7 @@ function PostCard(props) {
   //const [postToDelete, setPostToDelete] = useState(null);
   //const [postDeleted, setPostDeleted] = useState(false);
   //const { user, setPosts, posts, } = props;
-  const { post, setError } = props;
+  const { post, setMessage } = props;
   const [tags, setTags] = useState([]);
   const navigate = useNavigate();
 
@@ -33,7 +33,7 @@ function PostCard(props) {
   //     }
   //   } catch (error) {
   //     console.error("Error deleting post:", error);
-  //     setError("Error deleting post");
+  //           setMessage({ type: "error", message: "Error deleting post");
   //   }
 
   //   window.location.reload();
@@ -48,7 +48,7 @@ function PostCard(props) {
         setTags(response.data);
       } catch (error) {
         console.error("Error fetching tags:", error);
-        setError("Error fetching tags");
+        setMessage({ type: "error", message: "Error fetching tags" });
       }
     };
 

@@ -9,7 +9,7 @@ import PostDetails from "./pages/PostDetails";
 import SearchResults from "./pages/SearchResults";
 import AdminMenu from "./pages/AdminMenu";
 import Nav from "./components/Nav";
-import Error from "./components/Error";
+import Message from "./components/Message";
 import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
 import TermsAndConditions from "./pages/TermsAndConditions";
@@ -19,7 +19,7 @@ import "./App.css";
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
+  const [message, setMessage] = useState({ type: "", message: "" });
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -48,38 +48,40 @@ function App() {
         isAuthenticated={isAuthenticated}
         setIsAuthenticated={setIsAuthenticated}
       />
-      {error && <Error error={error} />}
+      {message.message && (
+        <Message type={message.type} message={message.message} />
+      )}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<h1>About</h1>} />
         <Route path="/b" element={<BoardsList />} />
         <Route
           path="/b/:name"
-          element={<BoardDetails user={user} setError={setError} />}
+          element={<BoardDetails user={user} setMessage={setMessage} />}
         />
         <Route
           path="/p/:postId"
-          element={<PostDetails user={user} setError={setError} />}
+          element={<PostDetails user={user} setMessage={setMessage} />}
         />
         <Route
           path="/b/:boardName/:tagName"
-          element={<TagDetails user={user} setError={setError} />}
+          element={<TagDetails user={user} setMessage={setMessage} />}
         />
         <Route
           path="/s/:board/:query"
-          element={<SearchResults user={user} setError={setError} />}
+          element={<SearchResults user={user} setMessage={setMessage} />}
         />
         <Route
           path="/u/:username"
-          element={<UserDetails user={user} setError={setError} />}
+          element={<UserDetails user={user} setMessage={setMessage} />}
         />
         <Route
           path="/new"
-          element={<CreatePost user={user} setError={setError} />}
+          element={<CreatePost user={user} setMessage={setMessage} />}
         />
         <Route
           path="/admin"
-          element={<AdminMenu user={user} setError={setError} />}
+          element={<AdminMenu user={user} setMessage={setMessage} />}
         />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/rules" element={<Rules />} />

@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function CreatePost(props) {
-  const { user, setError } = props;
+  const { user, setMessage } = props;
   const [boards, setBoards] = useState([]);
   const navigate = useNavigate();
 
@@ -27,11 +27,11 @@ function CreatePost(props) {
 
   useEffect(() => {
     if (!user) {
-      setError("Log in to create a post");
+      setMessage({ type: "error", message: "Log in to create a post" });
     } else {
-      setError("");
+      setMessage({ type: "", message: "" });
     }
-  }, [user, setError]);
+  }, [user, setMessage]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -44,7 +44,7 @@ function CreatePost(props) {
       .filter((tag) => tag);
 
     if (!title || !body) {
-      setError("Title and body are required");
+      setMessage({ type: "error", message: "Title and body are required" });
       return;
     }
 
@@ -64,7 +64,7 @@ function CreatePost(props) {
       const post = response.data;
       navigate(`/p/${post.id}`);
     } catch (error) {
-      setError("Error creating post:", error);
+      setMessage({ type: "error", message: "Error creating post:", error });
     }
   };
 

@@ -26,7 +26,10 @@ function Login() {
 
       if (response.status === 200) {
         console.log("Login successful:", response);
-        setMessage("Login successful! Please wait...");
+        setMessage({
+          type: "success",
+          message: "Login successful! Please wait...",
+        });
         setShowMessage(true);
         window.location.reload();
       } else {
@@ -58,9 +61,7 @@ function Login() {
             <input type="text" id="email" name="email" />
             <label htmlFor="password">Password</label>
             <input type="password" id="password" name="password" />
-            <button className="basic-button" type="submit">
-              Log In
-            </button>
+            <button type="submit">Log In</button>
           </form>
           <a onClick={() => setShowResetPassword(true)}>
             Forgot your password?

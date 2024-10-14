@@ -8,7 +8,7 @@ import UnlikeButton from "./buttons/UnlikeButton";
 import DeleteButton from "./buttons/DeleteButton";
 
 function Comment(props) {
-  const { comment, user, setError } = props;
+  const { comment, user, setMessage } = props;
   const [toggleEdit, setToggleEdit] = useState(false);
   const [editedComment, setEditedComment] = useState(comment.body);
   const [commentLiked, setCommentLiked] = useState(false);
@@ -25,7 +25,7 @@ function Comment(props) {
         setCommentLiked(response.data.liked);
       } catch (error) {
         console.error("Error fetching like status:", error);
-        setError("Error fetching like status");
+        setMessage({ type: "error", message: "Error fetching like status" });
       }
     };
 
@@ -47,7 +47,7 @@ function Comment(props) {
         : setLikes((prevLikes) => prevLikes + 1);
     } catch (error) {
       console.error("Error liking/unliking comment:", error);
-      setError("Error liking/unliking comment");
+      setMessage({ type: "error", message: "Error liking/unliking comment" });
     }
   };
 
@@ -68,7 +68,7 @@ function Comment(props) {
       window.location.reload();
     } catch (error) {
       console.error("Error deleting comment:", error);
-      setError("Error deleting comment");
+      setMessage({ type: "error", message: "Error deleting comment" });
     }
   };
 
@@ -78,8 +78,8 @@ function Comment(props) {
     const body = event.target.body.value.trim();
 
     if (!body) {
-      console.error("Comment is required");
-      setError("Comment is required");
+      console.error("Comment body is required");
+      setMessage({ type: "error", message: "Comment is required" });
       return;
     }
 
@@ -98,7 +98,7 @@ function Comment(props) {
       window.location.reload();
     } catch (error) {
       console.error("Error editing comment:", error);
-      setError("Error editing comment");
+      setMessage({ type: "error", message: "Error editing comment" });
     }
   };
 

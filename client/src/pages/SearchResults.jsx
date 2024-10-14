@@ -20,7 +20,7 @@ function SearchResults(props) {
           setPosts([]);
         } else {
           setPosts(response.data);
-          setMessage("");
+          setMessage({ type: "", message: "" });
         }
       } catch (error) {
         console.error("Error fetching search results:", error);

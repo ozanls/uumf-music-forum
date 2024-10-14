@@ -9,16 +9,16 @@ function TagDetails(props) {
   const [tag, setTag] = useState(null);
   const [numberOfPosts, setNumberOfPosts] = useState(0);
   const [posts, setPosts] = useState([]);
-  const { user, setError } = props;
+  const { user, setMessage } = props;
 
   useEffect(() => {
     const fetchTag = async () => {
       if (!boardName) {
-        setError("Board name is not defined");
+        setMessage({ type: "error", message: "Board name is not defined" });
         return;
       }
       if (!tagName) {
-        setError("Tag ID is not defined");
+        setMessage({ type: "error", message: "Tag ID is not defined" });
         return;
       }
 
@@ -110,7 +110,7 @@ function TagDetails(props) {
                 post={post.post}
                 user={user}
                 posts={posts}
-                setError={setError}
+                setMessage={setMessage}
               />
             </li>
           ))}

@@ -5,7 +5,7 @@ import Tag from "../components/Tag";
 import axios from "axios";
 
 const BoardDetails = (props) => {
-  const { user, setError } = props;
+  const { user, setMessage } = props;
   const { name } = useParams();
   const [board, setBoard] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -21,7 +21,7 @@ const BoardDetails = (props) => {
         setBoard(response.data);
       } catch (error) {
         console.error("Error fetching board:", error);
-        setError("Error fetching board");
+        setMessage({ type: "error", message: "Error fetching board" });
       }
     };
 
@@ -38,7 +38,7 @@ const BoardDetails = (props) => {
           setTrendingTags(response.data);
         } catch (error) {
           console.error("Error fetching tags:", error);
-          setError("Error fetching tags");
+          setMessage({ type: "error", message: "Error fetching tags" });
         }
       };
       const fetchPosts = async () => {
@@ -49,7 +49,7 @@ const BoardDetails = (props) => {
           setPosts(response.data);
         } catch (error) {
           console.error("Error fetching posts:", error);
-          setError("Error fetching posts");
+          setMessage({ type: "error", message: "Error fetching posts" });
         }
       };
       const fetchPostCount = async () => {
@@ -60,7 +60,7 @@ const BoardDetails = (props) => {
           setPostCount(response.data.count);
         } catch (error) {
           console.error("Error fetching post count:", error);
-          setError("Error fetching post count");
+          setMessage({ type: "error", message: "Error fetching post count" });
         }
       };
 
@@ -104,7 +104,7 @@ const BoardDetails = (props) => {
               post={post}
               user={user}
               posts={posts}
-              setError={setError}
+              setMessage={setMessage}
             />
           </li>
         ))}

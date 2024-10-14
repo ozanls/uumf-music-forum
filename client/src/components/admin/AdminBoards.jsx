@@ -1,3 +1,6 @@
+import BasicButton from "../buttons/BasicButton";
+import DeleteButton from "../buttons/DeleteButton";
+
 function AdminBoards(props) {
   const {
     boards,
@@ -9,11 +12,45 @@ function AdminBoards(props) {
     createBoard,
     boardFormData,
     handleBoardChange,
+    boardToDelete,
+    handleBoardDelete,
+    cancelBoardDelete,
   } = props;
 
   return (
     <>
       <h2>Boards</h2>
+      <form onSubmit={createBoard}>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  placeholder="(e.g. rhh)"
+                  value={boardFormData.name}
+                  onChange={handleBoardChange}
+                />
+              </td>
+              <td>
+                <input
+                  type="textarea"
+                  name="description"
+                  id="description"
+                  placeholder="(e.g. Rap & Hip-Hop)"
+                  value={boardFormData.description}
+                  onChange={handleBoardChange}
+                />
+              </td>
+              <td>
+                <button type="submit">Create Board</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
       <table>
         <thead>
           <tr>
@@ -52,24 +89,45 @@ function AdminBoards(props) {
               <td>
                 {editingBoard === board.id ? (
                   <>
-                    <button onClick={() => saveEditedBoard(board.id)}>
-                      Save
-                    </button>
-                    <button onClick={() => setEditingBoard(null)}>
-                      Cancel
-                    </button>
+                    <BasicButton
+                      text="Save"
+                      handleAction={() => saveEditedBoard(board.id)}
+                    />
+
+                    <BasicButton
+                      text="Cancel"
+                      handleAction={() => setEditingBoard(null)}
+                    />
                   </>
                 ) : (
                   <>
-                    <a href={`/b/${board.name}`}>
-                      <button>Visit /{board.name}/</button>
-                    </a>
-                    <button onClick={() => setEditingBoard(board.id)}>
-                      Edit
-                    </button>
-                    <button onClick={() => deleteBoard(board.id)}>
-                      Delete
-                    </button>
+                    {boardToDelete === board.id ? (
+                      <>
+                        <span>Are you sure?</span>
+                        <DeleteButton
+                          text="Confirm Delete"
+                          handleAction={() => deleteBoard(board.id)}
+                        />
+                        <BasicButton
+                          text="Cancel"
+                          handleAction={cancelBoardDelete}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <a href={`/b/${board.name}`}>
+                          <button>Visit /{board.name}/</button>
+                        </a>
+                        <BasicButton
+                          text="Edit"
+                          handleAction={() => setEditingBoard(board.id)}
+                        />
+                        <DeleteButton
+                          text="Delete"
+                          handleAction={() => handleBoardDelete(board.id)}
+                        />
+                      </>
+                    )}
                   </>
                 )}
               </td>
@@ -77,37 +135,6 @@ function AdminBoards(props) {
           ))}
         </tbody>
       </table>
-      <form onSubmit={createBoard}>
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="(e.g. rhh)"
-                  value={boardFormData.name}
-                  onChange={handleBoardChange}
-                />
-              </td>
-              <td>
-                <input
-                  type="textarea"
-                  name="description"
-                  id="description"
-                  placeholder="(e.g. Rap & Hip-Hop)"
-                  value={boardFormData.description}
-                  onChange={handleBoardChange}
-                />
-              </td>
-              <td>
-                <button type="submit">Create Board</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </form>
     </>
   );
 }
