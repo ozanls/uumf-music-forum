@@ -17,7 +17,6 @@ module.exports = (sequelize) => {
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
       userId: {
         type: DataTypes.INTEGER,
@@ -27,7 +26,6 @@ module.exports = (sequelize) => {
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
     },
     {
@@ -41,6 +39,14 @@ module.exports = (sequelize) => {
       ],
     }
   );
+
+  CommentLike.associate = (models) => {
+    CommentLike.belongsTo(models.User, { foreignKey: "userId", as: "user" });
+    CommentLike.belongsTo(models.Comment, {
+      foreignKey: "commentId",
+      as: "comment",
+    });
+  };
 
   return CommentLike;
 };

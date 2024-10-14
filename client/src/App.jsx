@@ -12,6 +12,8 @@ import Nav from "./components/Nav";
 import Error from "./components/Error";
 import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
+import TermsAndConditions from "./pages/TermsAndConditions";
+import Rules from "./pages/Rules";
 import "./App.css";
 
 function App() {
@@ -60,7 +62,7 @@ function App() {
           element={<PostDetails user={user} setError={setError} />}
         />
         <Route
-          path="/t/:tagName"
+          path="/b/:boardName/:tagName"
           element={<TagDetails user={user} setError={setError} />}
         />
         <Route
@@ -79,6 +81,8 @@ function App() {
           path="/admin"
           element={<AdminMenu user={user} setError={setError} />}
         />
+        <Route path="/terms" element={<TermsAndConditions />} />
+        <Route path="/rules" element={<Rules />} />
       </Routes>
     </Router>
   );

@@ -83,6 +83,12 @@ router.get("/:postId/tags", async (req, res) => {
         {
           model: Tag,
           as: "tag",
+          include: [
+            {
+              model: Board,
+              as: "board",
+            },
+          ],
         },
       ],
     });
@@ -175,7 +181,12 @@ router.post("/:id/like", isAuthenticated, async (req, res) => {
     const existingLike = await PostLike.findOne({ where: { postId, userId } });
     if (existingLike) {
       await PostLike.destroy({ where: { postId, userId }, transaction });
-      await Post.decrement("likes", { where: { id: postId }, transaction });
+      await Post.decrement("likes", {
+        by: 1,
+        where: { id: postId },
+        transaction,
+        silent: true,
+      });
       await transaction.commit();
       return res.status(200).json({ message: "Post unliked" });
     } else {
@@ -184,6 +195,7 @@ router.post("/:id/like", isAuthenticated, async (req, res) => {
         by: 1,
         where: { id: postId },
         transaction,
+        silent: true,
       });
       await transaction.commit();
       return res.status(200).json({ message: "Post liked", like });

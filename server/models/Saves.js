@@ -43,8 +43,14 @@ module.exports = (sequelize) => {
   );
 
   Save.associate = (models) => {
-    Save.belongsTo(models.Post, { foreignKey: "postId", as: "post" });
-    Save.belongsTo(models.User, { foreignKey: "userId", as: "user" });
+    Save.belongsTo(models.User, {
+      foreignKey: "userId",
+      as: "user",
+    });
+    Save.belongsTo(models.Post, {
+      foreignKey: "postId",
+      as: "post",
+    });
   };
 
   return Save;

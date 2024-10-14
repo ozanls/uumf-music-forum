@@ -48,8 +48,16 @@ module.exports = (sequelize) => {
     Comment.belongsTo(models.User, {
       foreignKey: "userId",
       as: "user",
-      onDelete: "CASCADE",
-      // onUpdate: 'CASCADE'
+    });
+
+    Comment.belongsTo(models.Post, {
+      foreignKey: "postId",
+      as: "post",
+    });
+
+    Comment.hasMany(models.CommentLike, {
+      foreignKey: "commentId",
+      as: "comment-likes",
     });
   };
 

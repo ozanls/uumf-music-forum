@@ -37,7 +37,7 @@ router.post("/:id", isAuthenticated, async (req, res) => {
 
   try {
     await Comment.create({ ...comment, postId }, { transaction });
-    await post.increment("comments", { by: 1, transaction });
+    await post.increment("comments", { by: 1, transaction, silent: true });
     await transaction.commit();
     res.status(201).json(comment);
   } catch (error) {
@@ -83,7 +83,7 @@ router.delete(
 
     try {
       await Comment.destroy({ where: { id: commentId }, transaction });
-      await post.decrement("comments", { by: 1, transaction });
+      await post.decrement("comments", { by: 1, transaction, silent: true });
       await transaction.commit();
       res.status(200).json({ message: "Comment deleted" });
     } catch (error) {
@@ -109,6 +109,7 @@ router.post("/:id/like", isAuthenticated, async (req, res) => {
       await Comment.decrement("likes", {
         where: { id: commentId },
         transaction,
+        silent: true,
       });
       await transaction.commit();
       return res.status(200).json({ message: "Comment unliked" });
@@ -121,6 +122,7 @@ router.post("/:id/like", isAuthenticated, async (req, res) => {
         by: 1,
         where: { id: commentId },
         transaction,
+        silent: true,
       });
       await transaction.commit();
       return res.status(201).json({ message: "Comment liked", like });

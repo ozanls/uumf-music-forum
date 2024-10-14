@@ -51,30 +51,34 @@ module.exports = function (sequelize, DataTypes) {
   );
 
   Post.associate = (models) => {
-    Post.belongsToMany(models.Tag, {
-      through: models.PostTag,
-      foreignKey: "postId",
-      otherKey: "tagId",
-    });
-
-    Post.belongsToMany(models.User, {
-      through: models.PostLike,
-      foreignKey: "postId",
-      otherKey: "userId",
-    });
-
     Post.belongsTo(models.User, {
       foreignKey: "userId",
       as: "user",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
 
     Post.belongsTo(models.Board, {
       foreignKey: "boardId",
       as: "board",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+    });
+
+    Post.hasMany(models.Comment, {
+      foreignKey: "postId",
+      as: "postComment",
+    });
+
+    Post.hasMany(models.PostLike, {
+      foreignKey: "postId",
+      as: "postLike",
+    });
+
+    Post.hasMany(models.Save, {
+      foreignKey: "postId",
+      as: "postSave",
+    });
+
+    Post.hasMany(models.PostTag, {
+      foreignKey: "postId",
+      as: "postTag",
     });
   };
 

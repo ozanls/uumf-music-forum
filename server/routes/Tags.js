@@ -1,14 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const { Tag, PostTag, Post, User } = require("../models");
+const { Tag, PostTag, Post, User, Board } = require("../models");
 const getRandomColor = require("../utilities/GetRandomColor");
 const { verifyAuthorization } = require("../utilities/auth");
 
-// Get a tag by name
-router.get("/:name", async (req, res) => {
-  const tagName = req.params.name;
+// Get a tag by board and name
+router.get("/find/:boardName/:tagName", async (req, res) => {
+  const { boardName, tagName } = req.params;
   try {
-    const tag = await Tag.findOne({ where: { name: tagName } });
+    const board = await Board.findOne({ where: { name: boardName } });
+    if (!board) {
+      return res.status(404).json({ error: "Board not found" });
+    }
+
+    const tag = await Tag.findOne({
+      where: { name: tagName, boardId: board.id },
+    });
     if (tag) {
       res.status(200).json(tag);
     } else {
@@ -79,18 +86,13 @@ router.delete(
   }
 );
 
-// Return all posts for a tag by tag name
-router.get("/:tag/posts", async (req, res) => {
-  const tagName = req.params.tag;
+// Return all posts for a tag
+router.get("/posts/:id", async (req, res) => {
+  const tagId = req.params.id;
   try {
     const posts = await PostTag.findAll({
+      where: { tagId },
       include: [
-        {
-          model: Tag,
-          as: "tag",
-          where: { name: tagName },
-          attributes: [],
-        },
         {
           model: Post,
           as: "post",
@@ -104,6 +106,11 @@ router.get("/:tag/posts", async (req, res) => {
         },
       ],
     });
+
+    if (posts.length === 0) {
+      return res.status(404).json({ error: "No posts found for this tag" });
+    }
+
     res.status(200).json(posts);
   } catch (error) {
     console.error("Error getting posts for tag:", error);
@@ -112,10 +119,10 @@ router.get("/:tag/posts", async (req, res) => {
 });
 
 // Return number of entries for a tag by tag name
-router.get("/:name/count", async (req, res) => {
-  const tagName = req.params.name;
+router.get("/count/:id", async (req, res) => {
+  const tagId = req.params.id;
   try {
-    const tag = await Tag.findOne({ where: { name: tagName } });
+    const tag = await Tag.findByPk(tagId);
     if (!tag) {
       return res.status(404).json({ error: "Tag not found" });
     }

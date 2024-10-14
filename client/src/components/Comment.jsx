@@ -104,70 +104,80 @@ function Comment(props) {
 
   return (
     <div className="comment">
-      {!toggleEdit ? (
-        <>
-          <p>{comment.body}</p>
-        </>
-      ) : (
-        <form onSubmit={handleSave}>
-          <textarea
-            name="body"
-            value={editedComment}
-            onChange={(e) => setEditedComment(e.target.value)}
-            rows="4"
-            cols="25"
-          />
-          <button type="button" onClick={() => setToggleEdit(false)}>
-            Cancel
-          </button>
-          <button type="submit">Save</button>
-        </form>
-      )}
-      <span>
-        Posted by
-        <Username user={comment.user} />
-      </span>
-      <time>
-        {formatDate(comment.createdAt)}
-        {comment.createdAt !== comment.updatedAt &&
-          ` (edited ${formatDate(comment.updatedAt)})`}
-      </time>
+      <div className="comment__left">
+        <span>
+          <Username user={comment.user} />
+          {"· "}
+          <time>
+            {formatDate(comment.createdAt)}
+            {comment.createdAt !== comment.updatedAt &&
+              ` (edited ${formatDate(comment.updatedAt)})`}
+          </time>
+        </span>
 
-      <div className="comment__actions">
-        {!toggleEdit && !commentToDelete && user && (
+        {!toggleEdit ? (
           <>
-            {commentLiked ? (
-              <UnlikeButton handleAction={handleLike} text={likes} />
-            ) : (
-              <LikeButton handleAction={handleLike} text={likes} />
-            )}
-
-            {user.id === comment.userId && (
-              <BasicButton
-                handleAction={() => setToggleEdit(true)}
-                text="Edit"
-              />
-            )}
-            {(user.id === comment.userId || user.role === "admin") && (
-              <DeleteButton
-                handleAction={() => handleDelete(comment.id)}
-                text="Delete"
-              />
-            )}
+            <p>{comment.body}</p>
           </>
-        )}
-
-        {commentToDelete === comment.id && (
-          <>
-            <span>Are you sure you want to delete this comment?</span>
-
-            <DeleteButton
-              handleAction={() => confirmDelete(comment.id)}
-              text="Yes"
+        ) : (
+          <form onSubmit={handleSave}>
+            <textarea
+              name="body"
+              value={editedComment}
+              onChange={(e) => setEditedComment(e.target.value)}
+              rows="4"
+              cols="25"
             />
-            <BasicButton handleAction={() => cancelDelete()} text="Cancel" />
-          </>
+            <button type="button" onClick={() => setToggleEdit(false)}>
+              Cancel
+            </button>
+            <button type="submit">Save</button>
+          </form>
         )}
+
+        <div className="comment__actions">
+          {!toggleEdit && !commentToDelete && user && (
+            <>
+              {commentLiked ? (
+                <UnlikeButton handleAction={handleLike} text={"Unlike"} />
+              ) : (
+                <LikeButton handleAction={handleLike} text={"Like"} />
+              )}
+
+              {user.id === comment.userId && (
+                <BasicButton
+                  handleAction={() => setToggleEdit(true)}
+                  text="Edit"
+                />
+              )}
+              {(user.id === comment.userId || user.role === "admin") && (
+                <DeleteButton
+                  handleAction={() => handleDelete(comment.id)}
+                  text="Delete"
+                />
+              )}
+            </>
+          )}
+
+          {commentToDelete === comment.id && (
+            <>
+              <span>Are you sure you want to delete this comment?</span>
+
+              <DeleteButton
+                handleAction={() => confirmDelete(comment.id)}
+                text="Yes"
+              />
+              <BasicButton handleAction={() => cancelDelete()} text="Cancel" />
+            </>
+          )}
+        </div>
+      </div>
+      <div className="comment__right">
+        <div className="stats">
+          <span className="stat-icon">
+            <i className="fa-solid fa-heart like"></i> {likes}
+          </span>
+        </div>
       </div>
     </div>
   );

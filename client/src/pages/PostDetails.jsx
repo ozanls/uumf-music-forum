@@ -204,8 +204,7 @@ function PostDetails(props) {
   return (
     <section className="post">
       <span>
-        Posted by
-        <Username user={post.user} />
+        <Username user={post.user} /> {"· "}
         <time>
           {formatDate(post.createdAt)}
           {post.createdAt !== post.updatedAt &&
@@ -245,11 +244,11 @@ function PostDetails(props) {
 
       <div className="stats">
         <span className="stat-icon">
-          <i className="fa-solid fa-heart like"></i> {likes}
-        </span>
-        <span className="stat-icon">
           <i className="fa-solid fa-comment icon"></i>
           {post.comments}
+        </span>
+        <span className="stat-icon">
+          <i className="fa-solid fa-heart like"></i> {likes}
         </span>
       </div>
 

@@ -8,14 +8,32 @@ const { Op } = require("sequelize");
 // Get all boards
 router.get("/", async (req, res) => {
   try {
-    const allBoards = await Board.findAll();
+    const allBoards = await Board.findAll({
+      include: [
+        {
+          model: TrendingTag,
+          as: "trendingTags",
+          include: [
+            {
+              model: Tag,
+              as: "tag",
+              include: [
+                {
+                  model: Board,
+                  as: "board",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
     res.status(200).json(allBoards);
   } catch (error) {
     console.error("Error getting all boards:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
 // Update trending tags for all boards
 router.get("/trendingTags/update", async (req, res) => {
   try {
@@ -32,7 +50,18 @@ router.get("/trendingTags/update", async (req, res) => {
 router.get("/trendingTags", async (req, res) => {
   try {
     const trendingTags = await TrendingTag.findAll({
-      include: [{ model: Tag, as: "tag" }],
+      include: [
+        {
+          model: Tag,
+          as: "tag",
+          include: [
+            {
+              model: Board,
+              as: "board",
+            },
+          ],
+        },
+      ],
     });
     console.log("Trending tags:", trendingTags);
     res.status(200).json(trendingTags);
@@ -48,7 +77,18 @@ router.get("/:id/trendingTags", async (req, res) => {
   try {
     const trendingTags = await TrendingTag.findAll({
       where: { boardId },
-      include: [{ model: Tag, as: "tag" }],
+      include: [
+        {
+          model: Tag,
+          as: "tag",
+          include: [
+            {
+              model: Board,
+              as: "board",
+            },
+          ],
+        },
+      ],
     });
     console.log("Trending tags:", trendingTags);
     res.status(200).json(trendingTags);

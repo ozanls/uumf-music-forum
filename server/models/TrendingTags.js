@@ -43,8 +43,15 @@ module.exports = (sequelize) => {
   );
 
   TrendingTag.associate = (models) => {
-    TrendingTag.belongsTo(models.Board, { foreignKey: "boardId", as: "board" });
-    TrendingTag.belongsTo(models.Tag, { foreignKey: "tagId", as: "tag" });
+    TrendingTag.belongsTo(models.Board, {
+      foreignKey: "boardId",
+      as: "board",
+    });
+
+    TrendingTag.belongsTo(models.Tag, {
+      foreignKey: "tagId",
+      as: "tag",
+    });
   };
 
   return TrendingTag;

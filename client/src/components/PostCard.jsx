@@ -65,29 +65,36 @@ function PostCard(props) {
       onClick={handleCardClick}
       style={{ cursor: "pointer" }}
     >
-      <h3>{post.title}</h3>
-      {tags.length !== 0 && (
-        <>
-          <ul className="tags">
-            {tags.map((tag) => (
-              <Tag key={tag.id} tag={tag.tag} />
-            ))}
-          </ul>
-        </>
-      )}
-      <span>
-        Posted by
-        <Username user={post.user} />
-      </span>
-      {"  "}· <time>{formatDate(post.createdAt)} </time>
-      <div className="stats">
-        <span className="stat-icon">
-          <i className="fa-solid fa-heart like"></i> {post.likes}
+      <div className="post-card__left">
+        <span>
+          <Username user={post.user} /> {"· "}
+          <time>
+            {formatDate(post.createdAt)}
+            {post.createdAt !== post.updatedAt &&
+              ` (edited ${formatDate(post.updatedAt)})`}
+          </time>
         </span>
-        <span className="stat-icon">
-          <i className="fa-solid fa-comment icon"></i>
-          {post.comments}
-        </span>
+        <h3 className="post-card__left__title">{post.title}</h3>
+        {tags.length !== 0 && (
+          <>
+            <ul className="tags">
+              {tags.map((tag) => (
+                <Tag key={tag.id} tag={tag.tag} />
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+      <div className="post-card__right">
+        <div className="stats">
+          <span className="stat-icon">
+            <i className="fa-solid fa-comment icon"></i>
+            {post.comments}
+          </span>
+          <span className="stat-icon">
+            <i className="fa-solid fa-heart like"></i> {post.likes}
+          </span>
+        </div>
       </div>
       {/* {user && (user.id === post.userId || user.role === "admin") && (
         <>

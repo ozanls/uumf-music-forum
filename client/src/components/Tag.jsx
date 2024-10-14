@@ -15,7 +15,7 @@ function Tag(props) {
 
   const hoverColor = alterHex(tag.hexCode, -20);
   return (
-    <a href={`/t/${tag.name}`}>
+    <a href={`/b/${tag.board.name.toString()}/${tag.name}`}>
       <div
         className="tag"
         style={{

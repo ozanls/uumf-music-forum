@@ -42,20 +42,16 @@ module.exports = (sequelize) => {
   );
 
   Tag.associate = (models) => {
+    Tag.belongsTo(models.Board, {
+      foreignKey: "boardId",
+      as: "board",
+    });
+
     Tag.belongsToMany(models.Post, {
       through: models.PostTag,
       foreignKey: "tagId",
       otherKey: "postId",
     });
   };
-
-  Tag.associate = (models) => {
-    Tag.belongsToMany(models.Board, {
-      through: models.TrendingTag,
-      foreignKey: "tagId",
-      otherKey: "boardId",
-    });
-  };
-
   return Tag;
 };

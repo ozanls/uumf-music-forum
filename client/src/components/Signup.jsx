@@ -62,7 +62,10 @@ function Signup() {
           <div className="auth-form__signup__checkbox">
             <input type="checkbox" id="agreedToTerms" name="agreedToTerms" />
             <label htmlFor="agreedToTerms">
-              You've read and agreed to our terms of service
+              You've read and agreed to our{" "}
+              <a href="/terms">
+                <u>terms and conditions</u>
+              </a>
             </label>
           </div>
           <div className="auth-form__signup__checkbox">

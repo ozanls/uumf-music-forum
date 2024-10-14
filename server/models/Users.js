@@ -63,26 +63,33 @@ module.exports = (sequelize) => {
   );
 
   User.associate = (models) => {
-    User.belongsToMany(models.Tag, {
-      through: models.UserBadge,
+    User.hasMany(models.Post, {
       foreignKey: "userId",
-      otherKey: "badgeId",
+      as: "post",
     });
-  };
-
-  User.associate = (models) => {
-    User.belongsToMany(models.Post, {
-      through: models.PostLike,
+    User.hasMany(models.Comment, {
       foreignKey: "userId",
-      otherKey: "postId",
+      as: "comment",
     });
-  };
-
-  User.associate = (models) => {
-    User.belongsToMany(models.Comment, {
-      through: models.CommentLike,
+    User.hasMany(models.CommentLike, {
       foreignKey: "userId",
-      otherKey: "commentId",
+      as: "commentLike",
+    });
+    User.hasMany(models.PostLike, {
+      foreignKey: "userId",
+      as: "postLike",
+    });
+    User.hasMany(models.Save, {
+      foreignKey: "userId",
+      as: "save",
+    });
+    User.hasMany(models.Badge, {
+      foreignKey: "userId",
+      as: "badge",
+    });
+    User.hasMany(models.UserBadge, {
+      foreignKey: "userId",
+      as: "userBadge",
     });
   };
 

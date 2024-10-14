@@ -117,7 +117,6 @@ module.exports = {
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -127,7 +126,6 @@ module.exports = {
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
       title: {
         type: Sequelize.STRING(100),
@@ -177,7 +175,6 @@ module.exports = {
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -187,7 +184,6 @@ module.exports = {
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
       body: {
         type: Sequelize.TEXT,
@@ -229,7 +225,6 @@ module.exports = {
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -239,7 +234,6 @@ module.exports = {
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -269,7 +263,6 @@ module.exports = {
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -279,7 +272,6 @@ module.exports = {
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -309,7 +301,6 @@ module.exports = {
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -319,7 +310,6 @@ module.exports = {
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -378,7 +368,6 @@ module.exports = {
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
       badgeId: {
         type: Sequelize.INTEGER,
@@ -388,7 +377,6 @@ module.exports = {
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -417,6 +405,7 @@ module.exports = {
           model: "boards",
           key: "id",
         },
+        onDelete: "CASCADE",
       },
       name: {
         type: Sequelize.STRING(100),
@@ -495,7 +484,6 @@ module.exports = {
           model: "boards",
           key: "id",
         },
-        onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
       tagId: {
@@ -505,7 +493,6 @@ module.exports = {
           model: "tags",
           key: "id",
         },
-        onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
       count: {

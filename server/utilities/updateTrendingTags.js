@@ -27,6 +27,12 @@ async function updateTrendingTags() {
             where: {
               boardId: board.id,
             },
+            include: [
+              {
+                model: Board,
+                as: "board",
+              },
+            ],
           },
         ],
         group: ["tagId", "tag.id", "tag.name"],
