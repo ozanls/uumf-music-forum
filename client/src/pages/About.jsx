@@ -1,19 +1,23 @@
+import usePageTitle from "../utilities/usePageTitle";
+
+const siteName = "UUMF";
+
 function About() {
+  usePageTitle(`About`);
   return (
     <main>
       {/* About Page Header */}
       <section className="page__header">
-        <h1>What is UUMF?</h1>
+        <h1>What is {siteName}?</h1>
       </section>
 
       {/* About Page Content */}
       <section className="page__content">
         <p>
-          UUMF (Underground Underground Music Forum) is a vibrant online
-          community dedicated to exploring and celebrating the depths of
-          underground music scenes. We provide a platform for musicians,
-          listeners, and enthusiasts to connect, share, and discuss the latest
-          in underground music across various genres.
+          {siteName} is a vibrant online community dedicated to exploring and
+          celebrating the depths of underground music scenes. We provide a
+          platform for musicians, listeners, and enthusiasts to connect, share,
+          and discuss the latest in underground music across various genres.
         </p>
 
         <h2>Our Mission</h2>
@@ -29,8 +33,8 @@ function About() {
         <p>
           Whether you're a musician looking to share your latest tracks, a
           devoted fan searching for new sounds, or simply curious about the
-          underground music scene, UUMF welcomes you. Join us in our journey to
-          unearth and celebrate the most exciting underground music!
+          underground music scene, {siteName} welcomes you. Join us in our
+          journey to unearth and celebrate the most exciting underground music!
         </p>
       </section>
     </main>

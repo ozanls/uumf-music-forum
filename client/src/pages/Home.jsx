@@ -1,8 +1,11 @@
 import React from "react";
-import BoardsList from "./BoardsList";
+import BoardsList from "../components/BoardsList";
 import BasicButton from "../components/buttons/BasicButton";
+import usePageTitle from "../utilities/usePageTitle";
 
 function Home() {
+  usePageTitle("Home");
+
   return (
     <main>
       {/* Home Page Header */}

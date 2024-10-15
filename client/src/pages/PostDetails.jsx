@@ -10,6 +10,7 @@ import LikeButton from "../components/buttons/LikeButton";
 import UnlikeButton from "../components/buttons/UnlikeButton";
 import BasicButton from "../components/buttons/BasicButton";
 import DeleteButton from "../components/buttons/DeleteButton";
+import usePageTitle from "../utilities/usePageTitle";
 
 function PostDetails(props) {
   const { postId } = useParams();
@@ -23,6 +24,10 @@ function PostDetails(props) {
   const [comments, setComments] = useState([]);
   const [tags, setTags] = useState([]);
   const { user, setMessage } = props;
+
+  usePageTitle(
+    post ? `${post.title} by ${post.user.username}` : "Post Details"
+  );
 
   // Fetch post details
   useEffect(() => {

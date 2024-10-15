@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AdminBoards from "../components/admin/AdminBoards";
 import AdminUsers from "../components/admin/AdminUsers";
+import usePageTitle from "../utilities/usePageTitle";
 
 function AdminMenu(props) {
   const { user, setMessage } = props;
@@ -17,6 +18,8 @@ function AdminMenu(props) {
   const [boardToDelete, setBoardToDelete] = useState(null);
 
   const navigate = useNavigate();
+
+  usePageTitle("Admin Menu");
 
   useEffect(() => {
     const fetchBoards = async () => {

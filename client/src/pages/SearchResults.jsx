@@ -2,12 +2,15 @@ import { useState, useEffect } from "react";
 import PostCard from "../components/PostCard";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import usePageTitle from "../utilities/usePageTitle";
 
 function SearchResults(props) {
   const { user } = props;
   const { boardName, query } = useParams();
   const [posts, setPosts] = useState([]);
   const [message, setMessage] = useState("");
+
+  usePageTitle(`Results for '${query}' in /${boardName}/`);
 
   useEffect(() => {
     // If boardName or query is not provided, return

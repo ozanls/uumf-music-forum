@@ -11,7 +11,8 @@ function Nav(props) {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const { user, setUser, isAuthenticated, setIsAuthenticated } = props;
+  const { user, setUser, isAuthenticated, setIsAuthenticated, setMessage } =
+    props;
 
   const logOut = async () => {
     try {
@@ -68,10 +69,10 @@ function Nav(props) {
       </nav>
 
       {/* If showLogin is true, show the Login component*/}
-      {showLogin && <Login />}
+      {showLogin && <Login setMessage={setMessage} />}
 
       {/* If showSignup is true, show the Signup component*/}
-      {showSignup && <Signup />}
+      {showSignup && <Signup setMessage={setMessage} />}
 
       {/* If user is logged in and showDropdown is true, show the NavDropdown component*/}
       {user && showDropdown && (

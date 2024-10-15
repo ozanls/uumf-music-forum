@@ -1,9 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 
-function Signup() {
-  const [message, setMessage] = useState("");
-  const [showMessage, setShowMessage] = useState(false);
+function Signup(props) {
+  const { setMessage } = props;
   const [showSignup, setShowSignup] = useState(true);
 
   const handleSubmit = async (e) => {
@@ -33,8 +32,7 @@ function Signup() {
 
       // If the user is registered successfully, display a success message and hide the signup form
       if (response.status === 201) {
-        setMessage(response.data.message);
-        setShowMessage(true);
+        setMessage({ type: "error", message: response.data.message });
         setShowSignup(false);
       }
 
@@ -50,17 +48,11 @@ function Signup() {
       } else {
         setMessage({ type: "error", message: "Signup failed, try again." });
       }
-
-      // Show the error message
-      setShowMessage(true);
     }
   };
 
   return (
     <div className="auth-form">
-      {/* If there is a message, display the message */}
-      {showMessage && <p className="auth-form__message">{message}</p>}
-
       {/* If showSignup is true, display the signup form */}
       {showSignup && (
         // Signup Form

@@ -3,6 +3,7 @@ import PostCard from "../components/PostCard";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import alterHex from "../utilities/alterHex";
+import usePageTitle from "../utilities/usePageTitle";
 
 function TagDetails(props) {
   const { boardName, tagName } = useParams();
@@ -10,6 +11,9 @@ function TagDetails(props) {
   const [numberOfPosts, setNumberOfPosts] = useState(0);
   const [posts, setPosts] = useState([]);
   const { user, setMessage } = props;
+
+  // Set the page title
+  usePageTitle(`#${tagName} /${boardName}/`);
 
   useEffect(() => {
     const fetchTag = async () => {

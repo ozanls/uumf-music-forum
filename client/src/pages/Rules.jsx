@@ -1,8 +1,12 @@
+import usePageTitle from "../utilities/usePageTitle";
+
 function Rules() {
   // Variables
   const lastUpdated = "October 13, 2024";
-  const websiteName = "UUMF";
+  const siteName = "UUMF";
   const contactEmail = "teamuumf@gmail.com";
+
+  usePageTitle(`${siteName} Rules`);
 
   return (
     <main>
@@ -15,8 +19,8 @@ function Rules() {
       {/* Rules */}
       <section className="page__content">
         <p>
-          Welcome to {websiteName}! To ensure a positive experience for all
-          users, please adhere to the following rules:
+          Welcome to {siteName}! To ensure a positive experience for all users,
+          please adhere to the following rules:
         </p>
 
         <h2>1. Respect and Civility</h2>

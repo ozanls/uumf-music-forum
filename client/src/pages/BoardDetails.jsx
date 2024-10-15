@@ -4,6 +4,7 @@ import BasicButton from "../components/buttons/BasicButton";
 import PostCard from "../components/PostCard";
 import Tag from "../components/Tag";
 import axios from "axios";
+import usePageTitle from "../utilities/usePageTitle";
 
 const BoardDetails = (props) => {
   const { user, setMessage } = props;
@@ -12,6 +13,8 @@ const BoardDetails = (props) => {
   const [posts, setPosts] = useState([]);
   const [postCount, setPostCount] = useState(0);
   const [trendingTags, setTrendingTags] = useState([]);
+
+  usePageTitle(board ? `/${board.name}/` : "Board Details");
 
   useEffect(() => {
     // If boardName is not provided, return

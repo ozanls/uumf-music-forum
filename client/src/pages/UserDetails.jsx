@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import PostCard from "../components/PostCard";
 import Comment from "../components/Comment";
+import usePageTitle from "../utilities/usePageTitle";
 
 function UserDetails(props) {
   const { user, setMessage } = props;
@@ -11,6 +12,9 @@ function UserDetails(props) {
   const [comments, setComments] = useState([]);
   const [savedPosts, setSavedPosts] = useState([]);
   const { username } = useParams();
+
+  // Set the page title
+  usePageTitle(`${username}'s profile`);
 
   useEffect(() => {
     const getUserData = async () => {

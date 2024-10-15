@@ -1,6 +1,9 @@
 import BasicButton from "../components/buttons/BasicButton";
+import usePageTitle from "../utilities/usePageTitle";
 
 function PageNotFound() {
+  usePageTitle("404");
+
   return (
     <main>
       {/* Page Not Found Header */}

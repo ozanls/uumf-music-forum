@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import BoardCard from "../components/BoardCard";
+import BoardCard from "./BoardCard";
 import axios from "axios";
 
 const BoardsList = (props) => {

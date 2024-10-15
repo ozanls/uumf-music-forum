@@ -1,7 +1,12 @@
+import usePageTitle from "../utilities/usePageTitle";
+
 function TermsAndConditions() {
   const lastUpdated = "October 13, 2024";
   const companyName = "Unnamed Underground Music Forum (UUMF)";
   const contactEmail = "teamuumf@gmail.com";
+
+  // Set the page title
+  usePageTitle("Terms and Conditions");
 
   return (
     <main>

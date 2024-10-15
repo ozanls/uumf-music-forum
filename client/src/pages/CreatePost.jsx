@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import usePageTitle from "../utilities/usePageTitle";
 
 function CreatePost(props) {
   const { user, setMessage } = props;
   const [boards, setBoards] = useState([]);
   const navigate = useNavigate();
+
+  usePageTitle("Create a Post");
 
   useEffect(() => {
     const fetchBoards = async () => {

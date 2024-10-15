@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import alterHex from "../utilities/alterHex";
+import usePageTitle from "../utilities/usePageTitle";
 import axios from "axios";
 
 function BoardTags(props) {
@@ -8,6 +8,8 @@ function BoardTags(props) {
   const { boardName } = useParams();
   const [board, setBoard] = useState(null);
   const [tags, setTags] = useState([]);
+
+  usePageTitle(`Top 20 Tags /${boardName}/`);
 
   useEffect(() => {
     const fetchBoard = async () => {

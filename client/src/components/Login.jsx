@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import ResetPassword from "./ResetPassword";
 
-function Login() {
-  const [message, setMessage] = useState("");
-  const [showMessage, setShowMessage] = useState(false);
+function Login(props) {
+  const { setMessage } = props;
   const [showResetPassword, setShowResetPassword] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -33,38 +32,26 @@ function Login() {
           type: "success",
           message: "Login successful! Please wait...",
         });
-        setShowMessage(true);
         window.location.reload();
 
         // If there is an error authenticating the user, display an error message
       } else {
         console.log(response.message);
-        setMessage(response.message);
-        setShowMessage(true);
+        setMessage({ type: "error", message: response.message });
         console.error("Login failed:", response);
       }
 
       // If there is an error authenticating the user, display an error message
     } catch (error) {
-      setMessage(error.response.data.message);
-      setShowMessage(true);
+      setMessage({ type: "error", message: error.response.data.message });
       console.error("Error logging in:", error);
     }
   };
 
   return (
     <div className="auth-form">
-      {/* If showMessage is true, show the message*/}
-      {showMessage && <p className="auth-form__message">{message}</p>}
-
       {/* If showResetPassword is true, show the ResetPassword component*/}
-      {showResetPassword && (
-        <ResetPassword
-          setMessage={setMessage}
-          setShowMessage={setShowMessage}
-          showMessage={showMessage}
-        />
-      )}
+      {showResetPassword && <ResetPassword setMessage={setMessage} />}
 
       {/* If showResetPassword is false, show the login form*/}
       {!showResetPassword && (
