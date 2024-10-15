@@ -70,27 +70,40 @@ function CreatePost(props) {
 
   if (user) {
     return (
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="title">Title</label>
-        <input type="text" id="title" name="title" />
+      <main>
+        <section className="page__header">
+          <h1>Create a Post</h1>
+        </section>
+        <section className="page__content">
+          <form onSubmit={handleSubmit} className="create-post-form">
+            <label htmlFor="board">Board</label>
+            <select
+              id="board"
+              className="create-post-form__select"
+              name="board"
+            >
+              {boards.map((board) => (
+                <option key={board.id} value={board.id}>
+                  {board.name}
+                </option>
+              ))}
+            </select>
 
-        <label htmlFor="board">Board</label>
-        <select id="board" name="board">
-          {boards.map((board) => (
-            <option key={board.id} value={board.id}>
-              {board.name}
-            </option>
-          ))}
-        </select>
+            <label htmlFor="title">Title</label>
+            <input type="text" id="title" name="title" />
 
-        <label htmlFor="body">Body</label>
-        <textarea id="body" name="body"></textarea>
+            <label htmlFor="body">Body</label>
+            <textarea id="body" name="body"></textarea>
 
-        <label htmlFor="tags">Tags (comma separated)</label>
-        <input type="text" id="tags" name="tags" />
+            <label htmlFor="tags">Tags (comma separated)</label>
+            <input type="text" id="tags" name="tags" />
 
-        <button type="submit">Submit</button>
-      </form>
+            <button className="basic-button-2" type="submit">
+              Submit
+            </button>
+          </form>
+        </section>
+      </main>
     );
   } else {
     return (

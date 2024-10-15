@@ -39,16 +39,23 @@ function SearchBar() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <select name="board">
+    <form onSubmit={handleSubmit} className="searchbar">
+      <select name="board" className="searchbar__dropdown">
         {boards.map((board) => (
           <option key={board.id} value={board.name}>
-            {board.name}
+            /{board.name}/
           </option>
         ))}
       </select>
-      <input type="text" name="query" placeholder="Search..." />
-      <button type="submit">Search</button>
+      <input
+        type="text"
+        name="query"
+        placeholder="Search..."
+        className="searchbar__input"
+      />
+      <button className="searchbar__submit" type="submit">
+        <i class="fa-solid fa-magnifying-glass"></i>{" "}
+      </button>
     </form>
   );
 }

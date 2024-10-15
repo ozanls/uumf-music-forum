@@ -69,8 +69,8 @@ function TagDetails(props) {
 
   if (!tag) {
     return (
-      <section className="tag-details">
-        <div
+      <main className="tag-details">
+        <section
           className="tag__header"
           style={{
             backgroundImage: `linear-gradient(45deg, #000000 0%, #767676 100%)`,
@@ -79,44 +79,46 @@ function TagDetails(props) {
           <h2>/{boardName}/</h2>
           <h1>#{tagName}</h1>
           <span>0 posts</span>
-        </div>
-      </section>
+        </section>
+      </main>
     );
   }
 
   const lighterHex = alterHex(tag.hexCode, 20);
 
   return (
-    <section className="tag-details">
-      <div
-        className="tag__header"
+    <main className="tag-details">
+      <section
+        className="page__header"
         style={{
           backgroundImage: `linear-gradient(45deg, ${tag.hexCode} 0%, ${lighterHex} 100%)`,
         }}
       >
-        <span>/{boardName}/</span>
-        <h1>#{tag.name}</h1>
+        <h2>/{boardName}/</h2>
+        <h1 className="tag-details__name">#{tag.name}</h1>
         {numberOfPosts === 1 ? (
           <span>1 post</span>
         ) : (
           <span>{numberOfPosts} posts</span>
         )}
-      </div>
-      {posts.length > 0 && (
-        <ul className="posts">
-          {posts.map((post) => (
-            <li key={post.post.id}>
-              <PostCard
-                post={post.post}
-                user={user}
-                posts={posts}
-                setMessage={setMessage}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
+      </section>
+      <section className="tag__posts">
+        {posts.length > 0 && (
+          <ul className="posts">
+            {posts.map((post) => (
+              <li key={post.post.id}>
+                <PostCard
+                  post={post.post}
+                  user={user}
+                  posts={posts}
+                  setMessage={setMessage}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </main>
   );
 }
 

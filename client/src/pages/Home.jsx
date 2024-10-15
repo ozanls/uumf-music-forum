@@ -3,9 +3,18 @@ import BoardsList from "./BoardsList";
 
 function Home() {
   return (
-    <div>
+    <main>
+      <section className="page__header">
+        <h1>UUMF</h1>
+        <button
+          className="basic-button"
+          onClick={() => (window.location.href = "/about")}
+        >
+          What is UUMF?
+        </button>
+      </section>
       <BoardsList />
-    </div>
+    </main>
   );
 }
 

@@ -3,7 +3,7 @@ function Username(props) {
 
   return (
     <a href={`/u/${user.username}`}>
-      <span className="username"> {user.username} </span>
+      <span className="username"> @{user.username} </span>
     </a>
   );
 }

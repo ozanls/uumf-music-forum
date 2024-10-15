@@ -3,7 +3,7 @@ function AdminUsers(props) {
     props;
 
   return (
-    <>
+    <section className="admin__users">
       <h2>Users</h2>
       <form onSubmit={handleUserSearch}>
         <input
@@ -61,7 +61,7 @@ function AdminUsers(props) {
           </table>
         </>
       )}
-    </>
+    </section>
   );
 }
 

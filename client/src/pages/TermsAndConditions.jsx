@@ -4,9 +4,11 @@ function TermsAndConditions() {
   const contactEmail = "teamuumf@gmail.com";
 
   return (
-    <section>
-      <h1>Terms and Conditions for Unnamed Underground Music Forum (UUMF)</h1>
-      <p>Last updated: {lastUpdated}</p>
+    <main>
+      <section className="page__header">
+        <h1>UUMF Terms and Conditions</h1>
+        <span>Last updated: {lastUpdated}</span>
+      </section>
       <p>
         Please read these Terms and Conditions ("Terms", "Terms and Conditions")
         carefully before using the Unnamed Underground Music Forum (UUMF)
@@ -133,7 +135,7 @@ function TermsAndConditions() {
         that you have read, understood, and agree to be bound by these Terms and
         Conditions.
       </p>
-    </section>
+    </main>
   );
 }
 

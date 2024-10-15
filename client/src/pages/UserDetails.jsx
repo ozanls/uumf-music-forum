@@ -19,7 +19,6 @@ function UserDetails(props) {
           `${import.meta.env.VITE_SERVER_URL}/users/username/${username}`
         );
         setUserData(response.data);
-        console.log("userData:", response.data);
       } catch (error) {
         console.error("Error fetching user:", error);
       }
@@ -29,13 +28,16 @@ function UserDetails(props) {
   }, [username]);
 
   useEffect(() => {
+    if (!userData) {
+      return;
+    }
+
     const getPosts = async () => {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_SERVER_URL}/users/${userData.id}/posts`
         );
         setPosts(response.data);
-        console.log("posts:", response.data);
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
@@ -59,13 +61,12 @@ function UserDetails(props) {
           }
         );
         setSavedPosts(response.data);
-        console.log(savedPosts);
       } catch (error) {
         console.error("Error fetching saved posts:", error);
       }
     };
 
-    if (userData && user && userData.id === user.id) {
+    if (user && userData.id === user.id) {
       getSavedPosts();
     }
 
@@ -78,17 +79,16 @@ function UserDetails(props) {
   }
 
   return (
-    <section className="user">
-      <h1>
-        {userData.username} ({userData.role})
-      </h1>
-      <span>
-        Member since{" "}
-        <time>{new Date(userData.createdAt).toLocaleDateString()}</time>
-      </span>
-      <p>{userData.bio}</p>
-      <img src={`.././public/${userData.image}`} alt={userData.username} />
-
+    <main className="user">
+      <section className="page__header">
+        <h1>@{userData.username}</h1>
+        <span>Role: {userData.role}</span>
+        <span>
+          Member since:{" "}
+          <time>{new Date(userData.createdAt).toLocaleDateString()}</time>
+        </span>
+        <p>{userData.bio}</p>
+      </section>
       <h2>Posts</h2>
       <ul className="posts">
         {posts.map((post) => (
@@ -123,7 +123,7 @@ function UserDetails(props) {
           )}
         </>
       )}
-    </section>
+    </main>
   );
 }
 

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import formatDate from "../utilities/formatDate";
 import Comment from "../components/Comment";
 import Username from "../components/Username";
+import BoardName from "../components/BoardName";
 import Tag from "../components/Tag";
 import axios from "axios";
 import LikeButton from "../components/buttons/LikeButton";
@@ -70,6 +71,10 @@ function PostDetails(props) {
   }, [postId]);
 
   useEffect(() => {
+    if (!user || !postId) {
+      return;
+    }
+
     const fetchLikeStatus = async () => {
       try {
         const response = await axios.get(
@@ -95,10 +100,8 @@ function PostDetails(props) {
       }
     };
 
-    if (user) {
-      fetchLikeStatus();
-      fetchSaveStatus();
-    }
+    fetchLikeStatus();
+    fetchSaveStatus();
   }, [user, postId]);
 
   const handleDelete = (postId) => {
@@ -202,123 +205,131 @@ function PostDetails(props) {
   }
 
   return (
-    <section className="post">
-      <span>
-        <Username user={post.user} /> {"· "}
-        <time>
-          {formatDate(post.createdAt)}
-          {post.createdAt !== post.updatedAt &&
-            ` (edited ${formatDate(post.updatedAt)})`}
-        </time>
-      </span>
-      <h1>{post.title}</h1>
-      {!toggleEdit ? (
-        <>
-          <p>{post.body}</p>
-        </>
-      ) : (
-        <>
-          <form onSubmit={handleEdit}>
-            <textarea name="body" id="body" defaultValue={post.body} />
-            <label htmlFor="tags">Tags:</label>
-            <input
-              type="text"
-              name="tags"
-              id="tags"
-              defaultValue={tags.map((tag) => tag.tag.name).join(", ")}
-            />
-            <button type="submit">Save</button>
-            <button type="button" onClick={() => setToggleEdit(false)}>
-              Cancel
-            </button>
-          </form>
-        </>
-      )}
-      {!toggleEdit && tags.length !== 0 && (
-        <ul className="tags">
-          {tags.map((tag) => (
-            <Tag key={tag.id} tag={tag.tag} />
-          ))}
-        </ul>
-      )}
-
-      <div className="stats">
-        <span className="stat-icon">
-          <i className="fa-solid fa-comment icon"></i>
-          {post.comments}
-        </span>
-        <span className="stat-icon">
-          <i className="fa-solid fa-heart like"></i> {likes}
-        </span>
-      </div>
-
-      <div className="post__actions">
-        {user &&
-          (postLiked ? (
-            <UnlikeButton handleAction={handleLike} text=" Unlike" />
+    <main className="post">
+      <section className="post__header">
+        <article>
+          <span>
+            <BoardName board={post.board} />
+            {" · "}
+            <Username user={post.user} /> {" · "}
+            <time>
+              {formatDate(post.createdAt)}
+              {post.createdAt !== post.updatedAt &&
+                ` (edited ${formatDate(post.updatedAt)})`}
+            </time>
+          </span>
+          <h1>{post.title}</h1>
+          {!toggleEdit ? (
+            <>
+              <p>{post.body}</p>
+            </>
           ) : (
-            <LikeButton handleAction={handleLike} text=" Like" />
-          ))}
+            <>
+              <form onSubmit={handleEdit}>
+                <textarea name="body" id="body" defaultValue={post.body} />
+                <label htmlFor="tags">Tags:</label>
+                <input
+                  type="text"
+                  name="tags"
+                  id="tags"
+                  defaultValue={tags.map((tag) => tag.tag.name).join(", ")}
+                />
+                <button type="submit">Save</button>
+                <button type="button" onClick={() => setToggleEdit(false)}>
+                  Cancel
+                </button>
+              </form>
+            </>
+          )}
+          {!toggleEdit && tags.length !== 0 && (
+            <ul className="tags">
+              {tags.map((tag) => (
+                <Tag key={tag.id} tag={tag.tag} />
+              ))}
+            </ul>
+          )}
 
-        {user &&
-          (postSaved ? (
-            <BasicButton handleAction={handleSave} text=" Unsave" />
-          ) : (
-            <BasicButton handleAction={handleSave} text=" Save" />
-          ))}
+          <div className="stats">
+            <span className="stat-icon">
+              <i className="fa-solid fa-comment icon"></i>
+              {post.comments}
+            </span>
+            <span className="stat-icon">
+              <i className="fa-solid fa-heart like"></i> {likes}
+            </span>
+          </div>
 
-        {user && user.id === post.userId && (
-          <BasicButton
-            handleAction={() => setToggleEdit(!toggleEdit)}
-            text=" Edit"
-          />
-        )}
+          <div className="post__actions">
+            {user &&
+              (postLiked ? (
+                <UnlikeButton handleAction={handleLike} text=" Unlike" />
+              ) : (
+                <LikeButton handleAction={handleLike} text=" Like" />
+              ))}
 
-        {user && (user.id === post.userId || user.role === "admin") && (
-          <>
-            {postToDelete !== post.id && (
-              <DeleteButton
-                handleAction={() => handleDelete(post.id)}
-                text="Delete"
+            {user &&
+              (postSaved ? (
+                <BasicButton handleAction={handleSave} text=" Unsave" />
+              ) : (
+                <BasicButton handleAction={handleSave} text=" Save" />
+              ))}
+
+            {user && user.id === post.userId && (
+              <BasicButton
+                handleAction={() => setToggleEdit(!toggleEdit)}
+                text=" Edit"
               />
             )}
-            {postToDelete === post.id && (
+
+            {user && (user.id === post.userId || user.role === "admin") && (
               <>
-                <span>Are you sure you want to delete this post?</span>
-                <button className="delete-button" onClick={confirmDelete}>
-                  Yes
-                </button>
-                <BasicButton handleAction={cancelDelete} text="Cancel" />
+                {postToDelete !== post.id && (
+                  <DeleteButton
+                    handleAction={() => handleDelete(post.id)}
+                    text="Delete"
+                  />
+                )}
+                {postToDelete === post.id && (
+                  <>
+                    <span>Are you sure you want to delete this post?</span>
+                    <button className="delete-button" onClick={confirmDelete}>
+                      Yes
+                    </button>
+                    <BasicButton handleAction={cancelDelete} text="Cancel" />
+                  </>
+                )}
+                {postDeleted && <p>Post deleted</p>}
               </>
             )}
-            {postDeleted && <p>Post deleted</p>}
-          </>
+          </div>
+        </article>
+      </section>
+      <section className="post__comments">
+        <h2>Comments</h2>
+        {user ? (
+          <form onSubmit={handleSubmit}>
+            <textarea
+              name="comment"
+              id="comment"
+              placeholder="Add a comment"
+              rows="4"
+              cols="25"
+            />
+            <button type="submit">Submit</button>
+          </form>
+        ) : (
+          <p>Sign Up or Log in to comment on this post</p>
         )}
-      </div>
-      <h2>Comments</h2>
-      {user ? (
-        <form onSubmit={handleSubmit}>
-          <textarea
-            name="comment"
-            id="comment"
-            placeholder="Add a comment"
-            rows="4"
-            cols="25"
-          />
-          <button type="submit">Submit</button>
-        </form>
-      ) : (
-        <p>Sign Up or Log in to comment on this post</p>
-      )}
-      {comments.length === 0 && <p>No comments yet</p>}
-      <ul className="comments">
-        {comments.map((comment) => (
-          <li key={comment.id}>
-            <Comment comment={comment} user={user} setMessage={setMessage} />
-          </li>
-        ))}
-      </ul>
-    </section>
+        {comments.length === 0 && <p>No comments yet</p>}
+        <ul className="comments">
+          {comments.map((comment) => (
+            <li key={comment.id}>
+              <Comment comment={comment} user={user} setMessage={setMessage} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    </main>
   );
 }
 

@@ -14,6 +14,8 @@ import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import Rules from "./pages/Rules";
+import About from "./pages/About";
+import Footer from "./components/Footer";
 import "./App.css";
 
 function App() {
@@ -53,7 +55,6 @@ function App() {
       )}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/about" element={<h1>About</h1>} />
         <Route path="/b" element={<BoardsList />} />
         <Route
           path="/b/:name"
@@ -85,7 +86,9 @@ function App() {
         />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/rules" element={<Rules />} />
+        <Route path="/about" element={<About />} />
       </Routes>
+      <Footer />
     </Router>
   );
 }

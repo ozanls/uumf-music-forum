@@ -81,8 +81,7 @@ function AdminMenu(props) {
   // Request body: { name: string, description: string }
   const createBoard = async (event) => {
     event.preventDefault();
-    const name = event.target.name.value;
-    const description = event.target.description.value;
+    const { name, description } = boardFormData;
 
     if (!name || !description) {
       setMessage({
@@ -209,10 +208,12 @@ function AdminMenu(props) {
 
   // If user is an admin, display the admin menu
   return (
-    <section className="admin-menu">
+    <main className="admin-menu">
       {user && user.role === "admin" ? (
         <>
-          <h1>Admin Menu</h1>
+          <section className="page__header">
+            <h1>Admin Menu</h1>
+          </section>
           <AdminBoards
             boards={boards}
             editingBoard={editingBoard}
@@ -238,7 +239,7 @@ function AdminMenu(props) {
       ) : (
         <button onClick={() => navigate(-1)}>Go Back</button>
       )}
-    </section>
+    </main>
   );
 }
 

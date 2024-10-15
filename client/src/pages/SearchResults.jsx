@@ -35,24 +35,32 @@ function SearchResults(props) {
   }, [board, query]);
 
   return (
-    <section className="search-results">
-      <h1>Search Results</h1>
-      <p>Board: {board}</p>
-      <p>Search query: {query}</p>
+    <main className="search-results">
+      <section className="page__header">
+        <h2>Search results for </h2>
+        <h1>'{query}'</h1>
+        {posts && posts.length === 0 ? (
+          <span>0 results found</span>
+        ) : (
+          <span>
+            {posts.length} results found in /{board}/
+          </span>
+        )}
+      </section>
 
-      <h2>Posts</h2>
-
-      {message && <p>{message}</p>}
-      {posts && posts.length > 0 && (
-        <ul className="posts">
-          {posts.map((post) => (
-            <li key={post.id}>
-              <PostCard post={post} user={user} posts={posts} />
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
+      <section className="page__content">
+        <h2>Search Results</h2>
+        {posts && posts.length > 0 && (
+          <ul className="posts">
+            {posts.map((post) => (
+              <li key={post.id}>
+                <PostCard post={post} user={user} posts={posts} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </main>
   );
 }
 

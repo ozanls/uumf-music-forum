@@ -1,34 +1,17 @@
-import { useState, useEffect } from "react";
+import Username from "./Username";
 import BasicButton from "./buttons/BasicButton";
-import axios from "axios";
 
 function Auth(props) {
   const {
     user,
-    setUser,
     isAuthenticated,
-    setIsAuthenticated,
     showLogin,
     showSignup,
     setShowLogin,
     setShowSignup,
+    setShowDropdown,
+    showDropdown,
   } = props;
-
-  const logOut = async () => {
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/users/auth/logout`,
-        {},
-        { withCredentials: true }
-      );
-      if (response.status === 200) {
-        setIsAuthenticated(false);
-        setUser(null);
-      }
-    } catch (error) {
-      console.error("Error logging out:", error);
-    }
-  };
 
   const toggleLogin = () => {
     setShowSignup(false);
@@ -46,9 +29,11 @@ function Auth(props) {
         {isAuthenticated ? (
           <>
             <p className="auth__welcome">
-              Welcome, <a href={`/u/${user.username}`}>{user.username}</a>!
+              <BasicButton
+                handleAction={() => setShowDropdown(!showDropdown)}
+                text={user.username}
+              />
             </p>
-            <button onClick={logOut}>Log Out</button>
           </>
         ) : (
           <>

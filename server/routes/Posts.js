@@ -37,6 +37,10 @@ router.get("/:id", async (req, res) => {
           as: "user",
           attributes: ["username"],
         },
+        {
+          model: Board,
+          as: "board",
+        },
       ],
     });
 

@@ -1,20 +1,64 @@
 /* Global rules */
 
-h1,
-h2 {
-  font-family: "Dela Gothic One", sans-serif;
-}
-
-h3,
-* {
-  font-family: "Inter", sans-serif;
+html,
+body {
+  height: 100%;
   margin: 0;
   padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f0f0f0;
+  margin: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 1em;
+  width: 55vw;
+  margin: auto;
+}
+
+h1 {
+  font-family: "Dela Gothic One", sans-serif;
+  font-size: 2em;
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  font-family: "Dela Gothic One", sans-serif;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin: 0;
+  padding: 0;
+}
+
+h3 {
+  font-family: "Inter", sans-serif;
+  font-size: 1em;
+  font-weight: bold;
 }
 
 * {
   list-style: none;
   font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 a,
@@ -23,19 +67,32 @@ a:visited {
   text-decoration: none;
 }
 
-body {
-  background-color: #f0f0f0;
+input,
+select,
+textarea {
+  font-family: "Inter", sans-serif;
+  padding: 0.5em;
+  border: 1px solid #000000;
+}
+
+/* Page Header */
+
+.page__header {
+  padding: 4em;
+  gap: 0.5em;
+  color: #ffffff;
+  align-items: center;
   display: flex;
-  justify-content: center;
-  height: 100vh;
-  margin: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #000000;
+  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
 }
 
 /* Buttons */
 
-button {
+.basic-button {
   font-weight: bold;
-  padding: 0.2em;
   cursor: pointer;
   background-color: #ffffff;
   border: 1px solid #001352;
@@ -43,11 +100,25 @@ button {
   padding: 0.5em;
   border-radius: 0.2em;
   transition: 0.2s;
-  margin: 0.2em;
 }
 
-button:hover {
+.basic-button:hover {
   background-color: #dadada;
+}
+
+.basic-button-2 {
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #001352;
+  border: 1px solid #000000;
+  color: #ffffff;
+  padding: 0.5em;
+  border-radius: 0.2em;
+  transition: 0.2s;
+}
+
+.basic-button-2:hover {
+  background-color: #5c70b1;
 }
 
 .like-button,
@@ -68,7 +139,7 @@ button:hover {
 .delete-button {
   background-color: #c72e19;
   color: #ffffff;
-  border: 1px solid #830000;
+  border: 1px solid #9b2d2d;
   padding: 0.5em;
   border-radius: 0.2em;
   transition: 0.2s;
@@ -83,7 +154,48 @@ button:hover {
   background-color: #9b2d2d;
 }
 
-/* Error message */
+/* Searchbar */
+.searchbar {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 0.2em;
+}
+
+.searchbar__dropdown {
+  color: #ffffff;
+  font-weight: bold;
+  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
+  border: 1px solid #000000;
+  border-radius: 4px;
+}
+
+.searchbar__dropdown option {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.searchbar__input {
+  flex: 1;
+  border: none;
+  outline: none;
+}
+.searchbar__submit {
+  background-color: #007bff;
+  color: #fff;
+  border: 1px solid #007bff;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  transition: 0.2s;
+  border-radius: 4px;
+}
+
+.searchbar__submit:hover {
+  background-color: #0056b3;
+}
+
+/* Message */
 
 .error-message {
   background-color: #ffa1a1;
@@ -109,10 +221,10 @@ button:hover {
   border: 1px solid black;
 }
 
-/* Navbar & Login/Signup */
+/* Navbar & Nav Menu */
 nav {
-  display: flex;
-  width: 100vw;
+  width: 100%;
+  top: 0;
   background-color: #000000;
   align-items: center;
   display: flex;
@@ -120,10 +232,44 @@ nav {
   padding: 0.5em;
 }
 
-.nav__logo {
-  height: 1em;
-  display: block;
+.logo {
+  font-family: "Dela Gothic One", sans-serif;
+  color: #ffffff;
+  font-size: 1.5em;
 }
+
+.nav__menu {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 0;
+  width: fit-content;
+  border: 1px solid black;
+  border-top: none;
+  background-color: #ffffff;
+}
+
+.nav__menu li {
+  padding: 0.5em 1em;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.nav__menu li:hover {
+  background-color: #dadada;
+}
+
+/* Search Bar */
+
+.searchbar__dropdown {
+  padding: 0.5em;
+}
+
+.searchbar__input {
+  padding: 0.5em;
+}
+
+/* Auth */
 
 .auth {
   display: flex;
@@ -167,42 +313,62 @@ nav {
   transition: 0.2s;
   text-transform: lowercase;
   font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tags {
   display: flex;
   flex-direction: row;
   gap: 0.5em;
+  flex-wrap: wrap;
 }
-.tag__header {
-  padding: 4em;
+
+/*Admin Menu*/
+table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid black;
+}
+
+thead {
+  background-color: #000000;
   color: #ffffff;
+}
+
+td,
+tr {
+  border: 1px solid black;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.5em;
+}
+
+/* Boards */
+.board__header {
+  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
+  padding: 3em 2em 3em 2em;
+  color: #ffffff;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   border: 1px solid #000000;
-  text-transform: lowercase;
 }
 
-section {
+.board__header__left {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1em;
-  padding: 1em;
-  width: 50vw;
-  margin: auto;
+  gap: 0.5em;
 }
 
-.posts,
-.comments,
-.boards {
+.board__header__right {
+  flex: 1;
   display: flex;
+  align-items: center;
   flex-direction: column;
-  gap: 1em;
-}
-
-.post__actions,
-.comment__actions {
-  display: flex;
+  gap: 0.5em;
 }
 
 .board-card {
@@ -211,6 +377,23 @@ section {
   flex-direction: column;
   color: #ffffff;
   background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
+}
+.boards {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+/* Posts */
+.posts {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.post__actions {
+  display: flex;
+  gap: 0.2em;
 }
 
 .post-card {
@@ -221,6 +404,7 @@ section {
   padding: 1em;
   border: 1px solid #000000;
   background-color: #ffffff;
+  transition: 0.2s;
 }
 
 .post-card__left {
@@ -233,10 +417,38 @@ section {
   transition: 0.2s;
 }
 
-.post-card__left__title:hover {
+.post-card:hover {
+  background-color: #f0f0f0;
+}
+
+.username {
+  transition: 0.2s;
+}
+
+.username:hover,
+.board-name:hover {
   color: #9e0091;
 }
 
+article {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
+.stat-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.2em;
+}
+
+/* Comments */
 .comment {
   display: flex;
   flex-direction: row;
@@ -252,33 +464,78 @@ section {
   flex-direction: column;
   row-gap: 0.5em;
 }
-
-.board__header {
-  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
-  padding: 4em;
-  color: #ffffff;
+.comments {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #000000;
-}
-
-.username {
-  transition: 0.2s;
-}
-
-.username:hover {
-  color: #9e0091;
-}
-
-.stats {
-  display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 1em;
 }
 
-.stat-icon {
+.comment__actions {
   display: flex;
-  align-items: center;
   gap: 0.2em;
+}
+
+/* Create Post Form */
+.create-post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.tag-details__name {
+  text-transform: lowercase;
+}
+
+/* Footer */
+
+footer {
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  background-color: #000000;
+  color: #ffffff;
+  padding: 1em;
+  margin-top: 2em;
+}
+
+.footer-section {
+  flex: 1 1 300px;
+  border: 1px solid black;
+  align-content: center;
+}
+
+.footer-links li,
+.footer-subtitle {
+  margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #9e0091;
+}
+
+/* Media query for medium screens */
+@media (max-width: 1440px) {
+  main {
+    width: 80vw;
+  }
+}
+
+/* Media query for tablets */
+@media (max-width: 1024px) {
+  main {
+    width: 85vw;
+  }
+}
+
+/* Media query for phones */
+@media (max-width: 601px) {
+  main {
+    width: 95vw;
+  }
 }

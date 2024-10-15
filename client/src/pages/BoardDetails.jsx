@@ -75,10 +75,10 @@ const BoardDetails = (props) => {
   }
 
   return (
-    <section className="board-details">
+    <main className="board-details">
       <div className="board__header">
         <div className="board__header__left">
-          <span className="board__header__subtitle">/{board.name}/</span>
+          <h2 className="board__header__subtitle">/{board.name}/</h2>
           <h1 className="board__header__title">{board.description}</h1>
           <span className="board__header__subtitle">{postCount} posts</span>
         </div>
@@ -109,7 +109,7 @@ const BoardDetails = (props) => {
           </li>
         ))}
       </ul>
-    </section>
+    </main>
   );
 };
 

@@ -18,39 +18,8 @@ function AdminBoards(props) {
   } = props;
 
   return (
-    <>
+    <section className="admin__boards">
       <h2>Boards</h2>
-      <form onSubmit={createBoard}>
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="(e.g. rhh)"
-                  value={boardFormData.name}
-                  onChange={handleBoardChange}
-                />
-              </td>
-              <td>
-                <input
-                  type="textarea"
-                  name="description"
-                  id="description"
-                  placeholder="(e.g. Rap & Hip-Hop)"
-                  value={boardFormData.description}
-                  onChange={handleBoardChange}
-                />
-              </td>
-              <td>
-                <button type="submit">Create Board</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </form>
       <table>
         <thead>
           <tr>
@@ -116,7 +85,9 @@ function AdminBoards(props) {
                     ) : (
                       <>
                         <a href={`/b/${board.name}`}>
-                          <button>Visit /{board.name}/</button>
+                          <button className="basic-button">
+                            Visit /{board.name}/
+                          </button>
                         </a>
                         <BasicButton
                           text="Edit"
@@ -133,9 +104,40 @@ function AdminBoards(props) {
               </td>
             </tr>
           ))}
+          <tr>
+            <td>
+              <input
+                type="text"
+                name="name"
+                id="name"
+                placeholder="(e.g. rhh)"
+                value={boardFormData.name}
+                onChange={handleBoardChange}
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                name="description"
+                id="description"
+                placeholder="(e.g. Rap & Hip-Hop)"
+                value={boardFormData.description}
+                onChange={handleBoardChange}
+              />
+            </td>
+            <td>
+              <button
+                className="basic-button"
+                type="submit"
+                onClick={createBoard}
+              >
+                Create Board
+              </button>
+            </td>
+          </tr>
         </tbody>
       </table>
-    </>
+    </section>
   );
 }
 
