@@ -20,7 +20,10 @@ function AdminBoards(props) {
   return (
     <section className="admin__boards">
       <h2>Boards</h2>
+
+      {/* Boards Table */}
       <table>
+        {/* Table Headers */}
         <thead>
           <tr>
             <th>Name</th>
@@ -28,10 +31,14 @@ function AdminBoards(props) {
             <th>Actions</th>
           </tr>
         </thead>
+
+        {/* Table Body */}
         <tbody>
+          {/* Map through boards and display each board */}
           {boards.map((board) => (
             <tr key={board.id}>
               <td>
+                {/* If editingBoard is the current board, display a name input field */}
                 {editingBoard === board.id ? (
                   <input
                     type="text"
@@ -40,9 +47,12 @@ function AdminBoards(props) {
                     onChange={(e) => handleEditBoardChange(e, board.id)}
                   />
                 ) : (
+                  // If editingBoard is not the current board, display the board name
                   board.name
                 )}
               </td>
+
+              {/* If editingBoard is the current board, display a description input field */}
               <td>
                 {editingBoard === board.id ? (
                   <input
@@ -52,9 +62,12 @@ function AdminBoards(props) {
                     onChange={(e) => handleEditBoardChange(e, board.id)}
                   />
                 ) : (
+                  // If editingBoard is not the current board, display the board description
                   board.description
                 )}
               </td>
+
+              {/* If editingBoard is the current board, display save and cancel buttons */}
               <td>
                 {editingBoard === board.id ? (
                   <>
@@ -69,7 +82,9 @@ function AdminBoards(props) {
                     />
                   </>
                 ) : (
+                  // If editingBoard is not the current board, display edit and delete buttons
                   <>
+                    {/* If boardToDelete is the current board, display delete confirmation */}
                     {boardToDelete === board.id ? (
                       <>
                         <span>Are you sure?</span>
@@ -83,6 +98,7 @@ function AdminBoards(props) {
                         />
                       </>
                     ) : (
+                      // If boardToDelete is not the current board, display edit and delete buttons
                       <>
                         <a href={`/b/${board.name}`}>
                           <button className="basic-button">
@@ -104,7 +120,10 @@ function AdminBoards(props) {
               </td>
             </tr>
           ))}
+
+          {/* Create Board Form */}
           <tr>
+            {/* Name Input */}
             <td>
               <input
                 type="text"
@@ -115,6 +134,8 @@ function AdminBoards(props) {
                 onChange={handleBoardChange}
               />
             </td>
+
+            {/* Description Input */}
             <td>
               <input
                 type="text"
@@ -125,6 +146,8 @@ function AdminBoards(props) {
                 onChange={handleBoardChange}
               />
             </td>
+
+            {/* Submit Button */}
             <td>
               <button
                 className="basic-button"

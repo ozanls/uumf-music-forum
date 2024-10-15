@@ -126,6 +126,30 @@ router.get("/:boardId/tags", async (req, res) => {
   }
 });
 
+// Get tags for a board (top 20 by post count in the past week)
+router.get("/:boardId/tags/active", async (req, res) => {
+  const boardId = req.params.boardId;
+  try {
+    const topTags = await Tag.sequelize.query(
+      `SELECT tags.*, COUNT(posttags.tagId) AS count
+       FROM tags
+       LEFT JOIN posttags ON tags.id = posttags.tagId
+       WHERE tags.boardId = :boardId AND posttags.createdAt >= NOW() - INTERVAL 1 WEEK
+       GROUP BY tags.id
+       ORDER BY count DESC
+       LIMIT 20`,
+      {
+        replacements: { boardId },
+        type: Tag.sequelize.QueryTypes.SELECT,
+      }
+    );
+    res.status(200).json(topTags);
+  } catch (error) {
+    console.error("Error getting tags for board:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // Return number of posts in a board
 router.get("/:boardId/count", async (req, res) => {
   const boardId = req.params.boardId;

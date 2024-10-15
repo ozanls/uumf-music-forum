@@ -1,12 +1,15 @@
 function Footer() {
   return (
     <footer>
+      {/* Logo */}
       <div className="footer-section">
         <a href="/">
           <span className="logo">UUMF</span>
         </a>
         <p>&copy; {new Date().getFullYear()} All rights reserved.</p>
       </div>
+
+      {/* Quick Links */}
       <div className="footer-section">
         <h4 className="footer-subtitle">Quick Links</h4>
         <ul className="footer-links">
@@ -21,6 +24,8 @@ function Footer() {
           </li>
         </ul>
       </div>
+
+      {/* Contact */}
       <div className="footer-section">
         <h4 className="footer-subtitle">Contact Us</h4>
         <p>teamuumf@gmail.com</p>

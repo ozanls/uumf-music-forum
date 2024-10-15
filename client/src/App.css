@@ -1,5 +1,13 @@
 /* Global rules */
 
+* {
+  list-style: none;
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;
@@ -8,19 +16,15 @@ body {
 }
 
 body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
   background-color: #f0f0f0;
   margin: 0;
 }
 
-#root {
+/* #root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  width: 100%;
-}
+} */
 
 main {
   flex: 1;
@@ -29,6 +33,7 @@ main {
   gap: 1em;
   padding: 1em;
   width: 55vw;
+  min-height: 80vh;
   margin: auto;
 }
 
@@ -53,12 +58,8 @@ h3 {
   font-weight: bold;
 }
 
-* {
-  list-style: none;
-  font-family: "Inter", sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+u {
+  cursor: pointer;
 }
 
 a,
@@ -72,10 +73,13 @@ select,
 textarea {
   font-family: "Inter", sans-serif;
   padding: 0.5em;
-  border: 1px solid #000000;
 }
 
-/* Page Header */
+textarea {
+  resize: vertical;
+}
+
+/* General Page Elements */
 
 .page__header {
   padding: 4em;
@@ -90,16 +94,23 @@ textarea {
 }
 
 /* Buttons */
+button {
+  cursor: pointer;
+  transition: 0.2s;
+  width: fit-content;
+}
+
+.button-list {
+  display: flex;
+  gap: 0.2em;
+}
 
 .basic-button {
-  font-weight: bold;
-  cursor: pointer;
   background-color: #ffffff;
   border: 1px solid #001352;
   color: #001352;
   padding: 0.5em;
   border-radius: 0.2em;
-  transition: 0.2s;
 }
 
 .basic-button:hover {
@@ -107,18 +118,16 @@ textarea {
 }
 
 .basic-button-2 {
-  font-weight: bold;
   cursor: pointer;
-  background-color: #001352;
+  background-color: #000000;
   border: 1px solid #000000;
   color: #ffffff;
   padding: 0.5em;
   border-radius: 0.2em;
-  transition: 0.2s;
 }
 
 .basic-button-2:hover {
-  background-color: #5c70b1;
+  background-color: #838383;
 }
 
 .like-button,
@@ -128,7 +137,6 @@ textarea {
   border: none;
   padding: 0.5em;
   border-radius: 0.2em;
-  transition: 0.2s;
 }
 
 .like,
@@ -142,7 +150,6 @@ textarea {
   border: 1px solid #9b2d2d;
   padding: 0.5em;
   border-radius: 0.2em;
-  transition: 0.2s;
 }
 
 .like-button:hover,
@@ -187,7 +194,6 @@ textarea {
   border: 1px solid #007bff;
   padding: 0.5em 1em;
   cursor: pointer;
-  transition: 0.2s;
   border-radius: 4px;
 }
 
@@ -239,24 +245,25 @@ nav {
 }
 
 .nav__menu {
-  display: flex;
-  flex-direction: column;
+  gap: 1em;
   position: absolute;
   right: 0;
-  width: fit-content;
-  border: 1px solid black;
   border-top: none;
-  background-color: #ffffff;
+  padding: 0em;
+  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
+  color: #ffffff;
 }
 
 .nav__menu li {
   padding: 0.5em 1em;
   transition: 0.2s;
   cursor: pointer;
+  border: 1px solid #000000;
 }
 
 .nav__menu li:hover {
-  background-color: #dadada;
+  background-color: #ffffff;
+  color: #000000;
 }
 
 /* Search Bar */
@@ -277,10 +284,6 @@ nav {
   column-gap: 1em;
 }
 
-.auth__welcome {
-  color: #ffffff;
-}
-
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -299,6 +302,12 @@ nav {
   display: flex;
   flex-direction: column;
   gap: 1em;
+}
+
+.auth-form__signup button,
+.auth-form__login button,
+.auth-form__reset-password button {
+  width: 100%;
 }
 
 .auth-form__message {
@@ -364,7 +373,6 @@ tr {
 }
 
 .board__header__right {
-  flex: 1;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -384,16 +392,26 @@ tr {
   gap: 1em;
 }
 
+/* Board Tags */
+
+.board-tags__name {
+  cursor: pointer;
+}
+.board-tags__name h2 {
+  text-transform: lowercase;
+  color: #ffffff;
+}
+
+.board-tags__count {
+  font-weight: bold;
+  background-color: #ffffff;
+}
+
 /* Posts */
 .posts {
   display: flex;
   flex-direction: column;
   gap: 1em;
-}
-
-.post__actions {
-  display: flex;
-  gap: 0.2em;
 }
 
 .post-card {
@@ -412,13 +430,33 @@ tr {
   flex-direction: column;
   row-gap: 0.2em;
 }
-
-.post-card__left__title {
-  transition: 0.2s;
+.post-card__left__body {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
 }
 
 .post-card:hover {
   background-color: #f0f0f0;
+}
+
+.post__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid #000000;
+  padding: 1em;
+}
+
+.post__header article {
+  gap: 1em;
+  width: 100%;
 }
 
 .username {
@@ -448,6 +486,55 @@ article {
   gap: 0.2em;
 }
 
+.post__comments__form {
+  margin-bottom: 1em;
+  background-color: #ffffff;
+  padding: 0.2em;
+  border: 1px solid #001352;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+
+.post__comments__form__textarea {
+  width: 100%;
+  border: none;
+  overflow: wrap;
+}
+
+.post__comments__form__submit {
+  right: 0;
+  cursor: pointer;
+  background-color: #001352;
+  border: 1px solid #001352;
+  color: #ffffff;
+  padding: 0.5em;
+  border-radius: 0.2em;
+}
+
+.post__comments__form__submit:hover {
+  background-color: #dadada;
+  color: #001352;
+}
+
+/* Post Edit Form*/
+.post__edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+/* Create Post Form */
+.create-post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.create-post-form button {
+  width: 100%;
+}
+
 /* Comments */
 .comment {
   display: flex;
@@ -463,20 +550,14 @@ article {
   display: flex;
   flex-direction: column;
   row-gap: 0.5em;
+  flex: 1;
 }
+
+.comment__left__form textarea {
+  width: 100%;
+}
+
 .comments {
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-}
-
-.comment__actions {
-  display: flex;
-  gap: 0.2em;
-}
-
-/* Create Post Form */
-.create-post-form {
   display: flex;
   flex-direction: column;
   gap: 1em;
@@ -489,7 +570,7 @@ article {
 /* Footer */
 
 footer {
-  bottom: 0;
+  flex-shrink: 0;
   width: 100%;
   display: flex;
   flex-wrap: wrap;
@@ -497,7 +578,6 @@ footer {
   background-color: #000000;
   color: #ffffff;
   padding: 1em;
-  margin-top: 2em;
 }
 
 .footer-section {
@@ -512,7 +592,7 @@ footer {
 }
 
 .footer-links a {
-  transition: color 0.3s ease;
+  transition: 0.2s;
 }
 
 .footer-links a:hover {

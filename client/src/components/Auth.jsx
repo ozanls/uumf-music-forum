@@ -13,11 +13,13 @@ function Auth(props) {
     showDropdown,
   } = props;
 
+  // Toggle login form
   const toggleLogin = () => {
     setShowSignup(false);
     setShowLogin(!showLogin);
   };
 
+  // Toggle signup form
   const toggleSignup = () => {
     setShowLogin(false);
     setShowSignup(!showSignup);
@@ -26,16 +28,31 @@ function Auth(props) {
   return (
     <>
       <div className="auth">
+        {/* If user is authenticated, display '+ Create a Post' and user dropdown */}
         {isAuthenticated ? (
           <>
-            <p className="auth__welcome">
-              <BasicButton
-                handleAction={() => setShowDropdown(!showDropdown)}
-                text={user.username}
-              />
-            </p>
+            {/* Create a Post */}
+            <BasicButton
+              handleAction={() => (window.location.href = `/new`)}
+              text={
+                <>
+                  <i className="fa-solid fa-plus"></i> Create a Post
+                </>
+              }
+            />
+
+            {/* User Dropdown */}
+            <BasicButton
+              handleAction={() => setShowDropdown(!showDropdown)}
+              text={
+                <>
+                  {user.username} <i className="fa-solid fa-chevron-down"></i>
+                </>
+              }
+            />
           </>
         ) : (
+          // If user is not authenticated, display 'Log In' and 'Sign Up' buttons
           <>
             <BasicButton handleAction={toggleLogin} text="Log In" />
             <BasicButton handleAction={toggleSignup} text="Sign Up" />

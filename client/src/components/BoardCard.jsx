@@ -7,13 +7,17 @@ function BoardCard(props) {
 
   return (
     <div className="board__header">
+      {/* Board Header Left (title, subtitle, visit button) */}
       <div className="board__header__left">
         <h2 className="board__header__subtitle">/{board.name}/</h2>
         <h1 className="board__header__title">{board.description}</h1>
-        <a href={`/b/${board.name}`}>
-          <button className="basic-button">Visit /{board.name}/</button>
-        </a>
+        <BasicButton
+          text={`Visit /${board.name}/`}
+          handleAction={() => (window.location.href = `/b/${board.name}`)}
+        />{" "}
       </div>
+
+      {/* Board Header Right (trending tags) */}
       <div className="board__header__right">
         {board.trendingTags.length !== 0 && (
           <>
@@ -28,6 +32,19 @@ function BoardCard(props) {
             </ul>
           </>
         )}
+
+        {/* If there are no trending tags, display a message */}
+        {board.trendingTags.length === 0 && (
+          <>
+            <h3>No trending tags...</h3>
+          </>
+        )}
+
+        {/* Button to view more tags */}
+        <BasicButton
+          text={`More /${board.name}/ Tags`}
+          handleAction={() => (window.location.href = `/b/${board.name}/tags`)}
+        />
       </div>
     </div>
   );

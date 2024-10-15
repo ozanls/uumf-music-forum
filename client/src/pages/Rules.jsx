@@ -1,14 +1,18 @@
 function Rules() {
+  // Variables
   const lastUpdated = "October 13, 2024";
   const websiteName = "UUMF";
   const contactEmail = "teamuumf@gmail.com";
 
   return (
     <main>
+      {/* Rules Header */}
       <section className="page__header">
         <h1>UUMF Rules</h1>
         <span>Last updated: {lastUpdated}</span>
       </section>
+
+      {/* Rules */}
       <section className="page__content">
         <p>
           Welcome to {websiteName}! To ensure a positive experience for all

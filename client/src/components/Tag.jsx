@@ -5,25 +5,27 @@ function Tag(props) {
   const { tag } = props;
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
+  // When the mouse enters or leaves the tag, toggle the isHovered state
+  const handleMouseAction = () => {
+    setIsHovered(!isHovered);
   };
 
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
-
+  // Alter the hex code of the tag to create a hover color
   const hoverColor = alterHex(tag.hexCode, -20);
+
   return (
-    <a href={`/b/${tag.board.name.toString()}/${tag.name}`}>
+    // Link to the tag details page
+    <a href={`/b/${tag.board.name.toString()}/tag/${tag.name}`}>
       <div
         className="tag"
+        // Set the background color of the tag to the tag's hex code or the hover color, depending on whether the tag is hovered.
         style={{
           backgroundColor: isHovered ? hoverColor : tag.hexCode,
-          transition: "background-color 0.3s ease",
+          transition: "0.3s",
         }}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        // When the mouse enters or leaves the tag, call the appropriate function
+        onMouseEnter={handleMouseAction}
+        onMouseLeave={handleMouseAction}
       >
         #{tag.name}
       </div>

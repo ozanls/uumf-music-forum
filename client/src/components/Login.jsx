@@ -9,11 +9,13 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Get the email and password from the form
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    console.log("Logging in with:", email, password);
-
+    // Send a POST request to the server to authenticate the user
+    // POST /users/auth
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/users/auth`,
@@ -24,6 +26,7 @@ function Login() {
         { withCredentials: true }
       );
 
+      // If the user is authenticated successfully, display a success message and reload the page
       if (response.status === 200) {
         console.log("Login successful:", response);
         setMessage({
@@ -32,12 +35,16 @@ function Login() {
         });
         setShowMessage(true);
         window.location.reload();
+
+        // If there is an error authenticating the user, display an error message
       } else {
         console.log(response.message);
         setMessage(response.message);
         setShowMessage(true);
         console.error("Login failed:", response);
       }
+
+      // If there is an error authenticating the user, display an error message
     } catch (error) {
       setMessage(error.response.data.message);
       setShowMessage(true);
@@ -47,6 +54,10 @@ function Login() {
 
   return (
     <div className="auth-form">
+      {/* If showMessage is true, show the message*/}
+      {showMessage && <p className="auth-form__message">{message}</p>}
+
+      {/* If showResetPassword is true, show the ResetPassword component*/}
       {showResetPassword && (
         <ResetPassword
           setMessage={setMessage}
@@ -54,21 +65,29 @@ function Login() {
           showMessage={showMessage}
         />
       )}
+
+      {/* If showResetPassword is false, show the login form*/}
       {!showResetPassword && (
         <>
           <form className="auth-form__signup" onSubmit={handleSubmit}>
+            {/* Email Input */}
             <label htmlFor="email">Email</label>
             <input type="text" id="email" name="email" />
+
+            {/* Password Input */}
             <label htmlFor="password">Password</label>
             <input type="password" id="password" name="password" />
-            <button type="submit">Log In</button>
+
+            {/* Log In Button */}
+            <button className="basic-button-2" type="submit">
+              Log In
+            </button>
           </form>
           <a onClick={() => setShowResetPassword(true)}>
-            Forgot your password?
+            <u>Forgot your password?</u>
           </a>
         </>
       )}
-      {showMessage && <p className="auth-form__message">{message}</p>}
     </div>
   );
 }

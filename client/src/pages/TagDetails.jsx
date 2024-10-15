@@ -13,6 +13,7 @@ function TagDetails(props) {
 
   useEffect(() => {
     const fetchTag = async () => {
+      // If boardName or tagName is not provided, return
       if (!boardName) {
         setMessage({ type: "error", message: "Board name is not defined" });
         return;
@@ -22,11 +23,17 @@ function TagDetails(props) {
         return;
       }
 
+      // Send a GET request to the server to get the tag details
+      // GET /tags/find/:boardName/:
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_SERVER_URL}/tags/find/${boardName}/${tagName}`
         );
+
+        // Update the tag state
         setTag(response.data);
+
+        // If there is an error fetching the tag, display an error message
       } catch (error) {
         console.error("Error fetching tag:", error);
       }
@@ -36,42 +43,55 @@ function TagDetails(props) {
   }, [tagName, boardName]);
 
   useEffect(() => {
+    // If tag is not loaded, return
     if (!tag) {
       return;
     }
 
     const fetchPosts = async () => {
+      // Send a GET request to the server to get the posts with the tag
+      // GET /tags/posts/:tagId
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_SERVER_URL}/tags/posts/${tag.id}`
         );
+
+        // Update the posts state
         setPosts(response.data);
+
+        // If there is an error fetching posts, display an error message
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
     };
 
     const fetchNumberOfPosts = async () => {
+      // Send a GET request to the server to get the number of posts with the tag
+      // GET /tags/count/:tagId
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_SERVER_URL}/tags/count/${tag.id}`
         );
+
+        // Update the number of posts state
         setNumberOfPosts(response.data.count);
+
+        // If there is an error fetching the number of posts, display an error message
       } catch (error) {
         console.error("Error fetching number of posts:", error);
       }
     };
 
     fetchNumberOfPosts();
-
     fetchPosts();
   }, [tag]);
 
+  // If tag is not loaded, return a placeholder
   if (!tag) {
     return (
       <main className="tag-details">
         <section
-          className="tag__header"
+          className="page__header"
           style={{
             backgroundImage: `linear-gradient(45deg, #000000 0%, #767676 100%)`,
           }}
@@ -84,10 +104,12 @@ function TagDetails(props) {
     );
   }
 
-  const lighterHex = alterHex(tag.hexCode, 20);
+  // Generate a lighter hex code for the tag background
+  const lighterHex = alterHex(tag.hexCode, 25);
 
   return (
     <main className="tag-details">
+      {/* Tag Header  */}
       <section
         className="page__header"
         style={{
@@ -102,9 +124,12 @@ function TagDetails(props) {
           <span>{numberOfPosts} posts</span>
         )}
       </section>
+
+      {/* Posts  */}
       <section className="tag__posts">
         {posts.length > 0 && (
           <ul className="posts">
+            {/* Display each post with the tag using PostCard.jsx */}
             {posts.map((post) => (
               <li key={post.post.id}>
                 <PostCard

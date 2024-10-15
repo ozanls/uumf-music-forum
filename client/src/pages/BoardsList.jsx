@@ -8,11 +8,17 @@ const BoardsList = (props) => {
 
   useEffect(() => {
     const fetchBoards = async () => {
+      // Send a GET request to the server to get the boards
+      // GET /boards
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_SERVER_URL}/boards`
         );
+
+        // Update the boards state
         setBoards(response.data);
+
+        // If there is an error fetching boards, display an error message
       } catch (error) {
         console.error("Error fetching boards:", error);
       }
@@ -22,6 +28,7 @@ const BoardsList = (props) => {
   }, []);
 
   return (
+    // Boards List Component
     <section className="boards-list">
       <ul className="boards">
         {boards.map((board) => (

@@ -1,9 +1,12 @@
 function About() {
   return (
     <main>
+      {/* About Page Header */}
       <section className="page__header">
         <h1>What is UUMF?</h1>
       </section>
+
+      {/* About Page Content */}
       <section className="page__content">
         <p>
           UUMF (Underground Underground Music Forum) is a vibrant online

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import axios from "axios";
 import BoardsList from "./pages/BoardsList";
 import BoardDetails from "./pages/BoardDetails";
+import BoardTags from "./pages/BoardTags";
 import TagDetails from "./pages/TagDetails";
 import UserDetails from "./pages/UserDetails";
 import PostDetails from "./pages/PostDetails";
@@ -13,6 +14,7 @@ import Message from "./components/Message";
 import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
 import TermsAndConditions from "./pages/TermsAndConditions";
+import PageNotFound from "./pages/PageNotFound";
 import Rules from "./pages/Rules";
 import About from "./pages/About";
 import Footer from "./components/Footer";
@@ -23,8 +25,11 @@ function App() {
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState({ type: "", message: "" });
 
+  // Check the authentication status when the app loads
   useEffect(() => {
     const checkAuthStatus = async () => {
+      // Send a GET request to the server to check the authentication status
+      // GET /users/auth/status
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_SERVER_URL}/users/auth/status`,
@@ -55,9 +60,8 @@ function App() {
       )}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/b" element={<BoardsList />} />
         <Route
-          path="/b/:name"
+          path="/b/:boardName"
           element={<BoardDetails user={user} setMessage={setMessage} />}
         />
         <Route
@@ -65,11 +69,15 @@ function App() {
           element={<PostDetails user={user} setMessage={setMessage} />}
         />
         <Route
-          path="/b/:boardName/:tagName"
+          path="/b/:boardName/tags"
+          element={<BoardTags user={user} setMessage={setMessage} />}
+        />
+        <Route
+          path="/b/:boardName/tag/:tagName"
           element={<TagDetails user={user} setMessage={setMessage} />}
         />
         <Route
-          path="/s/:board/:query"
+          path="/search/:boardName/:query"
           element={<SearchResults user={user} setMessage={setMessage} />}
         />
         <Route
@@ -87,6 +95,7 @@ function App() {
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/rules" element={<Rules />} />
         <Route path="/about" element={<About />} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
       <Footer />
     </Router>

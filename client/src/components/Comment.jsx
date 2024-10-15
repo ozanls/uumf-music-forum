@@ -17,55 +17,78 @@ function Comment(props) {
 
   useEffect(() => {
     const fetchLikeStatus = async () => {
+      // Send a GET request to the server to get the like status of the comment
+      // GET /comments/:commentId/liked
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_SERVER_URL}/comments/${comment.id}/liked`,
           { withCredentials: true }
         );
+
+        // Update the commentLiked state
         setCommentLiked(response.data.liked);
+
+        // If there is an error fetching the like status, display an error message
       } catch (error) {
         console.error("Error fetching like status:", error);
         setMessage({ type: "error", message: "Error fetching like status" });
       }
     };
 
+    // If user is logged in, fetch the like status
     if (user) {
       fetchLikeStatus();
     }
   }, [user, comment]);
 
   const handleLike = async () => {
+    // Send a POST request to the server to like/unlike the comment
+    // POST /comments/:commentId/like
     try {
       await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/comments/${comment.id}/like`,
         {},
         { withCredentials: true }
       );
+
+      // Update the commentLiked state
       setCommentLiked(!commentLiked);
+
+      // If the comment is liked/unliked, update the likes count accordingly
       commentLiked
         ? setLikes((prevLikes) => prevLikes - 1)
         : setLikes((prevLikes) => prevLikes + 1);
+
+      // If there is an error liking/unliking the comment, display an error message
     } catch (error) {
       console.error("Error liking/unliking comment:", error);
       setMessage({ type: "error", message: "Error liking/unliking comment" });
     }
   };
 
+  // Function to handle deleting a comment
   const handleDelete = (commentId) => {
     setCommentToDelete(commentId);
   };
 
+  // Function to cancel deleting a comment
   const cancelDelete = () => {
     setCommentToDelete(null);
   };
 
   const confirmDelete = async (commentId) => {
+    // Send a DELETE request to the server to delete the comment
+    // DELETE /comments/:commentId
     try {
       await axios.delete(
         `${import.meta.env.VITE_SERVER_URL}/comments/${commentId}`,
         { withCredentials: true }
       );
+
+      // Reload the page
       window.location.reload();
+
+      // If there is an error deleting the comment, display an error message
     } catch (error) {
       console.error("Error deleting comment:", error);
       setMessage({ type: "error", message: "Error deleting comment" });
@@ -75,16 +98,20 @@ function Comment(props) {
   const handleSave = async (event) => {
     event.preventDefault();
 
+    // Get the comment body from the form
     const body = event.target.body.value.trim();
 
+    // If the comment body is empty, display an error message
     if (!body) {
       console.error("Comment body is required");
       setMessage({ type: "error", message: "Comment is required" });
       return;
     }
 
+    // Send a POST request to the server to update the comment
+    // POST /comments/:commentId/update
     try {
-      const response = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/comments/${comment.id}/update`,
         {
           body,
@@ -93,9 +120,12 @@ function Comment(props) {
           withCredentials: true,
         }
       );
+
+      // Set toggleEdit to false and reload the page
       setToggleEdit(false);
-      console.log("Comment edited successfully:", response.data);
       window.location.reload();
+
+      // If there is an error editing the comment, display an error message
     } catch (error) {
       console.error("Error editing comment:", error);
       setMessage({ type: "error", message: "Error editing comment" });
@@ -104,6 +134,7 @@ function Comment(props) {
 
   return (
     <div className="comment">
+      {/* Comment Left (comment body, user, actions) */}
       <div className="comment__left">
         <span>
           <Username user={comment.user} />
@@ -115,41 +146,53 @@ function Comment(props) {
           </time>
         </span>
 
+        {/* If toggleEdit is false, display the comment body */}
         {!toggleEdit ? (
           <>
             <p>{comment.body}</p>
           </>
         ) : (
-          <form onSubmit={handleSave}>
+          // If toggleEdit is true, display the edit form
+          <form onSubmit={handleSave} className="comment__left__form">
             <textarea
               name="body"
               value={editedComment}
               onChange={(e) => setEditedComment(e.target.value)}
-              rows="4"
-              cols="25"
             />
-            <button type="button" onClick={() => setToggleEdit(false)}>
-              Cancel
-            </button>
-            <button type="submit">Save</button>
+            <div className="button-list">
+              <button className="basic-button-2" type="submit">
+                Save
+              </button>
+              <BasicButton
+                handleAction={() => setToggleEdit(false)}
+                text="Cancel"
+              />
+            </div>
           </form>
         )}
 
-        <div className="comment__actions">
+        {/* Comment Actions */}
+        <div className="button-list">
+          {/* If user is logged in and the comment is not being edited or deleted, display the like, edit, and delete buttons */}
           {!toggleEdit && !commentToDelete && user && (
             <>
+              {/* If the comment is liked, show an unlike button. */}
               {commentLiked ? (
                 <UnlikeButton handleAction={handleLike} text={"Unlike"} />
               ) : (
+                // If the comment is not liked, show a like button.
                 <LikeButton handleAction={handleLike} text={"Like"} />
               )}
 
+              {/* If the user is the author of the comment, show an edit button. */}
               {user.id === comment.userId && (
                 <BasicButton
                   handleAction={() => setToggleEdit(true)}
                   text="Edit"
                 />
               )}
+
+              {/* If the user is an admin or the author of the comment, show a delete button. */}
               {(user.id === comment.userId || user.role === "admin") && (
                 <DeleteButton
                   handleAction={() => handleDelete(comment.id)}
@@ -159,6 +202,7 @@ function Comment(props) {
             </>
           )}
 
+          {/* If the comment is being deleted, show a confirmation message. */}
           {commentToDelete === comment.id && (
             <>
               <span>Are you sure you want to delete this comment?</span>
@@ -172,6 +216,8 @@ function Comment(props) {
           )}
         </div>
       </div>
+
+      {/* Comment Right (like count) */}
       <div className="comment__right">
         <div className="stats">
           <span className="stat-icon">
