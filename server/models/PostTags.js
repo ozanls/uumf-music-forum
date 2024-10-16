@@ -1,13 +1,16 @@
-module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("posttags", {
+"use strict";
+
+module.exports = (sequelize, DataTypes) => {
+  const PostTag = sequelize.define(
+    "PostTag",
+    {
       id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
       postId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
           model: "posts",
@@ -17,7 +20,7 @@ module.exports = {
         onUpdate: "CASCADE",
       },
       tagId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
           model: "tags",
@@ -27,17 +30,30 @@ module.exports = {
         onUpdate: "CASCADE",
       },
       createdAt: {
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
         allowNull: false,
       },
       updatedAt: {
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
         allowNull: false,
       },
-    });
-  },
+    },
+    {
+      tableName: "posttags",
+      timestamps: true,
+    }
+  );
 
-  down: async (queryInterface) => {
-    await queryInterface.dropTable("posttags");
-  },
+  PostTag.associate = (models) => {
+    PostTag.belongsTo(models.Post, {
+      foreignKey: "postId",
+      as: "post",
+    });
+    PostTag.belongsTo(models.Tag, {
+      foreignKey: "tagId",
+      as: "tag",
+    });
+  };
+
+  return PostTag;
 };
