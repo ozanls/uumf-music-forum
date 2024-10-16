@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import axios from "axios";
 import ResetPassword from "./ResetPassword";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -7,6 +7,7 @@ function Login(props) {
   const { setMessage } = props;
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [recaptcha, setRecaptcha] = useState(null);
+  const recaptchaRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,8 +46,20 @@ function Login(props) {
 
       // If there is an error authenticating the user, display an error message
     } catch (error) {
-      setMessage({ type: "error", message: error.response.data.message });
-      console.error("Error logging in:", error);
+      // If the error response has a message, display the message, else display a generic error message
+      if (error.response.data.message) {
+        setMessage({ type: "error", message: error.response.data.message });
+
+        // Else, display a generic error message
+      } else {
+        setMessage({ type: "error", message: "Login failed, try again." });
+      }
+    } finally {
+      // Reset the ReCAPTCHA widget after each login attempt
+      if (recaptchaRef.current) {
+        recaptchaRef.current.reset();
+        setRecaptcha(null);
+      }
     }
   };
 
@@ -69,6 +82,7 @@ function Login(props) {
 
             {/* ReCAPTCHA */}
             <ReCAPTCHA
+              ref={recaptchaRef}
               sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
               onChange={(i) => setRecaptcha(i)}
             />

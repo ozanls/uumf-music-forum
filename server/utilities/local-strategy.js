@@ -4,11 +4,17 @@
 const passport = require("passport");
 const { Strategy } = require("passport-local");
 const { User } = require("../models");
-const { comparePassword } = require("./hashing");
+const bcrypt = require("bcrypt");
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
+// Checking if a password is correct via bcrypt
+async function comparePassword(password, hash) {
+  return await bcrypt.compare(password, hash);
+}
+
+// Deserialize the user
 passport.deserializeUser(async (id, done) => {
   try {
     const findUser = await User.findOne({ where: { id } });
@@ -21,6 +27,7 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
+// Local Strategy
 passport.use(
   new Strategy({ usernameField: "email" }, async (email, password, done) => {
     try {

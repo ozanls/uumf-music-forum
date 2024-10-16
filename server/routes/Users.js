@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
 const { User, Save, Post, Comment } = require("../models");
-const { hashPassword } = require("../utilities/Hashing");
 const {
   isAuthenticated,
   verifyAuthorization,
@@ -19,6 +19,12 @@ const usernameRegex = /^[a-zA-Z][a-zA-Z0-9]{2,}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex =
   /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]{8,}$/;
+
+// Hashing a password via bcrypt
+async function hashPassword(password) {
+  const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(password, salt);
+}
 
 // Authenticate a user (login)
 router.post("/auth", (req, res, next) => {

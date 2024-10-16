@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import axios from "axios";
 import ReCAPTCHA from "react-google-recaptcha";
 
@@ -6,6 +6,7 @@ function Signup(props) {
   const { setMessage } = props;
   const [showSignup, setShowSignup] = useState(true);
   const [recaptcha, setRecaptcha] = useState(null);
+  const recaptchaRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,7 +35,7 @@ function Signup(props) {
 
       // If the user is registered successfully, display a success message and hide the signup form
       if (response.status === 201) {
-        setMessage({ type: "error", message: response.data.message });
+        setMessage({ type: "success", message: response.data.message });
         setShowSignup(false);
       }
 
@@ -49,6 +50,12 @@ function Signup(props) {
         // Else, display a generic error message
       } else {
         setMessage({ type: "error", message: "Signup failed, try again." });
+      }
+    } finally {
+      // Reset the ReCAPTCHA widget after each login attempt
+      if (recaptchaRef.current) {
+        recaptchaRef.current.reset();
+        setRecaptcha(null);
       }
     }
   };
@@ -98,6 +105,7 @@ function Signup(props) {
 
           {/* ReCAPTCHA */}
           <ReCAPTCHA
+            ref={recaptchaRef}
             sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
             onChange={(i) => setRecaptcha(i)}
           />
