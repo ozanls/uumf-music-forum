@@ -1,12 +1,16 @@
 "use strict";
 const bcrypt = require("bcrypt");
+require("dotenv").config();
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const hashedTeamUUMFPassword = await bcrypt.hash("Hello12345%", 10);
-    const hashedAdminPassword = await bcrypt.hash("Hello12345%", 10);
-    const hashedUserPassword = await bcrypt.hash("Hello12345%", 10);
+    const hashedTeamUUMFPassword = await bcrypt.hash(
+      process.env.SEEDPASSWORD,
+      10
+    );
+    const hashedAdminPassword = await bcrypt.hash(process.env.SEEDPASSWORD, 10);
+    const hashedUserPassword = await bcrypt.hash(process.env.SEEDPASSWORD, 10);
 
     await queryInterface.bulkInsert(
       "users",
