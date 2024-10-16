@@ -28,7 +28,7 @@ module.exports = function (sequelize, DataTypes) {
       },
     },
     {
-      tableName: "PostTags",
+      tableName: "posttags",
       timestamps: true,
     }
   );
