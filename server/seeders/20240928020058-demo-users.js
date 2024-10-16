@@ -6,7 +6,7 @@ require("dotenv").config();
 module.exports = {
   async up(queryInterface, Sequelize) {
     const hashedTeamUUMFPassword = await bcrypt.hash(
-      process.env.SEEDPASSWORD,
+      process.env.SEED_PASSWORD,
       10
     );
     const hashedAdminPassword = await bcrypt.hash(process.env.SEEDPASSWORD, 10);
