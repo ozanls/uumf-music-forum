@@ -2,6 +2,7 @@ import BasicButton from "../components/buttons/BasicButton";
 import usePageTitle from "../utilities/usePageTitle";
 
 function PageNotFound() {
+  // Set the page title
   usePageTitle("404");
 
   return (

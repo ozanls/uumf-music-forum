@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import SearchBar from "./SearchBar";
-import Username from "./Username";
 import Auth from "./Auth";
 import Login from "./Login";
 import Signup from "./Signup";

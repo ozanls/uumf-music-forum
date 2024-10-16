@@ -20,12 +20,6 @@ body {
   margin: 0;
 }
 
-/* #root {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-} */
-
 main {
   flex: 1;
   display: flex;
@@ -354,6 +348,13 @@ tr {
   padding: 0.5em;
 }
 
+td input {
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  text-align: center;
+}
+
 /* Boards */
 .board__header {
   background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
@@ -407,11 +408,37 @@ tr {
   background-color: #ffffff;
 }
 
+/* Username and User Card */
+.username {
+  transition: 0.2s;
+}
+
+.username:hover,
+.board-name:hover {
+  color: #9e0091;
+}
+
+.user__card {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  gap: 0.5em;
+  padding: 1em;
+  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
+  color: #ffffff;
+  align-items: center;
+}
+
+.user__card__avatar {
+  width: 100px;
+}
+
 /* Posts */
 .posts {
   display: flex;
   flex-direction: column;
   gap: 1em;
+  margin-top: 1em;
 }
 
 .post-card {
@@ -459,15 +486,6 @@ tr {
   width: 100%;
 }
 
-.username {
-  transition: 0.2s;
-}
-
-.username:hover,
-.board-name:hover {
-  color: #9e0091;
-}
-
 article {
   display: flex;
   flex-direction: column;
@@ -490,10 +508,18 @@ article {
   margin-bottom: 1em;
   background-color: #ffffff;
   padding: 0.2em;
-  border: 1px solid #001352;
+  border: 1px solid #000000;
   display: flex;
   flex-direction: column;
-  align-items: end;
+  align-items: center;
+}
+
+.post__comments__form div {
+  margin-top: 1em;
+}
+
+.post__comments__form button {
+  align-self: flex-end;
 }
 
 .post__comments__form__textarea {
@@ -513,8 +539,7 @@ article {
 }
 
 .post__comments__form__submit:hover {
-  background-color: #dadada;
-  color: #001352;
+  background-color: #5c70b1;
 }
 
 /* Post Edit Form*/
@@ -561,6 +586,7 @@ article {
   display: flex;
   flex-direction: column;
   gap: 1em;
+  margin-top: 1em;
 }
 
 .tag-details__name {

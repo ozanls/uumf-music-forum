@@ -173,10 +173,9 @@ function Comment(props) {
 
         {/* Comment Actions */}
         <div className="button-list">
-          {/* If user is logged in and the comment is not being edited or deleted, display the like, edit, and delete buttons */}
+          {/* If user is logged in and the comment is not being edited or deleted, display the like/unlike, edit, and delete buttons */}
           {!toggleEdit && !commentToDelete && user && (
             <>
-              {/* If the comment is liked, show an unlike button. */}
               {commentLiked ? (
                 <UnlikeButton handleAction={handleLike} text={"Unlike"} />
               ) : (

@@ -34,11 +34,7 @@ function Auth(props) {
             {/* Create a Post */}
             <BasicButton
               handleAction={() => (window.location.href = `/new`)}
-              text={
-                <>
-                  <i className="fa-solid fa-plus"></i> Create a Post
-                </>
-              }
+              text={<>Create a Post</>}
             />
 
             {/* User Dropdown */}
@@ -46,7 +42,7 @@ function Auth(props) {
               handleAction={() => setShowDropdown(!showDropdown)}
               text={
                 <>
-                  {user.username} <i className="fa-solid fa-chevron-down"></i>
+                  @{user.username} <i className="fa-solid fa-chevron-down"></i>
                 </>
               }
             />

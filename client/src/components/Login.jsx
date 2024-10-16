@@ -1,10 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 import ResetPassword from "./ResetPassword";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function Login(props) {
   const { setMessage } = props;
   const [showResetPassword, setShowResetPassword] = useState(false);
+  const [recaptcha, setRecaptcha] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -65,8 +67,18 @@ function Login(props) {
             <label htmlFor="password">Password</label>
             <input type="password" id="password" name="password" />
 
+            {/* ReCAPTCHA */}
+            <ReCAPTCHA
+              sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+              onChange={(i) => setRecaptcha(i)}
+            />
+
             {/* Log In Button */}
-            <button className="basic-button-2" type="submit">
+            <button
+              disabled={!recaptcha}
+              className="basic-button-2"
+              type="submit"
+            >
               Log In
             </button>
           </form>

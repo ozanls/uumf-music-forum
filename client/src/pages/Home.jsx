@@ -4,6 +4,7 @@ import BasicButton from "../components/buttons/BasicButton";
 import usePageTitle from "../utilities/usePageTitle";
 
 function Home() {
+  // Set the page title
   usePageTitle("Home");
 
   return (

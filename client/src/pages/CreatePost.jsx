@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import usePageTitle from "../utilities/usePageTitle";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function CreatePost(props) {
   const { user, setMessage } = props;
   const [boards, setBoards] = useState([]);
   const navigate = useNavigate();
+  const [recaptcha, setRecaptcha] = useState(null);
 
+  // Set the page title
   usePageTitle("Create a Post");
 
   useEffect(() => {
@@ -84,7 +87,7 @@ function CreatePost(props) {
       // If the post is created successfully, navigate to the post
       const post = response.data;
       setMessage({ type: "", message: "" });
-      navigate(`/p/${post.id}`);
+      navigate(`/post/${post.id}`);
 
       // If there is an error creating the post, display an error message
     } catch (error) {
@@ -136,14 +139,22 @@ function CreatePost(props) {
               <label htmlFor="tags">Tags (comma separated)</label>
               <input type="text" id="tags" name="tags" />
 
-              <button className="basic-button-2" type="submit">
+              <ReCAPTCHA
+                sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                onChange={(i) => setRecaptcha(i)}
+              />
+              <button
+                disabled={!recaptcha}
+                className="basic-button-2"
+                type="submit"
+              >
                 Submit
               </button>
             </form>
           </section>
         </>
       ) : (
-        // If user is not logged in, a button to go back, alongside the previously set error message
+        // If user is not logged in, render a button to go back, alongside the previously set error message
         <button onClick={() => navigate(-1)}>Go Back</button>
       )}
     </main>

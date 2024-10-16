@@ -9,6 +9,7 @@ function BoardTags(props) {
   const [board, setBoard] = useState(null);
   const [tags, setTags] = useState([]);
 
+  // Set the page title
   usePageTitle(`Top 20 Tags /${boardName}/`);
 
   useEffect(() => {

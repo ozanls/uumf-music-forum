@@ -3,7 +3,9 @@ import usePageTitle from "../utilities/usePageTitle";
 const siteName = "UUMF";
 
 function About() {
+  // Set the page title
   usePageTitle(`About`);
+
   return (
     <main>
       {/* About Page Header */}

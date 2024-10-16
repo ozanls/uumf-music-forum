@@ -14,6 +14,7 @@ const BoardDetails = (props) => {
   const [postCount, setPostCount] = useState(0);
   const [trendingTags, setTrendingTags] = useState([]);
 
+  // Set the page title
   usePageTitle(board ? `/${board.name}/` : "Board Details");
 
   useEffect(() => {

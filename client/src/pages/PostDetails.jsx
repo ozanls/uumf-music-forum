@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import formatDate from "../utilities/formatDate";
+import ReCAPTCHA from "react-google-recaptcha";
 import Comment from "../components/Comment";
 import Username from "../components/Username";
 import BoardName from "../components/BoardName";
@@ -15,6 +16,8 @@ import usePageTitle from "../utilities/usePageTitle";
 function PostDetails(props) {
   const { postId } = useParams();
   const [post, setPost] = useState(null);
+  const [postRecaptcha, setPostRecaptcha] = useState(null);
+  const [commentRecaptcha, setCommentRecaptcha] = useState(null);
   const [postToDelete, setPostToDelete] = useState(null);
   const [postDeleted, setPostDeleted] = useState(false);
   const [postLiked, setPostLiked] = useState(false);
@@ -25,15 +28,13 @@ function PostDetails(props) {
   const [tags, setTags] = useState([]);
   const { user, setMessage } = props;
 
+  // Set the page title
   usePageTitle(
     post ? `${post.title} by ${post.user.username}` : "Post Details"
   );
 
   // Fetch post details
   useEffect(() => {
-    if (!postId) {
-      return;
-    }
     const fetchPost = async () => {
       // Send a GET request to the server to get the post details
       // GET /posts/:postId
@@ -53,7 +54,9 @@ function PostDetails(props) {
       }
     };
 
-    fetchPost();
+    if (postId) {
+      fetchPost();
+    }
   }, [postId]);
 
   // Fetch comments and tags
@@ -328,8 +331,19 @@ function PostDetails(props) {
                 />
                 <label htmlFor="body">Body</label>
                 <textarea name="body" id="body" defaultValue={post.body} />
+
+                {/* ReCAPTCHA */}
+                <ReCAPTCHA
+                  sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                  onChange={(i) => setPostRecaptcha(i)}
+                />
+
                 <span className="button-list">
-                  <button className="basic-button-2" type="submit">
+                  <button
+                    disabled={!postRecaptcha}
+                    className="basic-button-2"
+                    type="submit"
+                  >
                     Save
                   </button>
                   <button
@@ -418,19 +432,36 @@ function PostDetails(props) {
 
         {/* If user is logged in, display comment form, else display message */}
         {user ? (
-          <form onSubmit={handleSubmit} className="post__comments__form">
-            <textarea
-              className="post__comments__form__textarea"
-              name="comment"
-              id="comment"
-              placeholder="Add a comment"
-              rows="4"
-              cols="25"
-            />
-            <button className="post__comments__form__submit" type="submit">
-              Submit
-            </button>
-          </form>
+          <>
+            <form onSubmit={handleSubmit} className="post__comments__form">
+              {!commentRecaptcha ? (
+                <>
+                  {/* ReCAPTCHA */}
+                  <ReCAPTCHA
+                    sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                    onChange={(i) => setCommentRecaptcha(i)}
+                  />
+                </>
+              ) : (
+                <textarea
+                  className="post__comments__form__textarea"
+                  name="comment"
+                  id="comment"
+                  placeholder="Add a comment"
+                  rows="4"
+                  cols="25"
+                />
+              )}
+
+              <button
+                disabled={!commentRecaptcha}
+                className="post__comments__form__submit"
+                type="submit"
+              >
+                Submit
+              </button>
+            </form>
+          </>
         ) : (
           <p>Sign Up or Log in to comment on this post</p>
         )}

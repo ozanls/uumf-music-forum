@@ -19,6 +19,7 @@ function AdminMenu(props) {
 
   const navigate = useNavigate();
 
+  // Set the page title
   usePageTitle("Admin Menu");
 
   useEffect(() => {

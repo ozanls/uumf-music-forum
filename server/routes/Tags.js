@@ -100,7 +100,6 @@ router.get("/posts/:id", async (req, res) => {
             {
               model: User,
               as: "user",
-              attributes: ["username"],
             },
           ],
         },

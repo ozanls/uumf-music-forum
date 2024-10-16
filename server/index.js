@@ -10,9 +10,9 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-const port = process.env.PORT;
-app.use(express.json());
+const port = process.env.PORT || 3000;
 
+app.use(express.json());
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
@@ -22,15 +22,25 @@ app.use(
 
 const db = require("./models");
 
-const dbOptions = {
-  host: db.sequelize.config.host,
-  port: db.sequelize.config.port || 3306,
-  user: db.sequelize.config.username,
-  password: db.sequelize.config.password,
-  database: db.sequelize.config.database,
-};
+// Use JAWSDB_URL if available, otherwise use local database configuration
+const dbConfig =
+  process.env.NODE_ENV === "production" && process.env.JAWSDB_URL
+    ? new URL(process.env.JAWSDB_URL)
+    : {
+        host: db.sequelize.config.host,
+        port: db.sequelize.config.port || 3306,
+        user: db.sequelize.config.username,
+        password: db.sequelize.config.password,
+        database: db.sequelize.config.database,
+      };
 
-const sessionStore = new MySQLStore(dbOptions);
+const sessionStore = new MySQLStore({
+  host: dbConfig.host,
+  port: dbConfig.port,
+  user: dbConfig.user || dbConfig.username,
+  password: dbConfig.password,
+  database: dbConfig.database,
+});
 
 // Configure session
 app.use(
@@ -59,26 +69,21 @@ cron.schedule("0 * * * *", () => {
 });
 
 // Routers
+app.use("/users", require("./routes/Users"));
+app.use("/posts", require("./routes/Posts"));
+app.use("/comments", require("./routes/Comments"));
+app.use("/boards", require("./routes/Boards"));
+app.use("/tags", require("./routes/Tags"));
 
-// Users router
-const userRouter = require("./routes/Users");
-app.use("/users", userRouter);
+// Serve static files from the React app
+if (process.env.NODE_ENV === "production") {
+  const path = require("path");
+  app.use(express.static(path.join(__dirname, "../client/build")));
 
-// Posts router
-const postRouter = require("./routes/Posts");
-app.use("/posts", postRouter);
-
-// Comments router
-const commentRouter = require("./routes/Comments");
-app.use("/comments", commentRouter);
-
-// Boards router
-const boardRouter = require("./routes/Boards");
-app.use("/boards", boardRouter);
-
-// Tags router
-const tagRouter = require("./routes/Tags");
-app.use("/tags", tagRouter);
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/build", "index.html"));
+  });
+}
 
 db.sequelize.sync().then(() => {
   app.listen(port, () => {

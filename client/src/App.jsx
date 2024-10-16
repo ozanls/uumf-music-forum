@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import axios from "axios";
-import BoardsList from "./components/BoardsList";
 import BoardDetails from "./pages/BoardDetails";
 import BoardTags from "./pages/BoardTags";
 import TagDetails from "./pages/TagDetails";
@@ -66,7 +65,7 @@ function App() {
           element={<BoardDetails user={user} setMessage={setMessage} />}
         />
         <Route
-          path="/p/:postId"
+          path="/post/:postId"
           element={<PostDetails user={user} setMessage={setMessage} />}
         />
         <Route

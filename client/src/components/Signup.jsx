@@ -1,9 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function Signup(props) {
   const { setMessage } = props;
   const [showSignup, setShowSignup] = useState(true);
+  const [recaptcha, setRecaptcha] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -94,8 +96,18 @@ function Signup(props) {
             <label htmlFor="receivePromo">Receive promotional emails?</label>
           </div>
 
+          {/* ReCAPTCHA */}
+          <ReCAPTCHA
+            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+            onChange={(i) => setRecaptcha(i)}
+          />
+
           {/* Submit Button */}
-          <button className="basic-button-2" type="submit">
+          <button
+            disabled={!recaptcha}
+            className="basic-button-2"
+            type="submit"
+          >
             Sign Up
           </button>
         </form>

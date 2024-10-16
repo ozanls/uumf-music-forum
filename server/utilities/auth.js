@@ -15,6 +15,14 @@ function isAuthenticated(req, res, next) {
     .json({ message: "Unauthorized: Please log in and try again." });
 }
 
+// function banCheck(req, res, next) {
+//   if (req.user.role === "banned") {
+//     return res.status(403).json({ message: "Forbidden: You are banned." });
+//   }
+
+//   return next();
+// }
+
 function verifyAuthorization(model, resourceIdParam, permissions) {
   return async (req, res, next) => {
     const userRole = req.user?.role;

@@ -36,7 +36,7 @@ function PostCard(props) {
     // Post Card
     <div
       className="post-card"
-      onClick={() => navigate(`/p/${post.id}`)}
+      onClick={() => navigate(`/post/${post.id}`)}
       style={{ cursor: "pointer" }}
     >
       {/* Post Card Left (post info, tags)*/}

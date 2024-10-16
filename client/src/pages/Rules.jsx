@@ -6,6 +6,7 @@ function Rules() {
   const siteName = "UUMF";
   const contactEmail = "teamuumf@gmail.com";
 
+  // Set the page title
   usePageTitle(`${siteName} Rules`);
 
   return (

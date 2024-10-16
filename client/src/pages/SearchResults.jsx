@@ -10,6 +10,7 @@ function SearchResults(props) {
   const [posts, setPosts] = useState([]);
   const [message, setMessage] = useState("");
 
+  // Set the page title
   usePageTitle(`Results for '${query}' in /${boardName}/`);
 
   useEffect(() => {

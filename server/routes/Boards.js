@@ -172,7 +172,6 @@ router.get("/:boardId/posts", async (req, res) => {
         {
           model: User,
           as: "user",
-          attributes: ["username"],
         },
       ],
     });
