@@ -4,7 +4,7 @@
 const passport = require("passport");
 const { Strategy } = require("passport-local");
 const { User } = require("../models");
-const { comparePassword } = require("./Hashing");
+const { comparePassword } = require("./hashing");
 
 passport.serializeUser((user, done) => {
   done(null, user.id);

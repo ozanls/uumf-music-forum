@@ -4,7 +4,7 @@ const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
 const { User, Save, Post, Comment } = require("../models");
-const { hashPassword } = require("../utilities/Hashing");
+const { hashPassword } = require("../utilities/hashing");
 const {
   isAuthenticated,
   verifyAuthorization,
