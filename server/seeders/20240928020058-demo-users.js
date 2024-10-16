@@ -9,8 +9,11 @@ module.exports = {
       process.env.SEED_PASSWORD,
       10
     );
-    const hashedAdminPassword = await bcrypt.hash(process.env.SEEDPASSWORD, 10);
-    const hashedUserPassword = await bcrypt.hash(process.env.SEEDPASSWORD, 10);
+    const hashedAdminPassword = await bcrypt.hash(
+      process.env.SEED_PASSWORD,
+      10
+    );
+    const hashedUserPassword = await bcrypt.hash(process.env.SEED_PASSWORD, 10);
 
     await queryInterface.bulkInsert(
       "users",
