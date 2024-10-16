@@ -470,7 +470,7 @@ module.exports = {
       },
     });
 
-    await queryInterface.createTable("TrendingTags", {
+    await queryInterface.createTable("trendingtags", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -511,7 +511,7 @@ module.exports = {
       },
     });
 
-    await queryInterface.addIndex("TrendingTags", ["boardId", "tagId"], {
+    await queryInterface.addIndex("trendingtags", ["boardId", "tagId"], {
       unique: true,
       name: "unique_trending_tag",
     });
@@ -549,15 +549,16 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("posttags");
-    await queryInterface.dropTable("tags");
+    await queryInterface.dropTable("postlikes");
+    await queryInterface.dropTable("commentlikes");
     await queryInterface.dropTable("saves");
-    await queryInterface.dropTable("posts");
-    await queryInterface.dropTable("likes");
     await queryInterface.dropTable("comments");
-    await queryInterface.dropTable("boards");
-    await queryInterface.dropTable("userbadges");
-    await queryInterface.dropTable("badges");
-    await queryInterface.dropTable("users");
+    await queryInterface.dropTable("posts");
     await queryInterface.dropTable("trendingtags");
+    await queryInterface.dropTable("tags");
+    await queryInterface.dropTable("badges");
+    await queryInterface.dropTable("userbadges");
+    await queryInterface.dropTable("boards");
+    await queryInterface.dropTable("users");
   },
 };
