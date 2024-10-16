@@ -1,16 +1,18 @@
+"use strict";
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("posttags", {
+    await queryInterface.createTable("TrendingTags", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      postId: {
+      boardId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "posts",
+          model: "boards",
           key: "id",
         },
         onDelete: "CASCADE",
@@ -26,6 +28,10 @@ module.exports = {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
+      count: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -35,9 +41,13 @@ module.exports = {
         allowNull: false,
       },
     });
+
+    await queryInterface.addIndex("TrendingTags", ["boardId", "tagId"], {
+      unique: true,
+    });
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable("posttags");
+    await queryInterface.dropTable("TrendingTags");
   },
 };

@@ -470,6 +470,7 @@ module.exports = {
       },
     });
 
+    // Create TrendingTags table
     await queryInterface.createTable("trendingtags", {
       id: {
         type: Sequelize.INTEGER,

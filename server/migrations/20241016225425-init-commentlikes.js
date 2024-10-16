@@ -1,43 +1,51 @@
+"use strict";
+
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("posttags", {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable("commentlikes", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      postId: {
+      commentId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "posts",
+          model: "comments",
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
-      tagId: {
+      userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "tags",
+          model: "users",
           key: "id",
         },
         onDelete: "CASCADE",
-        onUpdate: "CASCADE",
       },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
+    });
+
+    await queryInterface.addIndex("commentlikes", ["commentId", "userId"], {
+      unique: true,
+      name: "unique_comment_like",
     });
   },
 
-  down: async (queryInterface) => {
-    await queryInterface.dropTable("posttags");
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable("commentlikes");
   },
 };

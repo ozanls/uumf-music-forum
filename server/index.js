@@ -23,16 +23,15 @@ app.use(
 const db = require("./models");
 
 // Use JAWSDB_URL if available, otherwise use local database configuration
-const dbConfig =
-  process.env.NODE_ENV === "production" && process.env.JAWSDB_URL
-    ? new URL(process.env.JAWSDB_URL)
-    : {
-        host: db.sequelize.config.host,
-        port: db.sequelize.config.port || 3306,
-        user: db.sequelize.config.username,
-        password: db.sequelize.config.password,
-        database: db.sequelize.config.database,
-      };
+const dbConfig = process.env.JAWSDB_URL
+  ? new URL(process.env.JAWSDB_URL)
+  : {
+      host: db.sequelize.config.host,
+      port: db.sequelize.config.port || 3306,
+      user: db.sequelize.config.username,
+      password: db.sequelize.config.password,
+      database: db.sequelize.config.database,
+    };
 
 const sessionStore = new MySQLStore({
   host: dbConfig.host,

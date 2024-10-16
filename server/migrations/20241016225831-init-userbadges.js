@@ -1,43 +1,45 @@
+"use strict";
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("posttags", {
+    await queryInterface.createTable("userbadges", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      postId: {
+      userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "posts",
+          model: "users",
           key: "id",
         },
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
-      tagId: {
+      badgeId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "tags",
+          model: "badges",
           key: "id",
         },
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
       createdAt: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE,
       },
       updatedAt: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE,
       },
     });
   },
 
-  down: async (queryInterface) => {
-    await queryInterface.dropTable("posttags");
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable("userbadges");
   },
 };

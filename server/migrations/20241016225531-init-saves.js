@@ -1,6 +1,9 @@
+"use strict";
+
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("posttags", {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable("saves", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -16,11 +19,11 @@ module.exports = {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
-      tagId: {
+      userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "tags",
+          model: "users",
           key: "id",
         },
         onDelete: "CASCADE",
@@ -29,15 +32,22 @@ module.exports = {
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
       updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
+    });
+
+    await queryInterface.addIndex("saves", ["postId", "userId"], {
+      unique: true,
+      name: "unique_post_save",
     });
   },
 
-  down: async (queryInterface) => {
-    await queryInterface.dropTable("posttags");
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable("saves");
   },
 };
