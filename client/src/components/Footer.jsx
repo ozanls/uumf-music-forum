@@ -2,7 +2,7 @@ function Footer() {
   return (
     <footer>
       {/* Logo */}
-      <div className="footer-section">
+      <div className="footer__section">
         <a href="/">
           <span className="logo">UUMF</span>
         </a>
@@ -10,7 +10,7 @@ function Footer() {
       </div>
 
       {/* Quick Links */}
-      <div className="footer-section">
+      <div className="footer__section">
         <h4 className="footer-subtitle">Quick Links</h4>
         <ul className="footer-links">
           <li>
@@ -26,7 +26,7 @@ function Footer() {
       </div>
 
       {/* Contact */}
-      <div className="footer-section">
+      <div className="footer__section">
         <h4 className="footer-subtitle">Contact Us</h4>
         <p>teamuumf@gmail.com</p>
       </div>

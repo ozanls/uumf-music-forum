@@ -62,7 +62,12 @@ app.use(
     cookie: {
       maxAge: 3600000,
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      httpOnly: true,
+      domain:
+        process.env.NODE_ENV === "production"
+          ? process.env.CLIENT_URL
+          : "localhost",
     },
   })
 );

@@ -606,7 +606,7 @@ footer {
   padding: 1em;
 }
 
-.footer-section {
+.footer__section {
   flex: 1 1 300px;
   border: 1px solid black;
   align-content: center;
