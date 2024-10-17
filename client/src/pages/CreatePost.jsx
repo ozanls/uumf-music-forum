@@ -78,6 +78,7 @@ function CreatePost(props) {
           boardId,
           tags,
           body,
+          recaptchaToken: recaptcha,
         },
         {
           withCredentials: true,

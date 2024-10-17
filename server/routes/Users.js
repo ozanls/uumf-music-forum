@@ -15,6 +15,7 @@ const sendForgotPasswordEmail = require("../utilities/sendForgotPasswordEmail");
 const deleteUnconfirmedUsers = require("../utilities/deleteUnconfirmedUsers");
 require("dotenv").config();
 
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 const usernameRegex = /^[a-zA-Z][a-zA-Z0-9]{2,}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex =
@@ -27,26 +28,57 @@ async function hashPassword(password) {
 }
 
 // Authenticate a user (login)
-router.post("/auth", (req, res, next) => {
-  passport.authenticate("local", (err, user) => {
-    if (err) {
-      return res.status(500).json({ message: "Server error" });
-    }
-    if (!user) {
-      return res.status(401).json({ message: "Invalid email/password" });
-    }
-    if (!user.confirmedEmail) {
+router.post("/auth", async (req, res, next) => {
+  const { recaptchaToken } = req.body;
+
+  if (!recaptchaToken) {
+    return res.status(400).json({ error: "reCAPTCHA token is missing" });
+  }
+
+  try {
+    // Verify the reCAPTCHA token
+    const response = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify`,
+      null,
+      {
+        params: {
+          secret: RECAPTCHA_SECRET_KEY,
+          response: recaptchaToken,
+        },
+      }
+    );
+
+    const { success, "error-codes": errorCodes } = response.data;
+
+    if (!success) {
       return res
-        .status(401)
-        .json({ message: "Please confirm your email address" });
+        .status(400)
+        .json({ error: "reCAPTCHA verification failed", errorCodes });
     }
-    req.logIn(user, (err) => {
+
+    passport.authenticate("local", (err, user) => {
       if (err) {
         return res.status(500).json({ message: "Server error" });
       }
-      return res.status(200).json({ message: "Login successful" });
-    });
-  })(req, res, next);
+      if (!user) {
+        return res.status(401).json({ message: "Invalid email/password" });
+      }
+      if (!user.confirmedEmail) {
+        return res
+          .status(401)
+          .json({ message: "Please confirm your email address" });
+      }
+      req.logIn(user, (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Server error" });
+        }
+        return res.status(200).json({ message: "Login successful" });
+      });
+    })(req, res, next);
+  } catch (error) {
+    console.error("Error verifying reCAPTCHA:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 // Un-authenticate a user (logout)
@@ -189,126 +221,166 @@ router.get("/search/:query", async (req, res) => {
 
 // Create a new user (register)
 router.post("/register", async (req, res) => {
-  try {
-    if (
-      !req.body.email ||
-      !req.body.username ||
-      !req.body.password ||
-      !req.body.confirmPassword
-    ) {
-      throw new Error("All fields are required");
-    }
+  const { recaptchaToken } = req.body;
 
-    if (!emailRegex.test(req.body.email)) {
-      throw new Error("Invalid email address");
-    }
-
-    if (!usernameRegex.test(req.body.username)) {
-      throw new Error(
-        "Username must be between 3 and 20 characters long and can only contain letters and numbers. Username cannot start with a number."
-      );
-    }
-
-    if (!req.body.agreedToTerms) {
-      throw new Error("You must agree to the terms and conditions");
-    }
-
-    const existingEmail = await User.findOne({
-      where: { email: req.body.email },
-    });
-    const existingUser = await User.findOne({
-      where: { username: req.body.username },
-    });
-
-    if (existingEmail) {
-      throw new Error("Email already in use");
-    }
-
-    if (existingUser) {
-      throw new Error("Username is taken");
-    }
-
-    if (!passwordRegex.test(req.body.password)) {
-      throw new Error(
-        "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one special character"
-      );
-    }
-
-    if (req.body.password !== req.body.confirmPassword) {
-      throw new Error("Passwords do not match");
-    }
-
-    const hashedPassword = await hashPassword(req.body.password, 10);
-    const newUser = await User.create({
-      username: req.body.username,
-      email: req.body.email,
-      password: hashedPassword,
-      role: "user", // Default role
-      image: "https://placehold.co/200x200", // Default image
-      agreedToTerms: req.body.agreedToTerms,
-    });
-
-    const token = jwt.sign(
-      { id: newUser.id, email: newUser.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-    sendConfirmationEmail(newUser, token);
-    res.status(201).json({
-      message:
-        "Signup successful! Check your email to verify your account before logging in.",
-    });
-  } catch (error) {
-    console.error("Error during registration:", error);
-    res.status(400).json({ message: error.message });
+  if (!recaptchaToken) {
+    return res.status(400).json({ error: "reCAPTCHA token is missing" });
   }
-});
-
-// Confirm email route
-router.get("/confirm/:token", async (req, res) => {
-  const { token } = req.params;
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findOne({ where: { id: decoded.id } });
-    if (!user) {
-      return res.status(400).json({ message: "Invalid token" });
+    // Verify the reCAPTCHA token
+    const response = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify`,
+      null,
+      {
+        params: {
+          secret: RECAPTCHA_SECRET_KEY,
+          response: recaptchaToken,
+        },
+      }
+    );
+
+    const { success, "error-codes": errorCodes } = response.data;
+
+    if (!success) {
+      return res
+        .status(400)
+        .json({ error: "reCAPTCHA verification failed", errorCodes });
     }
 
-    user.confirmedEmail = true;
-    await user.save();
+    // Proceed with user registration
+    try {
+      if (
+        !req.body.email ||
+        !req.body.username ||
+        !req.body.password ||
+        !req.body.confirmPassword
+      ) {
+        throw new Error("All fields are required");
+      }
 
-    res.status(200).json({ message: "Email confirmed successfully" });
+      if (!emailRegex.test(req.body.email)) {
+        throw new Error("Invalid email address");
+      }
+
+      if (!usernameRegex.test(req.body.username)) {
+        throw new Error(
+          "Username must be between 3 and 20 characters long and can only contain letters and numbers. Username cannot start with a number."
+        );
+      }
+
+      if (!req.body.agreedToTerms) {
+        throw new Error("You must agree to the terms and conditions");
+      }
+
+      const existingEmail = await User.findOne({
+        where: { email: req.body.email },
+      });
+      const existingUser = await User.findOne({
+        where: { username: req.body.username },
+      });
+
+      if (existingEmail) {
+        throw new Error("Email already in use");
+      }
+
+      if (existingUser) {
+        throw new Error("Username is taken");
+      }
+
+      if (!passwordRegex.test(req.body.password)) {
+        throw new Error(
+          "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one special character"
+        );
+      }
+
+      if (req.body.password !== req.body.confirmPassword) {
+        throw new Error("Passwords do not match");
+      }
+
+      const hashedPassword = await hashPassword(req.body.password, 10);
+      const newUser = await User.create({
+        username: req.body.username,
+        email: req.body.email,
+        password: hashedPassword,
+        role: "user", // Default role
+        image: "https://placehold.co/200x200", // Default image
+        agreedToTerms: req.body.agreedToTerms,
+      });
+
+      const token = jwt.sign(
+        { id: newUser.id, email: newUser.email },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+      sendConfirmationEmail(newUser, token);
+      res.status(201).json({
+        message:
+          "Signup successful! Check your email to verify your account before logging in.",
+      });
+    } catch (error) {
+      console.error("Error during registration:", error);
+      res.status(400).json({ message: error.message });
+    }
   } catch (error) {
-    console.error("Error confirming email:", error);
-    res.status(400).json({ message: "Invalid or expired token" });
+    console.error("Error verifying reCAPTCHA:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // Forgot password route
 router.post("/forgot-password", async (req, res) => {
-  const { email } = req.body;
+  const { email, recaptchaToken } = req.body;
+  if (!recaptchaToken) {
+    return res.status(400).json({ error: "reCAPTCHA token is missing" });
+  }
 
   try {
-    const user = await User.findOne({ where: { email } });
-    if (user) {
-      const token = jwt.sign(
-        { id: user.id, email: user.email },
-        process.env.JWT_SECRET,
-        { expiresIn: "1h" }
-      );
-      await sendForgotPasswordEmail(user, token);
+    // Verify the reCAPTCHA token
+    const response = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify`,
+      null,
+      {
+        params: {
+          secret: RECAPTCHA_SECRET_KEY,
+          response: recaptchaToken,
+        },
+      }
+    );
+
+    const { success, "error-codes": errorCodes } = response.data;
+
+    if (!success) {
+      return res
+        .status(400)
+        .json({ error: "reCAPTCHA verification failed", errorCodes });
     }
-    res.status(200).json({
-      message:
-        "If an account with that email exists, you'll receive a password reset email shortly...",
-    });
+
+    // Proceed with forgot password logic
+    try {
+      const user = await User.findOne({ where: { email } });
+      if (user) {
+        const token = jwt.sign(
+          { id: user.id, email: user.email },
+          process.env.JWT_SECRET,
+          { expiresIn: "1h" }
+        );
+        await sendForgotPasswordEmail(user, token);
+      }
+      res.status(200).json({
+        message:
+          "If an account with that email exists, you'll receive a password reset email shortly...",
+      });
+    } catch (error) {
+      console.error("Error in forgot-password route:", error);
+      res.status(500).json({
+        message:
+          "An error occurred while processing your request. Please try again later.",
+      });
+    }
   } catch (error) {
-    console.error("Error in forgot-password route:", error);
-    res.status(500).json({
-      message:
-        "An error occurred while processing your request. Please try again later.",
-    });
+    console.error("Error verifying reCAPTCHA:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

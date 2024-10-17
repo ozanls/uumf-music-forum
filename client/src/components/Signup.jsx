@@ -29,6 +29,7 @@ function Signup(props) {
           password,
           confirmPassword,
           agreedToTerms,
+          recaptchaToken: recaptcha,
         },
         { withCredentials: true }
       );

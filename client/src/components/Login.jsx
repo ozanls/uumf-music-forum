@@ -24,6 +24,7 @@ function Login(props) {
         {
           email,
           password,
+          recaptchaToken: recaptcha,
         },
         { withCredentials: true }
       );

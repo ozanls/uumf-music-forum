@@ -15,6 +15,8 @@ const getRandomColor = require("../utilities/GetRandomColor");
 const { isAuthenticated, verifyAuthorization } = require("../utilities/auth");
 const { Op } = require("sequelize");
 
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
+
 // Get all posts
 router.get("/", async (req, res) => {
   try {
@@ -110,7 +112,33 @@ router.post("/", isAuthenticated, async (req, res) => {
   req.body.likes = 0;
   req.body.status = "active";
 
+  const recaptchaToken = req.body.recaptchaToken;
+
+  if (!recaptchaToken) {
+    return res.status(400).json({ error: "reCAPTCHA token is missing" });
+  }
+
   try {
+    // Verify the reCAPTCHA token
+    const response = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify`,
+      null,
+      {
+        params: {
+          secret: RECAPTCHA_SECRET_KEY,
+          response: recaptchaToken,
+        },
+      }
+    );
+
+    const { success, "error-codes": errorCodes } = response.data;
+
+    if (!success) {
+      return res
+        .status(400)
+        .json({ error: "reCAPTCHA verification failed", errorCodes });
+    }
+
     const newPost = await Post.create(post);
     const postTags = post.tags;
 

@@ -22,6 +22,7 @@ function ResetPassword(props) {
         `${import.meta.env.VITE_SERVER_URL}/users/forgot-password`,
         {
           email,
+          recaptchaToken: recaptcha,
         },
         { withCredentials: true }
       );
