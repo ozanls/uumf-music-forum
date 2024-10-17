@@ -3,6 +3,8 @@ const router = express.Router();
 const { Comment, Post, CommentLike } = require("../models");
 const { isAuthenticated, verifyAuthorization } = require("../utilities/auth");
 const { sequelize } = require("../models");
+const axios = require("axios");
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 
 // Get a comment by id
 router.get("/:id", async (req, res) => {
@@ -30,19 +32,50 @@ router.post("/:id", isAuthenticated, async (req, res) => {
   const post = await Post.findByPk(postId);
   const transaction = await sequelize.transaction();
 
-  if (!req.body.body) {
-    await transaction.rollback();
-    return res.status(400).json({ error: "Comment body is required" });
+  const recaptchaToken = req.body.recaptchaToken;
+
+  if (!recaptchaToken) {
+    return res.status(400).json({ error: "reCAPTCHA token is missing" });
   }
 
   try {
-    await Comment.create({ ...comment, postId }, { transaction });
-    await post.increment("comments", { by: 1, transaction, silent: true });
-    await transaction.commit();
-    res.status(201).json(comment);
+    // Verify the reCAPTCHA token
+    const response = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify`,
+      null,
+      {
+        params: {
+          secret: RECAPTCHA_SECRET_KEY,
+          response: recaptchaToken,
+        },
+      }
+    );
+
+    const { success, "error-codes": errorCodes } = response.data;
+
+    if (!success) {
+      return res
+        .status(400)
+        .json({ error: "reCAPTCHA verification failed", errorCodes });
+    }
+
+    if (!req.body.body) {
+      await transaction.rollback();
+      return res.status(400).json({ error: "Comment body is required" });
+    }
+
+    try {
+      await Comment.create({ ...comment, postId }, { transaction });
+      await post.increment("comments", { by: 1, transaction, silent: true });
+      await transaction.commit();
+      res.status(201).json(comment);
+    } catch (error) {
+      console.error("Error creating comment:", error);
+      await transaction.rollback();
+      res.status(500).json({ error: "Internal server error" });
+    }
   } catch (error) {
-    console.error("Error creating comment:", error);
-    await transaction.rollback();
+    console.error("Error verifying reCAPTCHA:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

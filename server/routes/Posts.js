@@ -11,6 +11,7 @@ const {
   Board,
   sequelize,
 } = require("../models");
+const axios = require("axios");
 const getRandomColor = require("../utilities/GetRandomColor");
 const { isAuthenticated, verifyAuthorization } = require("../utilities/auth");
 const { Op } = require("sequelize");
@@ -166,6 +167,32 @@ router.post(
     const updatedPostData = req.body;
 
     try {
+      const recaptchaToken = req.body.recaptchaToken;
+
+      if (!recaptchaToken) {
+        return res.status(400).json({ error: "reCAPTCHA token is missing" });
+      }
+
+      // Verify the reCAPTCHA token
+      const response = await axios.post(
+        `https://www.google.com/recaptcha/api/siteverify`,
+        null,
+        {
+          params: {
+            secret: RECAPTCHA_SECRET_KEY,
+            response: recaptchaToken,
+          },
+        }
+      );
+
+      const { success, "error-codes": errorCodes } = response.data;
+
+      if (!success) {
+        return res
+          .status(400)
+          .json({ error: "reCAPTCHA verification failed", errorCodes });
+      }
+
       const originalPost = await Post.findByPk(postId);
 
       if (!originalPost) {
@@ -202,6 +229,8 @@ router.post(
     }
   }
 );
+
+module.exports = router;
 
 // Like or unlike a post
 router.post("/:id/like", isAuthenticated, async (req, res) => {

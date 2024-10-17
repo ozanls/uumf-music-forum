@@ -10,6 +10,7 @@ const {
   verifyAuthorization,
   verifyAdmin,
 } = require("../utilities/auth");
+const axios = require("axios");
 const sendConfirmationEmail = require("../utilities/sendConfirmationEmail");
 const sendForgotPasswordEmail = require("../utilities/sendForgotPasswordEmail");
 const deleteUnconfirmedUsers = require("../utilities/deleteUnconfirmedUsers");
