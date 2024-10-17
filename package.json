@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "heroku-prebuild": "cd server && npm install && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "heroku-prebuild": "cd server && npm install && npx sequelize-cli db:migrate",
     "start": "cd server && npm start",
     "postinstall": "cd server && npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
