@@ -52,7 +52,6 @@ const sessionStore = new MySQLStore({
   database: dbConfig.database,
 });
 
-// Configure session
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -62,15 +61,13 @@ app.use(
     cookie: {
       maxAge: 3600000,
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-      secure: process.env.NODE_ENV === "production" ? true : false,
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      domain:
-        process.env.NODE_ENV === "production"
-          ? process.env.CLIENT_URL
-          : "localhost",
     },
   })
 );
+
+app.set("trust proxy", 1);
 
 // Initialize passport
 app.use(passport.initialize());
