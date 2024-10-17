@@ -25,7 +25,7 @@ router.get("/", async (req, res) => {
     res.status(200).json(allPosts);
   } catch (error) {
     console.error("Error getting all posts:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -54,7 +54,7 @@ router.get("/:id", async (req, res) => {
     res.status(200).json(post);
   } catch (error) {
     console.error("Error getting post by id:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -76,7 +76,7 @@ router.get("/:postId/comments", async (req, res) => {
     res.status(200).json(comments);
   } catch (error) {
     console.error("Error getting comments for post:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -102,7 +102,7 @@ router.get("/:postId/tags", async (req, res) => {
     res.status(200).json(postTags);
   } catch (error) {
     console.error("Error getting tags for post:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -154,7 +154,7 @@ router.post("/", isAuthenticated, async (req, res) => {
     res.status(201).json(newPost);
   } catch (error) {
     console.error("Error creating post:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -225,7 +225,7 @@ router.post(
       res.status(200).json(updatedPostData);
     } catch (error) {
       console.error("Error updating post:", error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: error.message });
     }
   }
 );
@@ -264,7 +264,7 @@ router.post("/:id/like", isAuthenticated, async (req, res) => {
   } catch (error) {
     await transaction.rollback();
     console.error("Error liking/unliking post:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -282,7 +282,7 @@ router.get("/:id/liked", isAuthenticated, async (req, res) => {
     }
   } catch (error) {
     console.error("Error checking if post is liked:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -306,7 +306,7 @@ router.post("/:id/save", isAuthenticated, async (req, res) => {
   } catch (error) {
     await transaction.rollback();
     console.error("Error saving post:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -324,7 +324,7 @@ router.get("/:id/saved", isAuthenticated, async (req, res) => {
     }
   } catch (error) {
     console.error("Error checking if post is saved:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -374,7 +374,7 @@ router.get("/search/:boardName/:query", async (req, res) => {
     res.status(200).json(posts);
   } catch (error) {
     console.error("Error searching for posts:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -389,7 +389,7 @@ router.delete(
       res.status(200).json({ message: "Post deleted" });
     } catch (error) {
       console.error("Error deleting post:", error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: error.message });
     }
   }
 );

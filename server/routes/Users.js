@@ -15,7 +15,6 @@ const sendConfirmationEmail = require("../utilities/sendConfirmationEmail");
 const sendForgotPasswordEmail = require("../utilities/sendForgotPasswordEmail");
 const deleteUnconfirmedUsers = require("../utilities/deleteUnconfirmedUsers");
 require("dotenv").config();
-
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 const usernameRegex = /^[a-zA-Z][a-zA-Z0-9]{2,}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -59,7 +58,7 @@ router.post("/auth", async (req, res, next) => {
 
     passport.authenticate("local", (err, user) => {
       if (err) {
-        return res.status(500).json({ message: "Server error" });
+        return res.status(500).json({ message: err.message });
       }
       if (!user) {
         return res.status(401).json({ message: "Invalid email/password" });
@@ -71,14 +70,14 @@ router.post("/auth", async (req, res, next) => {
       }
       req.logIn(user, (err) => {
         if (err) {
-          return res.status(500).json({ message: "Server error" });
+          return res.status(500).json({ message: err.message });
         }
         return res.status(200).json({ message: "Login successful" });
       });
     })(req, res, next);
   } catch (error) {
     console.error("Error verifying reCAPTCHA:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -88,7 +87,7 @@ router.post("/auth/logout", (req, res) => {
     ? res.status(401).json({ message: "Unauthorized" })
     : req.logout((err) => {
         err
-          ? res.status(500).json({ message: "Server error" })
+          ? res.status(500).json({ message: err.message })
           : res.status(200).json({ message: "Logout Successful" });
       });
 });
@@ -99,7 +98,7 @@ router.get("/auth/status", isAuthenticated, (req, res) => {
     res.status(200).json(req.user);
   } catch (error) {
     console.error("Error getting authentication status:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -110,7 +109,7 @@ router.get("/", verifyAdmin(), async (req, res) => {
     res.status(200).json(allUsers);
   } catch (error) {
     console.error("Error getting all users:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -126,7 +125,7 @@ router.get("/:id/posts", async (req, res) => {
     res.status(200).json(posts);
   } catch (error) {
     console.error("Error getting posts for user:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -142,7 +141,7 @@ router.get("/:id/comments", async (req, res) => {
     res.status(200).json(comments);
   } catch (error) {
     console.error("Error getting comments for user:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -173,7 +172,7 @@ router.get(
       res.status(200).json(saves);
     } catch (error) {
       console.error("Error getting saved posts:", error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: error.message });
     }
   }
 );
@@ -188,7 +187,7 @@ router.get("/:id", verifyAdmin(), async (req, res) => {
       : res.status(404).json({ message: "User not found" });
   } catch (error) {
     console.error("Error getting user by id:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -202,7 +201,7 @@ router.get("/username/:username", async (req, res) => {
       : res.status(404).json({ message: "User not found" });
   } catch (error) {
     console.error("Error getting user by username:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -216,7 +215,7 @@ router.get("/search/:query", async (req, res) => {
     res.status(200).json(users);
   } catch (error) {
     console.error("Error searching for user:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -325,7 +324,7 @@ router.post("/register", async (req, res) => {
     }
   } catch (error) {
     console.error("Error verifying reCAPTCHA:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -381,7 +380,7 @@ router.post("/forgot-password", async (req, res) => {
     }
   } catch (error) {
     console.error("Error verifying reCAPTCHA:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -448,7 +447,7 @@ router.post("/update/email", isAuthenticated, async (req, res) => {
     res.status(200).json({ message: "Email updated successfully" });
   } catch (error) {
     console.error("Error updating email:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -471,7 +470,7 @@ router.post("/update/password", isAuthenticated, async (req, res) => {
     res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
     console.error("Error updating password:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -490,7 +489,7 @@ router.post("/:id/update-role", verifyAdmin(), async (req, res) => {
     res.status(200).json({ message: "User role updated successfully" });
   } catch (error) {
     console.error("Error updating user role:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -501,7 +500,7 @@ router.delete("/delete-unconfirmed", verifyAdmin(), async (req, res) => {
     res.status(200).json({ message: "Unconfirmed accounts deleted" });
   } catch (error) {
     console.error("Error deleting unconfirmed accounts:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 

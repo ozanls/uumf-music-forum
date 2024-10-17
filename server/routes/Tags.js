@@ -23,7 +23,7 @@ router.get("/find/:boardName/:tagName", async (req, res) => {
     }
   } catch (error) {
     console.error("Error getting tag by name:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -39,7 +39,7 @@ router.post(
       res.status(201).json(newTag);
     } catch (error) {
       console.error("Error creating tag:", error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: error.message });
     }
   }
 );
@@ -61,7 +61,7 @@ router.post(
       }
     } catch (error) {
       console.error("Error updating tag:", error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: error.message });
     }
   }
 );
@@ -81,7 +81,7 @@ router.delete(
       }
     } catch (error) {
       console.error("Error deleting tag:", error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: error.message });
     }
   }
 );
@@ -113,7 +113,7 @@ router.get("/posts/:id", async (req, res) => {
     res.status(200).json(posts);
   } catch (error) {
     console.error("Error getting posts for tag:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -130,7 +130,7 @@ router.get("/count/:id", async (req, res) => {
     res.status(200).json({ count });
   } catch (error) {
     console.error("Error getting tag count:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 

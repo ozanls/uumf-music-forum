@@ -18,7 +18,7 @@ router.get("/:id", async (req, res) => {
     }
   } catch (error) {
     console.error("Error getting comment by id:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -72,11 +72,11 @@ router.post("/:id", isAuthenticated, async (req, res) => {
     } catch (error) {
       console.error("Error creating comment:", error);
       await transaction.rollback();
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: error.message });
     }
   } catch (error) {
     console.error("Error verifying reCAPTCHA:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -93,7 +93,7 @@ router.post(
       res.status(200).json(updatedComment);
     } catch (error) {
       console.error("Error updating comment:", error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: error.message });
     }
   }
 );
@@ -122,7 +122,7 @@ router.delete(
     } catch (error) {
       console.error("Error deleting comment:", error);
       await transaction.rollback();
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: error.message });
     }
   }
 );
@@ -163,7 +163,7 @@ router.post("/:id/like", isAuthenticated, async (req, res) => {
   } catch (error) {
     await transaction.rollback();
     console.error("Error liking comment:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -181,7 +181,7 @@ router.get("/:id/liked", isAuthenticated, async (req, res) => {
     }
   } catch (error) {
     console.error("Error checking if comment is liked:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 

@@ -61,7 +61,7 @@ function verifyAuthorization(model, resourceIdParam, permissions) {
       });
     } catch (error) {
       console.error("Error verifying authorization:", error);
-      res.status(500).json({ message: "Internal server error." });
+      res.status(500).json({ message: error.message });
     }
   };
 }

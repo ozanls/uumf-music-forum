@@ -4,6 +4,7 @@ const { Board, Tag, Post, User, sequelize, TrendingTag } = require("../models");
 const { verifyAdmin } = require("../utilities/auth");
 const updateTrendingTags = require("../utilities/updateTrendingTags");
 const { Op } = require("sequelize");
+const e = require("express");
 
 // Get all boards
 router.get("/", async (req, res) => {
@@ -31,7 +32,7 @@ router.get("/", async (req, res) => {
     res.status(200).json(allBoards);
   } catch (error) {
     console.error("Error getting all boards:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 // Update trending tags for all boards
@@ -42,7 +43,7 @@ router.get("/trendingTags/update", async (req, res) => {
     res.status(200).json(trendingTags);
   } catch (error) {
     console.error("Error updating trending tags:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -67,7 +68,7 @@ router.get("/trendingTags", async (req, res) => {
     res.status(200).json(trendingTags);
   } catch (error) {
     console.error("Error fetching trending tags:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -94,7 +95,7 @@ router.get("/:id/trendingTags", async (req, res) => {
     res.status(200).json(trendingTags);
   } catch (error) {
     console.error("Error fetching trending tags:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -110,7 +111,7 @@ router.get("/:name", async (req, res) => {
     }
   } catch (error) {
     console.error("Error getting board by id:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -122,7 +123,7 @@ router.get("/:boardId/tags", async (req, res) => {
     res.status(200).json(allTags);
   } catch (error) {
     console.error("Error getting tags for board:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -146,7 +147,7 @@ router.get("/:boardId/tags/active", async (req, res) => {
     res.status(200).json(topTags);
   } catch (error) {
     console.error("Error getting tags for board:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -158,7 +159,7 @@ router.get("/:boardId/count", async (req, res) => {
     res.status(200).json({ count });
   } catch (error) {
     console.error("Error getting post count for board:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -180,7 +181,7 @@ router.get("/:boardId/posts", async (req, res) => {
     res.status(200).json(postsNewFirst);
   } catch (error) {
     console.error("Error getting posts for board:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -201,7 +202,7 @@ router.post("/", verifyAdmin(), async (req, res) => {
     res.status(201).json(newBoard);
   } catch (error) {
     console.error("Error creating board:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -219,7 +220,7 @@ router.post("/:id", verifyAdmin(), async (req, res) => {
     }
   } catch (error) {
     console.error("Error updating board:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -235,7 +236,7 @@ router.delete("/:id", verifyAdmin(), async (req, res) => {
     }
   } catch (error) {
     console.error("Error deleting board:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
