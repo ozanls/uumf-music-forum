@@ -328,6 +328,27 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// Confirm email route
+router.post("/confirm-email", async (req, res) => {
+  const { token } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ where: { id: decoded.id } });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid token" });
+    }
+
+    user.confirmedEmail = true;
+    await user.save();
+    res.status(200).json({ message: "Email confirmed successfully" });
+  } catch (error) {
+    console.error("Error confirming email:", error);
+    res.status(400).json({ message: "Invalid or expired token" });
+  }
+});
+
 // Forgot password route
 router.post("/forgot-password", async (req, res) => {
   const { email, recaptchaToken } = req.body;

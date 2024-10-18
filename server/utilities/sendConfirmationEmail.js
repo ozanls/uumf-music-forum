@@ -6,12 +6,10 @@ require("dotenv").config();
 
 const sesClient = new SESClient({ region: process.env.AWS_REGION });
 
-const sendConfirmationEmail = async (user, token) => {
-  const confirmationLink =
-    `${process.env.SITE_URL}/users/confirm/${token}` ||
-    `http://localhost:${port}/users/confirm/${token}`;
+const CLIENT_URL = process.env.CLIENT_URL;
 
-  // REPLACE confirmationLink with frontend URL that sends a GET request to the confirm route.
+const sendConfirmationEmail = async (user, token) => {
+  const confirmationLink = `${CLIENT_URL}/confirm/${token}`;
 
   const params = {
     Source: process.env.AWS_SES_SENDER,

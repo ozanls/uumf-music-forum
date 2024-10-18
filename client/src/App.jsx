@@ -14,6 +14,7 @@ import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import PageNotFound from "./pages/PageNotFound";
+import ConfirmEmail from "./pages/ConfirmEmail";
 import Rules from "./pages/Rules";
 import About from "./pages/About";
 import Footer from "./components/Footer";
@@ -87,6 +88,10 @@ function App() {
         <Route
           path="/new"
           element={<CreatePost user={user} setMessage={setMessage} />}
+        />
+        <Route
+          path="/confirm/:token"
+          element={<ConfirmEmail user={user} setMessage={setMessage} />}
         />
         <Route
           path="/admin"
