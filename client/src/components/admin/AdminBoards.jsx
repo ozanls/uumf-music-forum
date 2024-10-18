@@ -34,6 +34,43 @@ function AdminBoards(props) {
 
         {/* Table Body */}
         <tbody>
+          {/* Create Board Form */}
+          <tr>
+            {/* Name Input */}
+            <td>
+              <input
+                type="text"
+                name="name"
+                id="name"
+                placeholder="(e.g. rhh)"
+                value={boardFormData.name}
+                onChange={handleBoardChange}
+              />
+            </td>
+
+            {/* Description Input */}
+            <td>
+              <input
+                type="text"
+                name="description"
+                id="description"
+                placeholder="(e.g. Rap & Hip-Hop)"
+                value={boardFormData.description}
+                onChange={handleBoardChange}
+              />
+            </td>
+
+            {/* Submit Button */}
+            <td>
+              <button
+                className="basic-button"
+                type="submit"
+                onClick={createBoard}
+              >
+                Create Board
+              </button>
+            </td>
+          </tr>
           {/* Map through boards and display each board */}
           {boards.map((board) => (
             <tr key={board.id}>
@@ -120,44 +157,6 @@ function AdminBoards(props) {
               </td>
             </tr>
           ))}
-
-          {/* Create Board Form */}
-          <tr>
-            {/* Name Input */}
-            <td>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                placeholder="(e.g. rhh)"
-                value={boardFormData.name}
-                onChange={handleBoardChange}
-              />
-            </td>
-
-            {/* Description Input */}
-            <td>
-              <input
-                type="text"
-                name="description"
-                id="description"
-                placeholder="(e.g. Rap & Hip-Hop)"
-                value={boardFormData.description}
-                onChange={handleBoardChange}
-              />
-            </td>
-
-            {/* Submit Button */}
-            <td>
-              <button
-                className="basic-button"
-                type="submit"
-                onClick={createBoard}
-              >
-                Create Board
-              </button>
-            </td>
-          </tr>
         </tbody>
       </table>
     </section>

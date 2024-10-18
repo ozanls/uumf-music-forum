@@ -301,7 +301,7 @@ function AdminMenu(props) {
       ) : (
         // If user is not an admin, display a go back button
         <section className="page__content">
-          <button className="basic-button-2" onClick={() => navigate(-1)}>
+          <button className="basic-button-3" onClick={() => navigate(-1)}>
             Go Back
           </button>
         </section>

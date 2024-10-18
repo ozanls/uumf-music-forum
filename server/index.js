@@ -67,7 +67,9 @@ app.use(
   })
 );
 
-app.set("trust proxy", 1);
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
 
 // Initialize passport
 app.use(passport.initialize());

@@ -155,8 +155,12 @@ function CreatePost(props) {
           </section>
         </>
       ) : (
-        // If user is not logged in, render a button to go back, alongside the previously set error message
-        <button onClick={() => navigate(-1)}>Go Back</button>
+        // If user is not an admin, display a go back button
+        <section className="page__content">
+          <button className="basic-button-3" onClick={() => navigate(-1)}>
+            Go Back
+          </button>
+        </section>
       )}
     </main>
   );

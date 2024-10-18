@@ -124,6 +124,20 @@ button {
   background-color: #838383;
 }
 
+.basic-button-3 {
+  cursor: pointer;
+  background-color: #000000;
+  border: 1px solid #000000;
+  color: #ffffff;
+  padding: 0.5em;
+  border-radius: 0.2em;
+  width: 100%;
+}
+
+.basic-button-3:hover {
+  background-color: #838383;
+}
+
 .like-button,
 .unlike-button {
   background-color: #001352;

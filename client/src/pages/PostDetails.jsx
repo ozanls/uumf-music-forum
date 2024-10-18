@@ -174,6 +174,10 @@ function PostDetails(props) {
         { withCredentials: true }
       );
       setPostDeleted(true);
+      setMessage({
+        type: "success",
+        message: "Post has been deleted successfully.",
+      });
       window.location.href = "/";
     } catch (error) {
       console.error("Error deleting post:", error);
@@ -192,7 +196,10 @@ function PostDetails(props) {
     try {
       await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/comments/${postId}`,
-        comment,
+        {
+          comment,
+          recaptchaToken: commentRecaptcha,
+        },
         { withCredentials: true }
       );
     } catch (error) {
@@ -268,6 +275,7 @@ function PostDetails(props) {
         {
           body,
           tags,
+          recaptchaToken: postRecaptcha,
         },
         { withCredentials: true }
       );
