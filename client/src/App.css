@@ -84,7 +84,7 @@ textarea {
   flex-direction: column;
   justify-content: space-between;
   border: 1px solid #000000;
-  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
+  background-color: #000000;
 }
 
 /* Buttons */
@@ -181,7 +181,7 @@ button {
 .searchbar__dropdown {
   color: #ffffff;
   font-weight: bold;
-  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
+  background-color: #000000;
   border: 1px solid #000000;
   border-radius: 4px;
 }
@@ -258,7 +258,7 @@ nav {
   right: 0;
   border-top: none;
   padding: 0em;
-  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
+  background-color: #000000;
   color: #ffffff;
 }
 
@@ -371,7 +371,7 @@ td input {
 
 /* Boards */
 .board__header {
-  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
+  background-color: #000000;
   padding: 3em 2em 3em 2em;
   color: #ffffff;
   display: flex;
@@ -399,7 +399,7 @@ td input {
   display: flex;
   flex-direction: column;
   color: #ffffff;
-  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
+  background-color: #000000;
 }
 .boards {
   display: flex;
@@ -438,7 +438,7 @@ td input {
   flex-direction: column;
   gap: 0.5em;
   padding: 1em;
-  background-image: -moz-linear-gradient(45deg, #000000 0%, #767676 100%);
+  background-color: #000000;
   color: #ffffff;
   align-items: center;
 }
@@ -649,13 +649,26 @@ footer {
 /* Media query for tablets */
 @media (max-width: 1024px) {
   main {
-    width: 85vw;
+    width: 100vw;
   }
 }
 
-/* Media query for phones */
-@media (max-width: 601px) {
-  main {
-    width: 95vw;
+@media (max-width: 680px) {
+  .board__header {
+    flex-direction: column;
+    gap: 1em;
+  }
+
+  .board__header div {
+    align-items: center;
+  }
+
+  .board__header__left span,
+  .board__header__right h3 {
+    display: none;
+  }
+
+  .post {
+    padding: none;
   }
 }
