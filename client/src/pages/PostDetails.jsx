@@ -189,7 +189,16 @@ function PostDetails(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const commentBody = event.target.comment.value.trim();
-    const comment = { body: commentBody };
+
+    if (!commentBody) {
+      setMessage({ type: "error", message: "Comment body is required" });
+      return;
+    }
+
+    if (!commentRecaptcha) {
+      setMessage({ type: "error", message: "Please complete the reCAPTCHA" });
+      return;
+    }
 
     // Send a POST request to the server to create a comment
     // POST /comments/:postId
@@ -197,17 +206,25 @@ function PostDetails(props) {
       await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/comments/${postId}`,
         {
-          comment,
+          body: commentBody,
           recaptchaToken: commentRecaptcha,
         },
         { withCredentials: true }
       );
+
+      // Reset the reCAPTCHA widget and the form
+      setCommentRecaptcha(null);
+      event.target.reset();
+
+      // Fetch the updated comments
+      const response = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/posts/${postId}/comments`
+      );
+      setComments(response.data);
     } catch (error) {
       console.error("Error creating comment:", error);
       setMessage({ type: "error", message: "Error creating comment" });
     }
-
-    window.location.reload();
   };
 
   // Like Post

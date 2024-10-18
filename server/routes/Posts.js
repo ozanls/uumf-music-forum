@@ -230,8 +230,6 @@ router.post(
   }
 );
 
-module.exports = router;
-
 // Like or unlike a post
 router.post("/:id/like", isAuthenticated, async (req, res) => {
   const postId = req.params.id;

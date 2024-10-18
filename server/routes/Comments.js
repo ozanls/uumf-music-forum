@@ -39,7 +39,6 @@ router.post("/:id", isAuthenticated, async (req, res) => {
   }
 
   try {
-    // Verify the reCAPTCHA token
     const response = await axios.post(
       `https://www.google.com/recaptcha/api/siteverify`,
       null,
