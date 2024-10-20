@@ -1,4 +1,3 @@
-import BasicButton from "../buttons/BasicButton";
 import DeleteButton from "../buttons/DeleteButton";
 
 function AdminBoards(props) {
@@ -108,15 +107,19 @@ function AdminBoards(props) {
               <td>
                 {editingBoard === board.id ? (
                   <>
-                    <BasicButton
-                      text="Save"
-                      handleAction={() => saveEditedBoard(board.id)}
-                    />
+                    <button
+                      className="basic-button"
+                      onClick={() => saveEditedBoard(board.id)}
+                    >
+                      Save
+                    </button>
 
-                    <BasicButton
-                      text="Cancel"
-                      handleAction={() => setEditingBoard(null)}
-                    />
+                    <button
+                      className="basic-button"
+                      onClick={() => setEditingBoard(null)}
+                    >
+                      Cancel
+                    </button>
                   </>
                 ) : (
                   // If editingBoard is not the current board, display edit and delete buttons
@@ -129,10 +132,12 @@ function AdminBoards(props) {
                           text="Confirm Delete"
                           handleAction={() => deleteBoard(board.id)}
                         />
-                        <BasicButton
-                          text="Cancel"
-                          handleAction={cancelBoardDelete}
-                        />
+                        <button
+                          className="basic-button"
+                          onClick={cancelBoardDelete}
+                        >
+                          Cancel
+                        </button>
                       </>
                     ) : (
                       // If boardToDelete is not the current board, display edit and delete buttons
@@ -142,10 +147,12 @@ function AdminBoards(props) {
                             Visit /{board.name}/
                           </button>
                         </a>
-                        <BasicButton
-                          text="Edit"
-                          handleAction={() => setEditingBoard(board.id)}
-                        />
+                        <button
+                          className="basic-button"
+                          onClick={() => setEditingBoard(board.id)}
+                        >
+                          Edit
+                        </button>
                         <DeleteButton
                           text="Delete"
                           handleAction={() => handleBoardDelete(board.id)}

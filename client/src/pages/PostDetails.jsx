@@ -9,7 +9,6 @@ import Tag from "../components/Tag";
 import axios from "axios";
 import LikeButton from "../components/buttons/LikeButton";
 import UnlikeButton from "../components/buttons/UnlikeButton";
-import BasicButton from "../components/buttons/BasicButton";
 import DeleteButton from "../components/buttons/DeleteButton";
 import usePageTitle from "../utilities/usePageTitle";
 
@@ -405,18 +404,19 @@ function PostDetails(props) {
               )}
 
               {/* If post is saved, display UnsaveButton, else display SaveButton */}
-              {postSaved ? (
-                <BasicButton handleAction={handleSave} text=" Unsave" />
-              ) : (
-                <BasicButton handleAction={handleSave} text=" Save" />
-              )}
+
+              <button className="basic-button" onClick={handleSave}>
+                {postSaved ? "Unsave" : "Save"}
+              </button>
 
               {/* If user is post owner, display EditButton */}
               {user.id === post.userId && (
-                <BasicButton
-                  handleAction={() => setToggleEdit(!toggleEdit)}
-                  text=" Edit"
-                />
+                <button
+                  className="basic-button"
+                  onClick={() => setToggleEdit(true)}
+                >
+                  Edit
+                </button>
               )}
 
               {/* If user is post owner or admin, display DeleteButton */}
@@ -438,7 +438,9 @@ function PostDetails(props) {
                       </button>
 
                       {/* Cancel Delete Post */}
-                      <BasicButton handleAction={cancelDelete} text="Cancel" />
+                      <button className="basic-button" onClick={cancelDelete}>
+                        Cancel
+                      </button>
                     </>
                   )}
 

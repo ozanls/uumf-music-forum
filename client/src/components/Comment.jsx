@@ -3,7 +3,6 @@ import axios from "axios";
 import Username from "./Username";
 import formatDate from "../utilities/formatDate";
 import LikeButton from "./buttons/LikeButton";
-import BasicButton from "./buttons/BasicButton";
 import UnlikeButton from "./buttons/UnlikeButton";
 import DeleteButton from "./buttons/DeleteButton";
 
@@ -163,10 +162,12 @@ function Comment(props) {
               <button className="basic-button-2" type="submit">
                 Save
               </button>
-              <BasicButton
-                handleAction={() => setToggleEdit(false)}
-                text="Cancel"
-              />
+              <button
+                className="basic-button"
+                onClick={() => setToggleEdit(false)}
+              >
+                Cancel
+              </button>
             </div>
           </form>
         )}
@@ -185,10 +186,12 @@ function Comment(props) {
 
               {/* If the user is the author of the comment, show an edit button. */}
               {user.id === comment.userId && (
-                <BasicButton
-                  handleAction={() => setToggleEdit(true)}
-                  text="Edit"
-                />
+                <button
+                  className="basic-button"
+                  onClick={() => setToggleEdit(true)}
+                >
+                  Edit
+                </button>
               )}
 
               {/* If the user is an admin or the author of the comment, show a delete button. */}
@@ -210,7 +213,9 @@ function Comment(props) {
                 handleAction={() => confirmDelete(comment.id)}
                 text="Yes"
               />
-              <BasicButton handleAction={() => cancelDelete()} text="Cancel" />
+              <button className="basic-button" onClick={() => cancelDelete()}>
+                Cancel
+              </button>
             </>
           )}
         </div>

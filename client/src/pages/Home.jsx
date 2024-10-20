@@ -1,6 +1,5 @@
 import React from "react";
 import BoardsList from "../components/BoardsList";
-import BasicButton from "../components/buttons/BasicButton";
 import usePageTitle from "../utilities/usePageTitle";
 
 function Home() {
@@ -13,10 +12,12 @@ function Home() {
       <section className="page__header">
         <h1>UUMF</h1>
         <span className="button-list">
-          <BasicButton
-            handleAction={() => (window.location.href = "/about")}
-            text="What is UUMF?"
-          />
+          <button
+            className="basic-button"
+            onClick={() => (window.location.href = "/about")}
+          >
+            What is UUMF?
+          </button>
         </span>
       </section>
 

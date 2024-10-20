@@ -1,6 +1,5 @@
 import React from "react";
 import Tag from "./Tag";
-import BasicButton from "./buttons/BasicButton";
 
 function BoardCard(props) {
   const { board } = props;
@@ -11,10 +10,12 @@ function BoardCard(props) {
       <div className="board__header__left">
         <h2 className="board__header__subtitle">/{board.name}/</h2>
         <h1 className="board__header__title">{board.description}</h1>
-        <BasicButton
-          text={`Visit /${board.name}/`}
-          handleAction={() => (window.location.href = `/b/${board.name}`)}
-        />{" "}
+        <button
+          className="basic-button"
+          onClick={() => (window.location.href = `/b/${board.name}`)}
+        >
+          Visit /{board.name}/
+        </button>
       </div>
 
       {/* Board Header Right (trending tags) */}
@@ -41,10 +42,12 @@ function BoardCard(props) {
         )}
 
         {/* Button to view more tags */}
-        <BasicButton
-          text={`More /${board.name}/ Tags`}
-          handleAction={() => (window.location.href = `/b/${board.name}/tags`)}
-        />
+        <button
+          className="basic-button"
+          onClick={() => (window.location.href = `/b/${board.name}/tags`)}
+        >
+          More /${board.name}/ Tags
+        </button>
       </div>
     </div>
   );

@@ -1,5 +1,4 @@
 import Username from "./Username";
-import BasicButton from "./buttons/BasicButton";
 
 function Auth(props) {
   const {
@@ -32,26 +31,30 @@ function Auth(props) {
         {isAuthenticated ? (
           <>
             {/* Create a Post */}
-            <BasicButton
-              handleAction={() => (window.location.href = `/new`)}
-              text={<>Create a Post</>}
-            />
+            <button
+              className="basic-button"
+              onClick={() => (window.location.href = `/new`)}
+            >
+              + Create a Post
+            </button>
 
             {/* User Dropdown */}
-            <BasicButton
-              handleAction={() => setShowDropdown(!showDropdown)}
-              text={
-                <>
-                  @{user.username} <i className="fa-solid fa-chevron-down"></i>
-                </>
-              }
-            />
+            <button
+              className="basic-button"
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
+              @{user.username} <i className="fa-solid fa-chevron-down"></i>
+            </button>
           </>
         ) : (
           // If user is not authenticated, display 'Log In' and 'Sign Up' buttons
           <>
-            <BasicButton handleAction={toggleLogin} text="Log In" />
-            <BasicButton handleAction={toggleSignup} text="Sign Up" />
+            <button className="basic-button" onClick={toggleLogin}>
+              Log In
+            </button>
+            <button className="basic-button" onClick={toggleSignup}>
+              Sign Up
+            </button>
           </>
         )}
       </div>

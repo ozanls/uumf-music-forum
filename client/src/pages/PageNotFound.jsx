@@ -1,4 +1,3 @@
-import BasicButton from "../components/buttons/BasicButton";
 import usePageTitle from "../utilities/usePageTitle";
 
 function PageNotFound() {
@@ -11,10 +10,9 @@ function PageNotFound() {
       <section className="page__header">
         <h1>404</h1>
         <p>Page not found</p>
-        <BasicButton
-          handleAction={() => (window.location.href = "/")}
-          text="Go Home"
-        />
+        <button className="basic-button" onClick={() => window.history.back()}>
+          Go Back
+        </button>
       </section>
     </main>
   );

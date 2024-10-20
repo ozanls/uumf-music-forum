@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import BasicButton from "../components/buttons/BasicButton";
 import PostCard from "../components/PostCard";
 import Tag from "../components/Tag";
 import axios from "axios";
@@ -156,12 +155,12 @@ const BoardDetails = (props) => {
           )}
 
           {/* Button to view more tags */}
-          <BasicButton
-            text={`More /${board.name}/ Tags`}
-            handleAction={() =>
-              (window.location.href = `/b/${board.name}/tags`)
-            }
-          />
+          <button
+            className="basic-button"
+            onClick={() => (window.location.href = `/b/${board.name}/tags`)}
+          >
+            More /${board.name}/ Tags
+          </button>
         </div>
       </section>
 

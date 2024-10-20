@@ -16,10 +16,11 @@ function About() {
       {/* About Page Content */}
       <section className="page__content">
         <p>
-          {siteName} is a vibrant online community dedicated to exploring and
-          celebrating the depths of underground music scenes. We provide a
-          platform for musicians, listeners, and enthusiasts to connect, share,
-          and discuss the latest in underground music across various genres.
+          {siteName} (Unnamed Underground Music Forum) is a vibrant online
+          community dedicated to exploring and celebrating the depths of
+          underground music scenes. We provide a platform for musicians,
+          listeners, and enthusiasts to connect, share, and discuss the latest
+          in underground music across various genres.
         </p>
 
         <h2>Our Mission</h2>
