@@ -46,7 +46,7 @@ function BoardCard(props) {
           className="basic-button"
           onClick={() => (window.location.href = `/b/${board.name}/tags`)}
         >
-          More /${board.name}/ Tags
+          More /{board.name}/ Tags
         </button>
       </div>
     </div>
